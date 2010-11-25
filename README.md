@@ -17,10 +17,11 @@ For now just check my [lightning talk slides](http://www.slideshare.net/sylvinus
 Help & Forks welcomed! This is just starting for now.
 
 Rough todolist :
-  * Finish plugging Sizzle tests
-  * More crawling tests
-  * Document the API
-  * Get feedback on featureset for a 1.0 release (option for autofollowing links?)
+ 
+ * Finish plugging Sizzle tests
+ * More crawling tests
+ * Document the API
+ * Get feedback on featureset for a 1.0 release (option for autofollowing links?)
 
 
 API ideas
