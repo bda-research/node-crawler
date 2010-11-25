@@ -4,22 +4,12 @@ QUnit.module("selector");
 var path = require( "path" ).normalize( __dirname + "/.." ),
     sys = require("sys"),
     fs = require("fs"),
-    Apricot = require(path + "/lib/apricot.js").Apricot;
+    Crawler = require(path + "/lib/crawler.js").Crawler;
 
 
 var document,window,jQuery,navigator={userAgent:"Mozilla/5.0"};
 
-
-var getJQuery = function() {
-    
-    var location = window.location;
-    window.XMLHttpRequest = function() {};
-    
-    
-    return jQuery;
-    
-}
-
+var crawler = new Crawler();
 
 var myTest = function(name,actualTest) {
     
@@ -27,28 +17,23 @@ var myTest = function(name,actualTest) {
     
         fs.readFile(require( "path" ).normalize( __dirname + "/index.html" ), 'utf-8', function (err, data) {
             
+            crawler.queue({"html":data,"callback":function(error,response,$) {
             
-          //sys.puts(data);
+                window = response.window;
+                document = window.document;
+                jQuery = $;
             
-          Apricot.parse(data,function(err,doc) {
-          
-              window = doc.window;
-              document = window.document;
-              jQuery = window.jQuery;
-              
-              
-              actualTest();
-          
-          });
-  
+                actualTest();
+            
+            }}); 
         });
     });
-    
-
 };
 
 
 
+
+/* Below are the official Sizzle tests */
 
 
 

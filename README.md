@@ -8,6 +8,8 @@ How to install
 How to test
 
 	$ node test/simple.js
+	$ node test/testrunner.js
+	
 
 Why / What ?
 ------------
@@ -18,20 +20,22 @@ Help & Forks welcomed! This is just starting for now.
 
 Rough todolist :
  
- * Finish plugging Sizzle tests
+ * Make Sizzle tests pass (jsdom bug? https://github.com/tmpvar/jsdom/issues#issue/81)
  * More crawling tests
  * Document the API
  * Get feedback on featureset for a 1.0 release (option for autofollowing links?)
+ * Make sure jQuery is cached / Include latest release in tree or add dependency
+ * Check how we can support other mimetypes than HTML
+ * Add+test timeout parameter
 
 
-API ideas
----------
+API
+---
 
     var Crawler = require("node-crawler").Crawler;
     
     var c = new Crawler({
         "maxConnections":10,
-        "timeout":60,
         "callback":function(error,result,$) {
             $("#content a:link").each(function(a) {
                 c.queue(a.href);
@@ -39,14 +43,22 @@ API ideas
         }
     });
     
+    // Queue a list of URLs, with default callback
     c.queue(["http://jamendo.com/","http://tedxparis.com", ...]);
     
+	// Queue URLs with custom callbacks
     c.queue([{
         "uri":"http://parisjs.org/register",
         "method":"POST",
-        "timeout":120,
         "callback":function(error,result,$) {
             $("div:contains(Thank you)").after(" very much");
         }
     }]);
+
+    // Queue some HTML code directly without grabbing (mostly for tests)
+    c.queue([{
+        "html":"<p>This is a <strong>test</strong></p>"
+    }]);
+
+	
 
