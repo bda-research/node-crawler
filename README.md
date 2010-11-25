@@ -5,12 +5,22 @@ How to install
 
     $ npm install crawler
 
+How to test
+
+	$ node test/simple.js
+
 Why / What ?
 ------------
 
 For now just check my [lightning talk slides](http://www.slideshare.net/sylvinus/web-crawling-with-nodejs)
 
-Help & Forks welcomed! This is just starting for now
+Help & Forks welcomed! This is just starting for now.
+
+Rough todolist :
+ - Finish plugging Sizzle tests
+ - More crawling tests
+ - Document the API
+ - Get feedback on featureset for a 1.0 release (option for autofollowing links?)
 
 
 API ideas
