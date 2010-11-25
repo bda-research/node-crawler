@@ -8,7 +8,7 @@ How to install
 Why / What ?
 ------------
 
-For now just check my lightning talk : http://www.slideshare.net/sylvinus/web-crawling-with-nodejs
+For now just check my [lightning talk slides](http://www.slideshare.net/sylvinus/web-crawling-with-nodejs)
 
 Help & Forks welcomed! This is just starting for now
 
