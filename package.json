@@ -1,0 +1,59 @@
+{
+    "name": "crawler",
+    "version": "0.0.1",
+    "description": "Crawler is a web spider written with Nodejs. It gives you the full power of jQuery on the server to parse a big number of pages as they are downloaded, asynchronously.",
+    "keywords": [
+        "dom",
+        "javascript",
+        "crawling",
+        "jquery"
+    ],
+    "maintainers": [
+        {
+            "name": "Sylvain Zimmer",
+            "email": "sylvain@sylvainzimmer.com",
+            "web": "http://sylvinus.org/"
+        }
+    ],
+    "bugs": {
+        "mail": "sylvain@sylvainzimmer.com",
+        "web": "http://github.com/joshfire/node-crawler/issues"
+    },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "http://github.com/joshfire/node-crawler/blob/master/LICENSE.txt"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "git",
+            "url": "http://github.com/joshfire/node-crawler.git"
+        }
+    ],
+    "dependencies": {
+       "request": ">= 0.9.5",
+       "jsdom": ">= 0.1.20",
+       "generic-pool": ">= 1.0.2",
+       "qunit": ">= 0.0.7",
+       "htmlparser": ">= 1.6.2"
+    },
+    "os": [
+        "linux",
+        "macos",
+        "win"
+    ],
+    "cpu": [
+        "x86",
+        "ppc",
+        "x86_64"
+    ],
+    "engines": [
+        "node"
+    ],
+    "directories": {
+        "lib": "lib"
+    },
+    "main": "./lib/crawler"
+}
+
