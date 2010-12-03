@@ -27,7 +27,8 @@ Rough todolist :
  * Make sure jQuery is cached / Include latest release in tree or add dependency
  * Check how we can support other mimetypes than HTML
  * Add+test timeout parameter
-
+ * Option to wait for callback to finish before freeing the pool resource (via another callback like next())
+ * Events on queue empty / full
 
 API
 ---
