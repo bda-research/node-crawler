@@ -1,19 +1,19 @@
 var Crawler = require("../lib/crawler").Crawler;
 
 var c = new Crawler({
-    "maxConnections":10,
+    "maxConnections":1,
     "timeout":60,
     "debug":true,
+    "cache":true,
     "callback":function(error,result,$) {
-        console.log("Got page");
         $("a").each(function(i,a) {
             console.log(a.href);
-            //c.queue(a.href);
         })
     }
 });
 
-c.queue(["http://jamendo.com/","http://tedxparis.com"]);
+c.queue(["http://joshfire.com/","http://joshfire.com/","http://joshfire.com/","http://joshfire.com/"]);
+
 /*
 c.queue([{
     "uri":"http://parisjs.org/register",

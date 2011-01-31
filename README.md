@@ -24,7 +24,6 @@ Rough todolist :
  * More crawling tests
  * Document the API
  * Get feedback on featureset for a 1.0 release (option for autofollowing links?)
- * Make sure jQuery is cached / Include latest release in tree or add dependency
  * Check how we can support other mimetypes than HTML
  * Add+test timeout parameter
  * Option to wait for callback to finish before freeing the pool resource (via another callback like next())
@@ -62,4 +61,11 @@ API
     }]);
 
 	
+ChangeLog
+---------
 
+0.0.3 (dev)
+ - Fixes jQuery being redownloaded at each page + include it in the tree
+ - Cache support
+ - Retries
+ - Updated priority support with new generic-pool>=1.0.4
