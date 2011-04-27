@@ -33,10 +33,10 @@
     ,
     "dependencies": {
        "request": ">= 0.9.5",
-       "jsdom": "= 0.1.20",
        "generic-pool": ">= 1.0.4",
        "qunit": ">= 0.0.7",
-       "htmlparser": ">= 1.6.2"
+       "htmlparser": ">= 1.6.2",
+       "jquery": ">= 1.5.1"
     },
     "os": [
         "linux",
