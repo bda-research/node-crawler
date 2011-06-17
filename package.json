@@ -38,7 +38,7 @@
        "jquery": ">= 1.5.1"
     },
     "devDependencies": {
-        "qunit": ">= 0.0.7",
+       "qunit": ">= 0.0.7"
     },
     "os": [
         "linux",
