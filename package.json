@@ -34,9 +34,11 @@
     "dependencies": {
        "request": ">= 0.9.5",
        "generic-pool": ">= 1.0.4",
-       "qunit": ">= 0.0.7",
        "htmlparser": ">= 1.6.2",
        "jquery": ">= 1.5.1"
+    },
+    "devDependencies": {
+        "qunit": ">= 0.0.7",
     },
     "os": [
         "linux",
