@@ -34,6 +34,7 @@
     "dependencies": {
        "request": ">= 0.9.5",
        "generic-pool": ">= 1.0.4",
+       "jsdom": "0.1.20",
        "htmlparser": ">= 1.6.2",
        "jquery": ">= 1.5.1"
     },
