@@ -64,7 +64,8 @@ API
 ChangeLog
 ---------
 
-0.0.3 (dev)
+0.1.0
+ - Updated dependencies, notably node 0.4.x
  - Fixes jQuery being redownloaded at each page + include it in the tree
  - Cache support
  - Retries
