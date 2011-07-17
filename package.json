@@ -36,7 +36,7 @@
        "jsdom": ">= 0.2.0",
        "generic-pool": ">= 1.0.6",
        "qunit": ">= 0.0.7",
-       "htmlparser": ">= 1.7.3"
+       "htmlparser": ">= 1.7.3",
        "jquery": ">= 1.5.1"
     },
     "devDependencies": {
