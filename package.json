@@ -42,17 +42,6 @@
     "devDependencies": {
        "qunit": ">= 0.0.7"
     },
-    "os": [
-        "linux",
-        "macos",
-        "win"
-    ],
-    "cpu": [
-        "x86",
-        "ppc",
-        "x86_64",
-        "x64"
-    ],
     "engines": [
         "node"
     ],
