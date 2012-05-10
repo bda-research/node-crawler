@@ -1,18 +1,26 @@
 {
     "name": "crawler",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Crawler is a web spider written with Nodejs. It gives you the full power of jQuery on the server to parse a big number of pages as they are downloaded, asynchronously.",
     "keywords": [
         "dom",
         "javascript",
         "crawling",
-        "jquery"
+        "jquery",
+        "node"
     ],
     "maintainers": [
         {
             "name": "Sylvain Zimmer",
             "email": "sylvain@sylvainzimmer.com",
             "web": "http://sylvinus.org/"
+        }
+    ],
+    "contributors": [
+        {
+            "name": "Diego Araos",
+            "email": "d@wehack.it",
+            "url": "http://wehack.it/"
         }
     ],
     "bugs": {
@@ -50,4 +58,3 @@
     },
     "main": "./lib/crawler"
 }
-
