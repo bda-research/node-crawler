@@ -44,7 +44,7 @@
     },
     "os": [
         "linux",
-        "macos",
+        "darwin",
         "win"
     ],
     "cpu": [
