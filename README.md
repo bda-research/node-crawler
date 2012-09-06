@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/joshfire/node-crawler.png)](http://travis-ci.org/joshfire/node-crawler)
 node-crawler
 ------------
 
