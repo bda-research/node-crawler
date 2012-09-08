@@ -2,19 +2,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr" id="html">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>jQuery Test Suite</title>
+	<title>Sizzle Test Suite</title>
 	<link rel="Stylesheet" media="screen" href="qunit/qunit/qunit.css" />
-<!--	<script type="text/javascript" src="jquery.js"></script>
-	<script type="text/javascript" src="../sizzle.js"></script>
-	<script type="text/javascript" src="data/sizzle-jquery.js"></script>
-	<script type="text/javascript" src="data/testinit.js"></script>
 	<script type="text/javascript" src="qunit/qunit/qunit.js"></script>
+	<script type="text/javascript" src="data/testinit.js"></script>
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="../sizzle.js"></script>
 	<script type="text/javascript" src="unit/selector.js"></script>
-	-->
+	<script type="text/javascript" src="unit/utilities.js"></script>
 </head>
 
 <body id="body">
-	<h1 id="qunit-header">jQuery Test Suite</h1>
+	<h1 id="qunit-header">Sizzle Test Suite</h1>
 	<h2 id="qunit-banner"></h2>
 	<div id="qunit-testrunner-toolbar"></div>
 	<h2 id="qunit-userAgent"></h2>
@@ -24,10 +23,8 @@
 	<div id="nothiddendiv" style="height:1px;background:white;" class="nothiddendiv">
 		<div id="nothiddendivchild"></div>
 	</div>
-	<!-- this iframe is outside the #main so it won't reload constantly wasting time, but it means the tests must be "safe" and clean up after themselves -->
-	<iframe id="loadediframe" name="loadediframe" style="display:none;" src="data/iframe.html"></iframe>
-	<dl id="dl" style="position:absolute;top:-32767px;left:-32767px;">
-	<div id="main">
+	<dl id="dl" style="position:absolute;top:-32767px;left:-32767px;width:1px">
+	<div id="qunit-fixture">
 		<p id="firstp">See <a id="simon1" href="http://simon.incutio.com/archive/2003/03/25/#getElementsBySelector" rel="bookmark">this blog entry</a> for more information.</p>
 		<p id="ap">
 			Here are some links in a normal paragraph: <a id="google" href="http://www.google.com/" title="Google!">Google</a>,
@@ -45,7 +42,7 @@
 		<span id="name+value"></span>
 		<p id="first">Try them out:</p>
 		<ul id="firstUL"></ul>
-		<ol id="empty"></ol>
+		<ol id="empty"><!-- comment --></ol>
 		<form id="form" action="formaction">
 			<label for="action" id="label-for">Action:</label>
 			<input type="text" name="action" value="Test" id="text1" maxlength="30"/>
@@ -105,11 +102,11 @@
 				<param name="p2" value="x2" />
 			</object>
 
-			<span id="台北Táiběi"></span>
+			<span id="台北Táiběi"></span>
 			<span id="台北" lang="中文"></span>
-			<span id="utf8class1" class="台北Táiběi 台北"></span>
+			<span id="utf8class1" class="台北Táiběi 台北"></span>
 			<span id="utf8class2" class="台北"></span>
-			<span id="foo:bar" class="foo:bar"></span>
+			<span id="foo:bar" class="foo:bar"><span id="foo_descendent"></span></span>
 			<span id="test.foo[5]bar" class="test.foo[5]bar"></span>
 
 			<foo_bar id="foobar">test element</foo_bar>
@@ -169,6 +166,10 @@ Z</textarea>
 			<select name="D4" disabled="disabled">
 				<option selected="selected" value="NO">NO</option>
 			</select>
+			<input id="list-test" type="text" />
+			<datalist id="datalist">
+				<option value="option"></option>
+			</datalist>
 		</form>
 		<div id="moretests">
 			<form>
@@ -183,6 +184,13 @@ Z</textarea>
 			<div id="t2037">
 				<div><div class="hidden">hidden</div></div>
 			</div>
+			<div id="t6652">
+				<div></div>
+			</div>
+			<div id="t12087">
+				<input type="hidden" id="el12087" data-comma="0,1"/>
+			</div>
+			<div id="no-clone-exception"><object><embed></embed></object></div>
 		</div>
 
 		<div id="tabindex-tests">
@@ -210,7 +218,15 @@ Z</textarea>
 		<div id="siblingTest">
 			<em id="siblingfirst">1</em>
 			<em id="siblingnext">2</em>
-		</div>
+			<em id="siblingthird">
+				<em id="siblingchild">
+					<em id="siblinggrandchild">
+						<em id="siblinggreatgrandchild"></em>
+					</em>
+				</em>
+			</em>
+			<span id="siblingspan"></span>
+		</div>​
 	</div>
 	</dl>
 	<div id="fx-test-group" style="position:absolute;width:1px;height:1px;overflow:hidden;">
@@ -232,7 +248,7 @@ Z</textarea>
 			<div id="slidetoggleout" class='chain test out'>slideToggleOut<div>slideToggleOut</div></div>
 
 			<div id="fadetogglein" class='chain test'>fadeToggleIn<div>fadeToggleIn</div></div>
-      <div id="fadetoggleout" class='chain test out'>fadeToggleOut<div>fadeToggleOut</div></div>
+			<div id="fadetoggleout" class='chain test out'>fadeToggleOut<div>fadeToggleOut</div></div>
 
 			<div id="fadeto" class='chain test'>fadeTo<div>fadeTo</div></div>
 		</div>
