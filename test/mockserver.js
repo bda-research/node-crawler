@@ -7,4 +7,8 @@ app.get('/timeout', function(req, res){
   },req.param("timeout") || 0);
 });
 
+app.get('/status/:status', function(req, res){
+  res.send("HTTP "+req.params.status,parseInt(req.params.status,10));
+});
+
 exports.app = app;

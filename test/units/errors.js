@@ -15,12 +15,11 @@ test("request timeout", function() {
         "debug":DEBUG,
         "timeout":500,
         "retryTimeout":1000,
-        "retries":1
+        "retries":1,
+        "onDrain":function() {
+            start();
+        }
     });
-
-    c.onDrain = function() {
-        start();
-    };
 
     c.queue([{
         "uri":"http://127.0.0.1:"+MOCKPORT+"/timeout?timeout=100",
@@ -37,3 +36,35 @@ test("request timeout", function() {
 
 });
 
+
+test("request statuses", function() {
+    expect( 6 );
+    
+    stop();
+
+    var c = new Crawler({
+        "debug":DEBUG,
+        "jQuery":false,
+        "onDrain":function() {
+            start();
+        }
+    });
+
+    c.queue([{
+        "uri":"http://127.0.0.1:"+MOCKPORT+"/status/200",
+        "callback":function(error,result,$) {
+            equal(error,null);
+            equal(result.body,"HTTP 200");
+            equal(result.statusCode,200);
+        }
+    },{
+        "uri":"http://127.0.0.1:"+MOCKPORT+"/status/404",
+        "callback":function(error,result,$) {
+            equal(error,null);
+            equal(result.body,"HTTP 404");
+            equal(result.statusCode,404);
+        }
+    }]);
+    
+
+});
