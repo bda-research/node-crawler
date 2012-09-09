@@ -16,12 +16,12 @@ testrunner.run([
         {
             code: path + "/lib/crawler.js",
             tests: [
-              //path + "/test/units/forceutf8.js",
-              //path + "/test/units/simple.js",
+              path + "/test/units/forceutf8.js",
+              path + "/test/units/simple.js",
               path + "/test/units/errors.js"
             ]
         }    
 ],function() {
-  console.log("Closing server...");
+  console.log("Stopping mockserver...");
   mockserver.close();
 });
