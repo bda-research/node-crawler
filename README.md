@@ -116,6 +116,7 @@ How to test
 
 Feel free to add more tests!
 
+[![build status](https://secure.travis-ci.org/joshfire/node-crawler.png)](http://travis-ci.org/joshfire/node-crawler)
 
 Rough todolist
 --------------
