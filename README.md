@@ -136,7 +136,7 @@ ChangeLog
  - Added a forceUTF8 mode
  - Added real unit tests & travis-ci
  - Added some docs!
- - Added Crawler.onDrain()
+ - Added onDrain()
  - Code refactor
  - [BACKWARD-INCOMPATIBLE] Timeout parameters now in milliseconds (weren't documented)
 

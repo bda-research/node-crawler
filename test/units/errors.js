@@ -68,3 +68,34 @@ test("request statuses", function() {
     
 
 });
+
+
+
+test("empty response", function() {
+    expect( 2 );
+    
+    stop();
+
+    var c = new Crawler({
+        "debug":DEBUG,
+        "jQuery":false,
+        "onDrain":function() {
+            start();
+        }
+    });
+
+    c.queue([{
+        "uri":"http://127.0.0.1:"+MOCKPORT+"/empty",
+        "callback":function(error,result,$) {
+            equal(error,null);
+            equal(result.statusCode,204);
+        }
+    }/*,{
+        "uri":"http://127.0.0.1:"+MOCKPORT+"/close/end",
+        "callback":function(error,result,$) {
+            ok(!!error);
+        }
+    }*/]);
+    
+
+});
