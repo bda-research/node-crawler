@@ -53,6 +53,9 @@ test("two requests", function() {
         "callback":function(error,result,$) {
             equal(error,null);
             ok(result.body.length>1000);
+            
+        },
+        "onDrain":function() {
             start();
         }
     });
