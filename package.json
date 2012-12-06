@@ -15,12 +15,12 @@
         {
             "name": "Sylvain Zimmer",
             "email": "sylvain@sylvainzimmer.com",
-            "web": "http://sylvinus.org/"
+            "url": "http://sylvinus.org/"
         }
     ],
     "bugs": {
         "mail": "sylvain@sylvainzimmer.com",
-        "web": "http://github.com/sylvinus/node-crawler/issues"
+        "url": "http://github.com/sylvinus/node-crawler/issues"
     },
     "licenses": [
         {
