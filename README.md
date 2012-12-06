@@ -123,7 +123,7 @@ Rough todolist
  
  * Make Sizzle tests pass (jsdom bug? https://github.com/tmpvar/jsdom/issues#issue/81)
  * More crawling tests
- * Document the API
+ * Document the API more (+ the result object)
  * Get feedback on featureset for a 1.0 release (option for autofollowing links?)
  * Check how we can support other mimetypes than HTML
  * Option to wait for callback to finish before freeing the pool resource (via another callback like next())

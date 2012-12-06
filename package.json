@@ -20,18 +20,18 @@
     ],
     "bugs": {
         "mail": "sylvain@sylvainzimmer.com",
-        "web": "http://github.com/joshfire/node-crawler/issues"
+        "web": "http://github.com/sylvinus/node-crawler/issues"
     },
     "licenses": [
         {
             "type": "MIT",
-            "url": "http://github.com/joshfire/node-crawler/blob/master/LICENSE.txt"
+            "url": "http://github.com/sylvinus/node-crawler/blob/master/LICENSE.txt"
         }
     ],
     "repository":
         {
             "type": "git",
-            "url": "https://github.com/joshfire/node-crawler.git"
+            "url": "https://github.com/sylvinus/node-crawler.git"
         }
     ,
     "dependencies": {
