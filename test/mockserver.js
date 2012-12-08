@@ -25,4 +25,14 @@ app.get('/close/destroy', function(req, res){
   res.end();
 });
 
+
+app.get('/mockfiles/*', function(req, res){
+  res.sendfile("test/mockfiles/"+req.param(0));
+});
+
+
 exports.app = app;
+
+if (require.main === module) {
+  app.listen(8080);
+}

@@ -33,7 +33,7 @@ Crash course
         "callback":function(error,result,$) {
 
             // $ is a jQuery instance scoped to the server-side DOM of the page
-            $("#content a:link").each(function(a) {
+            $("#content a").each(function(a) {
                 c.queue(a.href);
             });
         }
@@ -131,6 +131,13 @@ Rough todolist
 	
 ChangeLog
 ---------
+
+0.2.2
+ - Fix relative link bug, all a.href should be absolute when crawling a remote URL
+ - Updated default jQuery to 1.8.3
+
+0.2.1
+ - Updated jsdom to 0.2.19
 
 0.2.0
  - Updated code & dependencies for node 0.6/0.8, cleaned package.json

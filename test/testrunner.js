@@ -16,9 +16,12 @@ testrunner.run([
         {
             code: path + "/lib/crawler.js",
             tests: [
+              path + "/test/units/links.js",
+              
               path + "/test/units/forceutf8.js",
               path + "/test/units/simple.js",
               path + "/test/units/errors.js"
+              
             ]
         }    
 ],function() {

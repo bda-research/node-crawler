@@ -1,0 +1,23 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'test' ]
+2 info using npm@1.1.45
+3 info using node@v0.8.4
+4 verbose node symlink /usr/local/bin/node
+5 verbose config file /Users/sylvinus/.npmrc
+6 verbose config file /usr/local/etc/npmrc
+7 verbose config file /usr/local/lib/node_modules/npm/npmrc
+8 verbose read json /Users/sylvinus/w/sz/node-crawler/test/package.json
+9 error Error: ENOENT, open '/Users/sylvinus/w/sz/node-crawler/test/package.json'
+10 error If you need help, you may report this log at:
+10 error     <http://github.com/isaacs/npm/issues>
+10 error or email it to:
+10 error     <npm-@googlegroups.com>
+11 error System Darwin 12.2.0
+12 error command "node" "/usr/local/bin/npm" "test"
+13 error cwd /Users/sylvinus/w/sz/node-crawler/test
+14 error node -v v0.8.4
+15 error npm -v 1.1.45
+16 error path /Users/sylvinus/w/sz/node-crawler/test/package.json
+17 error code ENOENT
+18 error errno 34
+19 verbose exit [ 34, true ]
