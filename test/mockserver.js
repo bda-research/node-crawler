@@ -25,6 +25,11 @@ app.get('/close/destroy', function(req, res){
   res.end();
 });
 
+//100k page
+var bigpage = new Array(100).join(new Array(100).join("1234567890"));
+app.get('/bigpage', function(req, res){
+  res.send("<html><body>"+bigpage+"</body></html>");
+});
 
 app.get('/mockfiles/*', function(req, res){
   res.sendfile("test/mockfiles/"+req.param(0));

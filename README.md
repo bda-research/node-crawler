@@ -97,6 +97,7 @@ Server-side DOM options:
 
  * jQuery: Boolean, if true creates a server-side DOM and adds jQuery (Default true)
  * jQueryUrl: String, path to the jQuery file you want to insert (Defaults to bundled jquery-1.8.1.min.js)
+ * autoWindowClose: Boolean, if false you will have to close the window yourself with result.window.close(). Useful when your callback needs to continue having the window open until some async code has ran. (Default true)
 
 Charset encoding:
 
@@ -107,6 +108,13 @@ Cache:
  * cache: Boolean, if true stores requests in memory (Default false)
  * skipDuplicates: Boolean, if true skips URIs that were already crawled, without even calling callback() (Default false)
 
+
+Memory leaks
+------------
+
+When using timeouts, to avoid triggering [Node #3076](https://github.com/joyent/node/pull/3076) you should use Node > 0.8.14
+
+There is now a complete memory leak test for node-crawler :)
 
 
 How to test
@@ -134,7 +142,9 @@ ChangeLog
 
 0.2.2
  - Fix relative link bug, all a.href should be absolute when crawling a remote URL
- - Updated default jQuery to 1.8.3
+ - Updated default jQuery to 1.8.3, request to 2.12.0, genericpool to 2.0.2
+ - Fixed memory leak by adding the autoWindowClose option
+ - Added memory leak test
 
 0.2.1
  - Updated jsdom to 0.2.19
