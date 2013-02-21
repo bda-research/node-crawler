@@ -33,7 +33,7 @@ Crash course
         "callback":function(error,result,$) {
 
             // $ is a jQuery instance scoped to the server-side DOM of the page
-            $("#content a").each(function(a) {
+            $("#content a").each(function(index,a) {
                 c.queue(a.href);
             });
         }
