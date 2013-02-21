@@ -68,14 +68,14 @@ Options reference
 You can pass these options to the Crawler() constructor if you want them to be global or as 
 items in the queue() calls if you want them to be specific to that item (overwriting global options)
 
-This options list is a strict superset of mikeal's request options and will be directly passed to
+This options list is a strict superset of [mikeal's request options](https://github.com/mikeal/request#requestoptions-callback) and will be directly passed to
 the request() method.
 
 Basic request options:
 
  * uri: String, the URL you want to crawl
  * timeout : Number, in milliseconds        (Default 60000)
- * method, xxx: All mikeal's requests options are accepted
+ * method, xxx: [All mikeal's requests options are accepted](https://github.com/mikeal/request#requestoptions-callback)
 
 Callbacks:
 
