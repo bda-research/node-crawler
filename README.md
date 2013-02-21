@@ -108,6 +108,10 @@ Cache:
  * cache: Boolean, if true stores requests in memory (Default false)
  * skipDuplicates: Boolean, if true skips URIs that were already crawled, without even calling callback() (Default false)
 
+Other:
+
+ * userAgent: String, defaults to "node-crawler/[version]"
+
 
 Memory leaks
 ------------
@@ -139,6 +143,10 @@ Rough todolist
 	
 ChangeLog
 ---------
+
+0.2.3
+ - Added gzip support
+ - Support for userAgent option
 
 0.2.2
  - Fix relative link bug, all a.href should be absolute when crawling a remote URL

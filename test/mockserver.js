@@ -1,4 +1,5 @@
-var express = require('express');
+var express = require('express'),
+    path = require("path");
 var app = express.createServer();
 
 app.get('/timeout', function(req, res){
@@ -13,6 +14,10 @@ app.get('/status/:status', function(req, res){
 
 app.get('/empty', function(req, res){
   res.send("",204);
+});
+
+app.get('/echo_useragent', function(req, res){
+  res.send("<html>Your user agent: "+req.headers["user-agent"]+"</html>");
 });
 
 app.get('/close/end', function(req, res){
@@ -31,9 +36,12 @@ app.get('/bigpage', function(req, res){
   res.send("<html><body>"+bigpage+"</body></html>");
 });
 
-app.get('/mockfiles/*', function(req, res){
-  res.sendfile("test/mockfiles/"+req.param(0));
-});
+
+app.use("/mockfiles/gzipped/",express.compress());
+
+app.use('/mockfiles/', express["static"](path.resolve(__dirname, 'mockfiles')));
+
+
 
 
 exports.app = app;
