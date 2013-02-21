@@ -147,6 +147,7 @@ ChangeLog
 0.2.3
  - Added gzip support
  - Support for userAgent option
+ - Added fallback on iconv-lite and marked iconv as optional dependency
 
 0.2.2
  - Fix relative link bug, all a.href should be absolute when crawling a remote URL
