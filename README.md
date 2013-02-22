@@ -128,7 +128,7 @@ How to test
 
 Feel free to add more tests!
 
-[![build status](https://secure.travis-ci.org/joshfire/node-crawler.png)](http://travis-ci.org/joshfire/node-crawler)
+[![build status](https://secure.travis-ci.org/sylvinus/node-crawler.png)](http://travis-ci.org/sylvinus/node-crawler)
 
 Rough todolist
 --------------
