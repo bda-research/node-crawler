@@ -108,5 +108,23 @@ test("one request + user agent", function() {
 });
 
 
+test("from the readme",function() {
+
+    expect( 2 );
+
+    stop();
+
+    var c = new Crawler({
+        "maxConnections":10,
+        "callback":function(error,result,$) {
+            equal(typeof result.body, "string");
+            ok(result.body.indexOf("Google")>=0);
+            start();
+        }
+    });
+    c.queue("http://google.com");
+
+});
+
 
 /* */
