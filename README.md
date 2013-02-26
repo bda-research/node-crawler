@@ -143,6 +143,9 @@ Rough todolist
 	
 ChangeLog
 ---------
+0.2.4
+ - Fixed a bug with response.body being a Buffer in some cases
+ - Wrapped jsdom calls in a try/catch to isolate us from crashes
 
 0.2.3
  - Added gzip support

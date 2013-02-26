@@ -98,7 +98,7 @@ test("one request + user agent", function() {
         "jQuery":false,
         "callback":function(error,result,$) {
             equal(error,null);
-            ok(result.body=="<html>Your user agent: test/1.2</html>");
+            ok(result.body=="Your user agent: test/1.2");
             start();
         }
     });

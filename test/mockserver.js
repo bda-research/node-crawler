@@ -17,7 +17,7 @@ app.get('/empty', function(req, res){
 });
 
 app.get('/echo_useragent', function(req, res){
-  res.send("<html>Your user agent: "+req.headers["user-agent"]+"</html>");
+  res.send("Your user agent: "+req.headers["user-agent"]);
 });
 
 app.get('/close/end', function(req, res){
