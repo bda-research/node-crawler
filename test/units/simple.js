@@ -108,6 +108,27 @@ test("one request + user agent", function() {
 });
 
 
+test("Auto-disabling of jQuery if no html tag first", function() {
+    expect( 2 );
+
+    stop();
+
+    var c = new Crawler({
+        "debug":DEBUG,
+        "userAgent":"test/1.2",
+        "forceUTF8":true,
+        "callback":function(error,result,$) {
+            equal(error,null);
+            ok(result.body=="Your user agent: test/1.2");
+            start();
+        }
+    });
+
+    c.queue(["http://127.0.0.1:"+MOCKPORT+"/echo_useragent"]);
+
+});
+
+
 test("from the readme",function() {
 
     expect( 2 );
