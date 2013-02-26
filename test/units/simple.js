@@ -118,7 +118,12 @@ test("from the readme",function() {
         "maxConnections":10,
         "callback":function(error,result,$) {
             equal(typeof result.body, "string");
-            ok(result.body.indexOf("Google")>=0);
+            if (typeof result.body == "string") {
+                ok(result.body.indexOf("Google")>=0);
+            } else {
+                ok(true);
+            }
+            
             start();
         }
     });
