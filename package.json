@@ -43,9 +43,6 @@
        "jschardet": "1.0.2",
        "iconv-lite": "0.2.7"
     },
-    "optionalDependencies":{
-        "iconv": "1.2.3"
-    },
     "devDependencies": {
        "qunit": "0.5.8",
        "express": "2.5.x",
