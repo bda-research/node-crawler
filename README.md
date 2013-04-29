@@ -24,43 +24,44 @@ How to install
 Crash course
 ------------
 
-    var Crawler = require("crawler").Crawler;
-    
-    var c = new Crawler({
-        "maxConnections":10,
+```javascript
+var Crawler = require("crawler").Crawler;
 
-        // This will be called for each crawled page
-        "callback":function(error,result,$) {
+var c = new Crawler({
+"maxConnections":10,
 
-            // $ is a jQuery instance scoped to the server-side DOM of the page
-            $("#content a").each(function(index,a) {
-                c.queue(a.href);
-            });
-        }
+// This will be called for each crawled page
+"callback":function(error,result,$) {
+
+    // $ is a jQuery instance scoped to the server-side DOM of the page
+    $("#content a").each(function(index,a) {
+        c.queue(a.href);
     });
-    
-    // Queue just one URL, with default callback
-    c.queue("http://joshfire.com");
+}
+});
 
-    // Queue a list of URLs
-    c.queue(["http://jamendo.com/","http://tedxparis.com"]);
-    
-	// Queue URLs with custom callbacks & parameters
-    c.queue([{
-        "uri":"http://parishackers.org/",
-        "jQuery":false,
+// Queue just one URL, with default callback
+c.queue("http://joshfire.com");
 
-        // The global callback won't be called
-        "callback":function(error,result) {
-            console.log("Grabbed",result.body.length,"bytes");
-        }
-    }]);
+// Queue a list of URLs
+c.queue(["http://jamendo.com/","http://tedxparis.com"]);
 
-    // Queue some HTML code directly without grabbing (mostly for tests)
-    c.queue([{
-        "html":"<p>This is a <strong>test</strong></p>"
-    }]);
+// Queue URLs with custom callbacks & parameters
+c.queue([{
+"uri":"http://parishackers.org/",
+"jQuery":false,
 
+// The global callback won't be called
+"callback":function(error,result) {
+    console.log("Grabbed",result.body.length,"bytes");
+}
+}]);
+
+// Queue some HTML code directly without grabbing (mostly for tests)
+c.queue([{
+"html":"<p>This is a <strong>test</strong></p>"
+}]);
+```
 
 Options reference
 -----------------
