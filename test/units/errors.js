@@ -44,7 +44,7 @@ test("request statuses", function() {
 
     var c = new Crawler({
         "debug":DEBUG,
-        "jQuery":false,
+        parser: undefined,
         "onDrain":function() {
             start();
         }
@@ -78,7 +78,7 @@ test("empty response", function() {
 
     var c = new Crawler({
         "debug":DEBUG,
-        "jQuery":false,
+        "parser":undefined,
         "onDrain":function() {
             start();
         }

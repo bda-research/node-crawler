@@ -131,6 +131,8 @@ Rough todolist
 	
 ChangeLog
 ---------
+0.3.0
+ - JSDOM replaced with Cheerio
 
 0.2.0
  - Updated code & dependencies for node 0.6/0.8, cleaned package.json
