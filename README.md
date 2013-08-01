@@ -146,7 +146,8 @@ ChangeLog
 ---------
 
 0.2.5
- - Updated jsdom dependency to 0.8.2 + others
+ - Basic auth support, thanks @luap
+ - Updated jsdom dependency to 0.8.2 + others, Node 0.10.x support, thanks @bkw
  - Highlight code in docs, thanks @namuol
  - Detect non-html responses
  - Proxy list support
