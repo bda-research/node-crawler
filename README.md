@@ -146,6 +146,7 @@ ChangeLog
 ---------
 
 0.2.5
+ - Fix `options.encoding = null`, thanks @trantorLiu
  - Basic auth support, thanks @luap
  - Updated jsdom dependency to 0.8.2 + others, Node 0.10.x support, thanks @bkw
  - Highlight code in docs, thanks @namuol
