@@ -66,7 +66,7 @@ c.queue([{
 Options reference
 -----------------
 
-You can pass these options to the Crawler() constructor if you want them to be global or as 
+You can pass these options to the Crawler() constructor if you want them to be global or as
 items in the queue() calls if you want them to be specific to that item (overwriting global options)
 
 This options list is a strict superset of [mikeal's request options](https://github.com/mikeal/request#requestoptions-callback) and will be directly passed to
@@ -87,7 +87,7 @@ Pool options:
 
  * maxConnections: Number, Size of the worker pool (Default 10),
  * priorityRange: Number, Range of acceptable priorities starting from 0 (Default 10),
- * priority: Number, Priority of this request (Default 5), 
+ * priority: Number, Priority of this request (Default 5),
 
 Retry options:
 
@@ -104,7 +104,7 @@ Charset encoding:
 
  * forceUTF8: Boolean, if true will try to detect the page charset and convert it to UTF8 if necessary. Never worry about encoding anymore! (Default false),
 
-Cache:    
+Cache:
 
  * cache: Boolean, if true stores requests in memory (Default false)
  * skipDuplicates: Boolean, if true skips URIs that were already crawled, without even calling callback() (Default false)
@@ -133,7 +133,7 @@ Feel free to add more tests!
 
 Rough todolist
 --------------
- 
+
  * Make Sizzle tests pass (jsdom bug? https://github.com/tmpvar/jsdom/issues#issue/81)
  * More crawling tests
  * Document the API more (+ the result object)
@@ -141,9 +141,16 @@ Rough todolist
  * Check how we can support other mimetypes than HTML
  * Option to wait for callback to finish before freeing the pool resource (via another callback like next())
 
-	
+
 ChangeLog
 ---------
+
+0.2.5
+ - Updated jsdom dependency to 0.8.2 + others
+ - Highlight code in docs, thanks @namuol
+ - Detect non-html responses
+ - Proxy list support
+
 0.2.4
  - Fixed a bug with response.body being a Buffer in some cases
  - Wrapped jsdom calls in a try/catch to isolate us from crashes

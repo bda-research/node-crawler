@@ -11,7 +11,7 @@ var MOCKPORT = 30045;
 
 test("Crawl 10k URLs and check memory/speed without jsdom", function() {
     expect( 1 );
-    
+
     var N = 10000;
 
     var hd;
@@ -25,7 +25,7 @@ test("Crawl 10k URLs and check memory/speed without jsdom", function() {
         "retryTimeout":1000,
         "retries":1,
         "onDrain":function() {
-            
+
             // Wait a bit for the GC to kick in
             setTimeout(function() {
                 var diff = hd.end();
@@ -38,7 +38,7 @@ test("Crawl 10k URLs and check memory/speed without jsdom", function() {
                 //Shouldn't have grown by more than 10 MB.
                 ok(diff.change.size_bytes<10000000);
             },10000);
-           
+
 
         }
     });
@@ -54,14 +54,14 @@ test("Crawl 10k URLs and check memory/speed without jsdom", function() {
             }
         }]);
     }
-    
+
 
 });
 
 
 test("Crawl 1000 URLs and check memory/speed with jsdom", function() {
     expect( 1 );
-    
+
     var N = 1000;
 
     var hd;
@@ -75,7 +75,7 @@ test("Crawl 1000 URLs and check memory/speed with jsdom", function() {
         "retryTimeout":1000,
         "retries":1,
         "onDrain":function() {
-            
+
             // Wait a bit for the GC to kick in
             setTimeout(function() {
                 var diff = hd.end();
@@ -87,8 +87,8 @@ test("Crawl 1000 URLs and check memory/speed with jsdom", function() {
 
                 //Shouldn't have grown by more than 20 MB.
                 ok(diff.change.size_bytes<20000000);
-            },10000);
-           
+            },30000);
+
 
         }
     });
@@ -100,11 +100,10 @@ test("Crawl 1000 URLs and check memory/speed with jsdom", function() {
         c.queue([{
             "uri":"http://127.0.0.1:"+MOCKPORT+"/bigpage?i="+i,
             "callback":function(error,result,$) {
-
             }
         }]);
     }
-    
+
 
 });
 
@@ -112,7 +111,7 @@ test("Crawl 1000 URLs and check memory/speed with jsdom", function() {
 
 test("Check that we do leak w/ 100 jsdom requests without autoWindowClose", function() {
     expect( 1 );
-    
+
     var N = 100;
 
     var hd;
@@ -127,7 +126,7 @@ test("Check that we do leak w/ 100 jsdom requests without autoWindowClose", func
         "retryTimeout":1000,
         "retries":1,
         "onDrain":function() {
-            
+
             // Wait a bit for the GC to kick in
             setTimeout(function() {
                 var diff = hd.end();
@@ -140,7 +139,7 @@ test("Check that we do leak w/ 100 jsdom requests without autoWindowClose", func
                 //Should have grown by more than 50 MB.
                 ok(diff.change.size_bytes>50000000);
             },10000);
-           
+
 
         }
     });
@@ -156,6 +155,6 @@ test("Check that we do leak w/ 100 jsdom requests without autoWindowClose", func
             }
         }]);
     }
-    
+
 
 });
