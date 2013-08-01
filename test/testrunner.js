@@ -27,7 +27,8 @@ testrunner.run([
   
             ]
         }
-],function() {
+],function(err, report) {
   console.log("Stopping mockserver...");
   mockserver.close();
+  process.exit((err || report.failed !== 0) ? 1 : 0);
 });
