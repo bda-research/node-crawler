@@ -16,6 +16,7 @@ testrunner.run([
         {
             code: path + "/lib/crawler.js",
             tests: [
+             path + "/test/units/jar.js",
              path + "/test/units/simple.js",
               path + "/test/units/links.js",
              
