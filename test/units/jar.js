@@ -17,7 +17,7 @@ test("jar", function() {
         "jar": request.jar(),
         "callback":function(error,result,$) {
             equal(error, null);
-            ok(result.body.length>1000);
+            ok(result.body.length > 1000);
             start();
         }
     });
