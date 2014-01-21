@@ -55,7 +55,7 @@ test("two requests", function() {
         "callback":function(error,result,$) {
             equal(error,null);
             ok(result.body.length>1000);
-            
+
         },
         "onDrain":function() {
             start();
@@ -144,7 +144,7 @@ test("from the readme",function() {
             } else {
                 ok(true);
             }
-            
+
             start();
         }
     });
@@ -152,5 +152,22 @@ test("from the readme",function() {
 
 });
 
+test("Malformed HTML causing a non-critical JSDOM errors", function() {
+    expect( 2 );
 
-/* */
+    stop();
+
+    var c = new Crawler({
+        "debug":DEBUG,
+        "userAgent":"test/1.2",
+        "forceUTF8":true,
+        "callback":function(error,result,$) {
+            ok(error);
+            ok($);
+            start();
+        }
+    });
+
+    c.queue(["http://127.0.0.1:"+MOCKPORT+"/malformed"]);
+
+});

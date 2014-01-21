@@ -36,6 +36,10 @@ app.get('/bigpage', function(req, res){
   res.send("<html><body>"+bigpage+"</body></html>");
 });
 
+app.get('/malformed', function(req, res){
+    res.send("<html><body>it's a trap !</body></html><script></script>");
+});
+
 
 app.use("/mockfiles/gzipped/",express.compress());
 
