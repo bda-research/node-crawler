@@ -49,7 +49,7 @@
     },
     "devDependencies": {
        "qunit": "0.5.x",
-       "express": "2.5.x",
+       "express": "3.4.x",
        "memwatch": "0.2.2"
     },
     "scripts": {

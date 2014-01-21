@@ -1,6 +1,6 @@
 var express = require('express'),
     path = require("path");
-var app = express.createServer();
+var app = express();
 
 app.get('/timeout', function(req, res){
   setTimeout(function() {
@@ -41,12 +41,9 @@ app.get('/malformed', function(req, res){
 });
 
 
-app.use("/mockfiles/gzipped/",express.compress());
+app.use('/mockfiles/gzipped', express.compress({"threshold" : 0}));
 
-app.use('/mockfiles/', express["static"](path.resolve(__dirname, 'mockfiles')));
-
-
-
+app.use('/mockfiles', express.static(__dirname + '/mockfiles'));
 
 exports.app = app;
 

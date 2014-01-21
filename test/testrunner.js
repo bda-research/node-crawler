@@ -8,9 +8,7 @@ testrunner.setup({
 
 });
 
-var mockserver = require("./mockserver").app;
-
-mockserver.listen(30045);
+var mockserver = require("./mockserver").app.listen(30045);
 
 testrunner.run([
         {
