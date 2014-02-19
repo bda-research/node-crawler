@@ -107,6 +107,26 @@ test("one request + user agent", function() {
 
 });
 
+test("one requrest + referer", function () {
+    expect( 2 );
+
+    stop();
+
+    var c = new Crawler({
+        "debug":DEBUG,
+        "referer":"http://spoofed.com",
+        "jQuery":false,
+        "callback":function(error,result,$) {
+            equal(error,null);
+            ok(result.body=="Your referer: http://spoofed.com");
+            start();
+        }
+    });
+
+    c.queue(["http://127.0.0.1:"+MOCKPORT+"/echo_referer"]);
+
+});
+
 
 test("Auto-disabling of jQuery if no html tag first", function() {
     expect( 2 );
