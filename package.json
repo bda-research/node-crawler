@@ -1,68 +1,63 @@
 {
-    "name": "crawler",
-    "version": "0.2.5",
-    "description": "Crawler is a web spider written with Nodejs. It gives you the full power of jQuery on the server to parse a big number of pages as they are downloaded, asynchronously. Scraping should be simple and fun!",
-    "keywords": [
-        "dom",
-        "javascript",
-        "crawling",
-        "spider",
-        "scraper",
-        "scraping",
-        "jquery"
-    ],
-    "maintainers": [
-        {
-            "name": "Sylvain Zimmer",
-            "email": "sylvain@sylvainzimmer.com",
-            "url": "http://sylvinus.org/"
-        }
-    ],
-    "bugs": {
-        "mail": "sylvain@sylvainzimmer.com",
-        "url": "http://github.com/sylvinus/node-crawler/issues"
-    },
-    "licenses": [
-        {
-            "type": "MIT",
-            "url": "http://github.com/sylvinus/node-crawler/blob/master/LICENSE.txt"
-        }
-    ],
-    "repository":
-        {
-            "type": "git",
-            "url": "https://github.com/sylvinus/node-crawler.git"
-        }
-    ,
-    "dependencies": {
-       "request": "2.12.0",
-       "jsdom": "0.8.2",
-       "generic-pool": "2.0.2",
-       "htmlparser": "1.7.6",
-       "underscore": "1.3.3",
-       "request": "2.21.0",
-       "jsdom": "0.8.2",
-       "generic-pool": "2.0.3",
-       "underscore": "1.4.4",
-       "jschardet": "1.0.2",
-       "iconv-lite": "0.2.8"
-    },
-    "optionalDependencies":{
-        "iconv": "2.0.6"
-    },
-    "devDependencies": {
-       "qunit": "0.5.16",
-       "express": "2.5.x",
-       "memwatch": "0.2.2"
-    },
-    "scripts": {
-        "test": "node test/testrunner.js"
-    },
-    "engines": [
-        "node >=0.6.x"
-    ],
-    "directories": {
-        "lib": "lib"
-    },
-    "main": "./lib/crawler"
+  "name": "crawler",
+  "version": "0.2.5",
+  "description": "Crawler is a web spider written with Nodejs. It gives you the full power of jQuery on the server to parse a big number of pages as they are downloaded, asynchronously. Scraping should be simple and fun!",
+  "keywords": [
+    "dom",
+    "javascript",
+    "crawling",
+    "spider",
+    "scraper",
+    "scraping",
+    "jquery"
+  ],
+  "maintainers": [
+    {
+      "name": "Sylvain Zimmer",
+      "email": "sylvain@sylvainzimmer.com",
+      "url": "http://sylvinus.org/"
+    }
+  ],
+  "bugs": {
+    "mail": "sylvain@sylvainzimmer.com",
+    "url": "http://github.com/sylvinus/node-crawler/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/sylvinus/node-crawler/blob/master/LICENSE.txt"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sylvinus/node-crawler.git"
+  },
+  "dependencies": {
+    "request": "2.21.0",
+    "jsdom": "0.8.2",
+    "generic-pool": "2.0.3",
+    "htmlparser": "1.7.6",
+    "underscore": "1.4.4",
+    "jschardet": "1.0.2",
+    "iconv-lite": "0.2.8",
+    "compress-buffer": "~1.2.1"
+  },
+  "optionalDependencies": {
+    "iconv": "2.0.6"
+  },
+  "devDependencies": {
+    "qunit": "0.5.16",
+    "express": "2.5.x",
+    "memwatch": "0.2.2"
+  },
+  "scripts": {
+    "test": "node test/testrunner.js"
+  },
+  "engines": [
+    "node >=0.6.x"
+  ],
+  "directories": {
+    "lib": "lib"
+  },
+  "main": "./lib/crawler"
 }
