@@ -1,6 +1,5 @@
-var express = require('express'),
-    path = require("path");
-var app = express.createServer();
+var express = require('express');
+var app = express();
 
 app.get('/timeout', function(req, res){
   setTimeout(function() {
@@ -35,13 +34,6 @@ var bigpage = new Array(100).join(new Array(100).join("1234567890"));
 app.get('/bigpage', function(req, res){
   res.send("<html><body>"+bigpage+"</body></html>");
 });
-
-
-app.use("/mockfiles/gzipped/",express.compress());
-
-app.use('/mockfiles/', express["static"](path.resolve(__dirname, 'mockfiles')));
-
-
 
 
 exports.app = app;

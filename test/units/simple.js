@@ -76,13 +76,13 @@ test("one request gzipped", function() {
         "debug":DEBUG,
         "callback":function(error,result,$) {
             equal(error,null);
-            ok(result.body.indexOf("gzipped okay.")>0);
+            ok(result.body.indexOf("User-Agent")>0);
             ok(result.headers["content-encoding"]=="gzip");
             start();
         }
     });
 
-    c.queue(["http://127.0.0.1:"+MOCKPORT+"/mockfiles/gzipped/test-gzip.html"]);
+    c.queue(['http://httpbin.org/gzip']);
 
 });
 
