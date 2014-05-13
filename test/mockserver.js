@@ -36,6 +36,8 @@ app.get('/bigpage', function(req, res){
 });
 
 
+app.use(express.static(__dirname, '/mockfiles'));
+
 exports.app = app;
 
 if (require.main === module) {

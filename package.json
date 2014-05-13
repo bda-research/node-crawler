@@ -40,7 +40,6 @@
     "underscore": "^1.6.0",
     "jschardet": "^1.1.0",
     "iconv-lite": "^0.4.0-pre3",
-    "express": "^4.2.0",
     "qunit": "^0.6.3",
     "iconv": "^2.1.0",
     "compression": "^1.0.2"
@@ -49,9 +48,9 @@
     "iconv": "*"
   },
   "devDependencies": {
-    "qunit": "*",
-    "express": "*",
-    "memwatch": "*"
+    "qunit": "^0.6.3",
+    "express": "^4.2.0",
+    "memwatch": "^0.2.2"
   },
   "scripts": {
     "test": "node test/testrunner.js"
