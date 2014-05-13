@@ -35,9 +35,6 @@
         }
     ,
     "dependencies": {
-       "request": "2.12.0",
-       "jsdom": "0.8.2",
-       "generic-pool": "2.0.2",
        "htmlparser": "1.7.6",
        "request": "2.21.0",
        "jsdom": "0.8.2",
