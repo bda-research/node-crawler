@@ -41,7 +41,9 @@ app.use("/mockfiles/gzipped/",express.compress());
 
 app.use('/mockfiles/', express["static"](path.resolve(__dirname, 'mockfiles')));
 
-
+app.get('/redirect/links2.html', function(req, res){
+  res.redirect('/mockfiles/links2.html', 301);
+});
 
 
 exports.app = app;
