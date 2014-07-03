@@ -9,7 +9,8 @@
     "spider",
     "scraper",
     "scraping",
-    "jquery"
+    "jquery",
+    "crawler"
   ],
   "maintainers": [
     {
@@ -24,7 +25,6 @@
     }
   ],
   "bugs": {
-    "mail": "sylvain@sylvainzimmer.com",
     "url": "http://github.com/sylvinus/node-crawler/issues"
   },
   "licenses": [
@@ -61,7 +61,7 @@
     "test": "node test/testrunner.js"
   },
   "engines": [
-    "node >=0.8.x"
+    "node >=0.10.x"
   ],
   "directories": {
     "lib": "lib"

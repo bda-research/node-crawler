@@ -145,9 +145,13 @@ Rough todolist
 ChangeLog
 ---------
 
+0.2.6
+ - Spring Cleaning !!
+ - Update all dependencies to new versions
+
 0.2.5
  - Fix `options.encoding = null`, thanks @trantorLiu
- - Basic auth support, thanks @luap
+ - Basic auth support, thanks @paulvalla
  - Updated jsdom dependency to 0.8.2 + others, Node 0.10.x support, thanks @bkw
  - Highlight code in docs, thanks @namuol
  - Detect non-html responses
