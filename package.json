@@ -16,7 +16,12 @@
       "name": "Sylvain Zimmer",
       "email": "sylvain@sylvainzimmer.com",
       "url": "http://sylvinus.org/"
-    }
+    },
+    {
+      "name": "Paul Valla",
+      "email": "paul.valla+nodecrawler@gmail.com",
+      "url": "http://www.pol.ninja/"
+      }
   ],
   "bugs": {
     "mail": "sylvain@sylvainzimmer.com",
