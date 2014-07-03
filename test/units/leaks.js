@@ -3,7 +3,7 @@ var _ = require('underscore');
 var memwatch = require('memwatch');
 
 
-QUnit.module('links');
+QUnit.module('leaks');
 
 var DEBUG = false;
 var MOCKPORT = 30045;
@@ -23,22 +23,21 @@ test('Check that we do leak w/ 100 jsdom requests without autoWindowClose', func
         retryTimeout: 1000,
         retries: 1,
         onDrain: function() {
-                hd = new memwatch.HeapDiff();
-//            // Wait a bit for the GC to kick in
-//            setTimeout(function() {
+            // Wait a bit for the GC to kick in
+            setTimeout(function() {
                 start();
 
-//                var diff = hd.end();
-                console.log('Bytes added to memory',diff.change.size_bytes);
-//
-//                Should have grown by more than 50 MB.
-//                ok(diff.change.size_bytes > 50000000);
-//            }, 10000);
+                var diff = hd.end();
+                console.log('Bytes added to memory', diff.change.size_bytes);
+
+                //Should have grown by more than 50 MB.
+                ok(diff.change.size_bytes > 50000000);
+            }, 10000);
         }
     });
+    hd = new memwatch.HeapDiff();
 
-
-    console.log('Queueing '+N+' requests w/ jsdom and autoWindowClose=false...');
+    console.log('Queueing '+ N +' requests w/ jsdom and autoWindowClose=false...');
     for (var i=0; i<N; i++) {
         c.queue([{
             uri:'http://127.0.0.1:'+MOCKPORT+'/bigpage?i='+i,
@@ -47,36 +46,36 @@ test('Check that we do leak w/ 100 jsdom requests without autoWindowClose', func
     }
 });
 
-//test('Crawl 10k URLs and check memory/speed without jsdom', function() {
-//    expect(1);
-//    stop();
-//
-//    var N = 10000;
-//    var hd;
-//    var c = new Crawler({
-//        debug: false,
-//        jQuery: false,
-//        timeout: 500,
-//        retryTimeout: 1000,
-//        retries: 1,
-//        onDrain: function() {
-//            start();
-//            // Wait a bit for the GC to kick in
-//            setTimeout(function() {
-//                var diff = hd.end();
-//                console.log('Bytes added to memory', diff.change.size_bytes);
-//                //Shouldn't have grown by more than 10 MB.
-//                ok(diff.change.size_bytes < 10000000);
-//            }, 10000);
-//        }
-//    });
-//    hd = new memwatch.HeapDiff();
-//
-//    console.log('Queueing '+N+' requests w/o jsdom...');
-//    for (var i=0; i<N; i++) {
-//        c.queue([{
-//            uri:'http://127.0.0.1:'+MOCKPORT+'/bigpage?i='+i,
-//            callback:function(error,result,$) {}
-//        }]);
-//    }
-//});
+test('Crawl 10k URLs and check memory/speed without jsdom', function() {
+    expect(1);
+    stop();
+
+    var N = 10000;
+    var hd;
+    var c = new Crawler({
+        debug: false,
+        jQuery: false,
+        timeout: 500,
+        retryTimeout: 1000,
+        retries: 1,
+        onDrain: function() {
+            // Wait a bit for the GC to kick in
+            setTimeout(function() {
+                start();
+                var diff = hd.end();
+                console.log('Bytes added to memory', diff.change.size_bytes);
+                //Shouldn't have grown by more than 10 MB.
+                ok(diff.change.size_bytes < 10000000);
+            }, 10000);
+        }
+    });
+    hd = new memwatch.HeapDiff();
+
+    console.log('Queueing '+ N +' requests w/o jsdom...');
+    for (var i = 0; i < N; i++) {
+        c.queue([{
+            uri:'http://127.0.0.1:'+MOCKPORT+'/bigpage?i='+i,
+            callback:function(error, result, $) {}
+        }]);
+    }
+});
