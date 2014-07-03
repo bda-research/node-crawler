@@ -21,7 +21,7 @@
       "name": "Paul Valla",
       "email": "paul.valla+nodecrawler@gmail.com",
       "url": "http://www.pol.ninja/"
-      }
+    }
   ],
   "bugs": {
     "mail": "sylvain@sylvainzimmer.com",
@@ -53,7 +53,7 @@
     "iconv": "*"
   },
   "devDependencies": {
-    "qunit": "^0.6.3",
+    "qunit": "^0.6.4",
     "express": "^4.2.0",
     "memwatch": "^0.2.2"
   },
