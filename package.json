@@ -1,65 +1,70 @@
 {
-    "name": "crawler",
-    "version": "0.2.5",
-    "description": "Crawler is a web spider written with Nodejs. It gives you the full power of jQuery on the server to parse a big number of pages as they are downloaded, asynchronously. Scraping should be simple and fun!",
-    "keywords": [
-        "dom",
-        "javascript",
-        "crawling",
-        "spider",
-        "scraper",
-        "scraping",
-        "jquery",
-        "crawler"
-    ],
-    "maintainers": [
-        {
-            "name": "Sylvain Zimmer",
-            "email": "sylvain@sylvainzimmer.com",
-            "url": "http://sylvinus.org/"
-        }
-    ],
-    "bugs": {
-        "mail": "sylvain@sylvainzimmer.com",
-        "url": "http://github.com/sylvinus/node-crawler/issues"
+  "name": "crawler",
+  "version": "0.2.5",
+  "description": "Crawler is a web spider written with Nodejs. It gives you the full power of jQuery on the server to parse a big number of pages as they are downloaded, asynchronously. Scraping should be simple and fun!",
+  "keywords": [
+    "dom",
+    "javascript",
+    "crawling",
+    "spider",
+    "scraper",
+    "scraping",
+    "jquery"
+  ],
+  "maintainers": [
+    {
+      "name": "Sylvain Zimmer",
+      "email": "sylvain@sylvainzimmer.com",
+      "url": "http://sylvinus.org/"
     },
-    "licenses": [
-        {
-            "type": "MIT",
-            "url": "http://github.com/sylvinus/node-crawler/blob/master/LICENSE.txt"
-        }
-    ],
-    "repository":
-        {
-            "type": "git",
-            "url": "https://github.com/sylvinus/node-crawler.git"
-        }
-    ,
-    "dependencies": {
-       "htmlparser": "1.7.x",
-       "request": "2.33.x",
-       "jsdom": "0.8.x",
-       "generic-pool": "2.0.x",
-       "underscore": "1.5.x",
-       "jschardet": "1.0.2",
-       "iconv-lite": "0.2.x"
-    },
-    "optionalDependencies":{
-        "iconv": "2.0.x"
-    },
-    "devDependencies": {
-       "qunit": "0.5.x",
-       "express": "3.4.x",
-       "memwatch": "0.2.2"
-    },
-    "scripts": {
-        "test": "node test/testrunner.js"
-    },
-    "engines": [
-        "node >=0.8.x"
-    ],
-    "directories": {
-        "lib": "lib"
-    },
-    "main": "./lib/crawler"
+    {
+      "name": "Paul Valla",
+      "email": "paul.valla+nodecrawler@gmail.com",
+      "url": "http://www.pol.ninja/"
+    }
+  ],
+  "bugs": {
+    "mail": "sylvain@sylvainzimmer.com",
+    "url": "http://github.com/sylvinus/node-crawler/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/sylvinus/node-crawler/blob/master/LICENSE.txt"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sylvinus/node-crawler.git"
+  },
+  "dependencies": {
+    "htmlparser": "^1.7.7",
+    "request": "^2.34.0",
+    "jsdom": "^0.10.5",
+    "generic-pool": "^2.0.4",
+    "underscore": "^1.6.0",
+    "jschardet": "^1.1.0",
+    "iconv-lite": "^0.4.0-pre3",
+    "qunit": "^0.6.3",
+    "iconv": "^2.1.0",
+    "compression": "^1.0.2"
+  },
+  "optionalDependencies": {
+    "iconv": "*"
+  },
+  "devDependencies": {
+    "qunit": "^0.6.4",
+    "express": "^4.2.0",
+    "memwatch": "^0.2.2"
+  },
+  "scripts": {
+    "test": "node test/testrunner.js"
+  },
+  "engines": [
+    "node >=0.8.x"
+  ],
+  "directories": {
+    "lib": "lib"
+  },
+  "main": "./lib/crawler"
 }

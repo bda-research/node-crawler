@@ -1,5 +1,4 @@
-var express = require('express'),
-    path = require("path");
+var express = require('express');
 var app = express();
 
 app.get('/timeout', function(req, res){
@@ -36,14 +35,8 @@ app.get('/bigpage', function(req, res){
   res.send("<html><body>"+bigpage+"</body></html>");
 });
 
-app.get('/malformed', function(req, res){
-    res.send("<html><body>it's a trap !</body></html><script></script>");
-});
 
-
-app.use('/mockfiles/gzipped', express.compress({"threshold" : 0}));
-
-app.use('/mockfiles', express.static(__dirname + '/mockfiles'));
+app.use(express.static(__dirname, '/mockfiles'));
 
 exports.app = app;
 
