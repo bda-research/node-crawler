@@ -38,6 +38,10 @@ app.get('/bigpage', function(req, res){
 
 app.use(express.static(__dirname, '/mockfiles'));
 
+app.get('/redirect/links2.html', function(req, res){
+  res.redirect('/mockfiles/links2.html', 301);
+});
+
 exports.app = app;
 
 if (require.main === module) {
