@@ -112,7 +112,7 @@ Cache:
 Other:
 
  * userAgent: String, defaults to "node-crawler/[version]"
-
+ * referer: String, if truthy sets the HTTP referer header
 
 Memory leaks
 ------------

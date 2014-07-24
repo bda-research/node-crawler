@@ -19,6 +19,10 @@ app.get('/echo_useragent', function(req, res){
   res.send("Your user agent: "+req.headers["user-agent"]);
 });
 
+app.get('/echo_referer', function(req, res){
+  res.send("Your referer: "+req.headers["referer"]);
+});
+
 app.get('/close/end', function(req, res){
   res.socket.end();
   res.end();
