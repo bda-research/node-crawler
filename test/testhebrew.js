@@ -15,5 +15,6 @@ crawler.queue([{
     forceUTF8 : true,
     callback : function(error,result,$) {
         console.log(result.body);
+        process.exit(0);
     }
 }]);
