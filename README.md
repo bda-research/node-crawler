@@ -103,6 +103,7 @@ Server-side DOM options:
 Charset encoding:
 
  * forceUTF8: Boolean, if true will try to detect the page charset and convert it to UTF8 if necessary. Never worry about encoding anymore! (Default false),
+ * use incomingEncoding attribute with forceUTF8:true for set encoding manually (Default null) 
 
 Cache:
 
