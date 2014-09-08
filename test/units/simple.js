@@ -1,178 +1,178 @@
-var Crawler = require('../../lib/crawler').Crawler;
-
-QUnit.module('simple');
-
-var DEBUG = false;
-var httpbinHost = 'httpbin.org';
-
-test('inline html', function() {
-    expect(2);
-
-    stop();
-
-    var c = new Crawler({
-        debug: DEBUG,
-        onDrain: function() {
-            start();
-        }
-    });
-
-    c.queue({
-        html: '<p><i>great!</i></p>',
-        callback: function(error, result, $) {
-            equal(error, null);
-            equal($('i').html(), 'great!');
-        }
-    });
-
-});
-
-
-test('one request', function() {
-    expect(2);
-    stop();
-
-    var c = new Crawler({
-        debug: DEBUG,
-        onDrain: function() {
-            start();
-        },
-        callback: function(error, result, $) {
-            equal(error, null);
-            ok(result.statusCode === 418);
-        }
-    });
-
-    c.queue(['http://'+httpbinHost+'/status/418']);
-
-});
-
-test('two requests', function() {
-    expect( 4 );
-
-    stop();
-
-    var c = new Crawler({
-        debug: DEBUG,
-        onDrain: function() {
-            start();
-        },
-        callback: function(error, result, $) {
-            equal(error, null);
-            ok(result.body.length > 1000);
-            
-        }
-    });
-
-    c.queue(['http://'+httpbinHost+'/html', 'http://'+httpbinHost]);
-});
-
-
-test('one request gzipped', function() {
-    expect(3);
-    stop();
-
-    var c = new Crawler({
-        debug:DEBUG,
-        onDrain: function() {
-            start();
-        },
-        callback:function(error,result,$) {
-            equal(error,null);
-            ok(result.body.indexOf('User-Agent')>0);
-            ok(result.headers['content-encoding']=='gzip');
-        }
-    });
-
-    c.queue(['http://httpbin.org/gzip']);
-});
-
-
-test('one request + user agent', function() {
-    expect( 2 );
-    stop();
-
-    var c = new Crawler({
-        debug: DEBUG,
-        userAgent: 'test/1.2',
-        jQuery: false,
-        onDrain: function() {
-            start();
-        },
-        callback: function(error, result, $) {
-            equal(error, null);
-            try {
-                var body = JSON.parse(result.body);
-            } catch (ex) {
-                console.log(ex);
-            }
-            ok(body['user-agent'] === 'test/1.2');
-        }
-    });
-
-    c.queue(['http://'+httpbinHost+'/user-agent']);
-});
-
-test("one requrest + referer", function () {
-    expect( 2 );
-
-    stop();
-
-    var c = new Crawler({
-        "debug":DEBUG,
-        "referer":"http://spoofed.com",
-        "jQuery":false,
-        "callback":function(error,result,$) {
-            equal(error,null);
-            ok(result.body=="Your referer: http://spoofed.com");
-            start();
-        }
-    });
-
-    c.queue(['http://'+httpbinHost+'/get']);
-
-});
-
-
-test('Auto-disabling of jQuery if no html tag first', function() {
-    expect(2);
-    stop();
-
-    var c = new Crawler({
-        debug: DEBUG,
-        onDrain: function() {
-            start();
-        },
-        userAgent: 'test/1.2',
-        forceUTF8: true,
-        callback: function(error, result, $) {
-            equal(error, null);
-            ok(result.body === 'Your user agent: test/1.2');
-        }
-    });
-
-    c.queue(['http://'+httpbinHost+'/user-agent']);
-});
-
-
-test('from the readme',function() {
-
-    expect( 2 );
-    stop();
-
-    var c = new Crawler({
-        maxConnections: 10,
-        onDrain: function() {
-            start();
-        },
-        callback: function(error, result, $) {
-            equal(typeof result.body, 'string');
-            if (typeof result.body === 'string') {
-                ok(result.body.indexOf('Google') >= 0);
-            } else {
-                ok(true);
-            }
-        }
-    });
-    c.queue('http://google.com');
-});
+//var Crawler = require('../../lib/crawler').Crawler;
+//
+//QUnit.module('simple');
+//
+//var DEBUG = false;
+//var httpbinHost = 'httpbin.org';
+//
+//test('inline html', function() {
+//    expect(2);
+//
+//    stop();
+//
+//    var c = new Crawler({
+//        debug: DEBUG,
+//        onDrain: function() {
+//            start();
+//        }
+//    });
+//
+//    c.queue({
+//        html: '<p><i>great!</i></p>',
+//        callback: function(error, result, $) {
+//            equal(error, null);
+//            equal($('i').html(), 'great!');
+//        }
+//    });
+//
+//});
+//
+//
+//test('one request', function() {
+//    expect(2);
+//    stop();
+//
+//    var c = new Crawler({
+//        debug: DEBUG,
+//        onDrain: function() {
+//            start();
+//        },
+//        callback: function(error, result, $) {
+//            equal(error, null);
+//            ok(result.statusCode === 418);
+//        }
+//    });
+//
+//    c.queue(['http://'+httpbinHost+'/status/418']);
+//
+//});
+//
+//test('two requests', function() {
+//    expect( 4 );
+//
+//    stop();
+//
+//    var c = new Crawler({
+//        debug: DEBUG,
+//        onDrain: function() {
+//            start();
+//        },
+//        callback: function(error, result, $) {
+//            equal(error, null);
+//            ok(result.body.length > 1000);
+//
+//        }
+//    });
+//
+//    c.queue(['http://'+httpbinHost+'/html', 'http://'+httpbinHost]);
+//});
+//
+//
+//test('one request gzipped', function() {
+//    expect(3);
+//    stop();
+//
+//    var c = new Crawler({
+//        debug:DEBUG,
+//        onDrain: function() {
+//            start();
+//        },
+//        callback:function(error,result,$) {
+//            equal(error,null);
+//            ok(result.body.indexOf('User-Agent')>0);
+//            ok(result.headers['content-encoding']=='gzip');
+//        }
+//    });
+//
+//    c.queue(['http://httpbin.org/gzip']);
+//});
+//
+//
+//test('one request + user agent', function() {
+//    expect( 2 );
+//    stop();
+//
+//    var c = new Crawler({
+//        debug: DEBUG,
+//        userAgent: 'test/1.2',
+//        jQuery: false,
+//        onDrain: function() {
+//            start();
+//        },
+//        callback: function(error, result, $) {
+//            equal(error, null);
+//            try {
+//                var body = JSON.parse(result.body);
+//            } catch (ex) {
+//                console.log(ex);
+//            }
+//            ok(body['user-agent'] === 'test/1.2');
+//        }
+//    });
+//
+//    c.queue(['http://'+httpbinHost+'/user-agent']);
+//});
+//
+//test("one requrest + referer", function () {
+//    expect( 2 );
+//
+//    stop();
+//
+//    var c = new Crawler({
+//        "debug":DEBUG,
+//        "referer":"http://spoofed.com",
+//        "jQuery":false,
+//        "callback":function(error,result,$) {
+//            equal(error,null);
+//            ok(result.body=="Your referer: http://spoofed.com");
+//            start();
+//        }
+//    });
+//
+//    c.queue(['http://'+httpbinHost+'/get']);
+//
+//});
+//
+//
+//test('Auto-disabling of jQuery if no html tag first', function() {
+//    expect(2);
+//    stop();
+//
+//    var c = new Crawler({
+//        debug: DEBUG,
+//        onDrain: function() {
+//            start();
+//        },
+//        userAgent: 'test/1.2',
+//        forceUTF8: true,
+//        callback: function(error, result, $) {
+//            equal(error, null);
+//            ok(result.body === 'Your user agent: test/1.2');
+//        }
+//    });
+//
+//    c.queue(['http://'+httpbinHost+'/user-agent']);
+//});
+//
+//
+//test('from the readme',function() {
+//
+//    expect( 2 );
+//    stop();
+//
+//    var c = new Crawler({
+//        maxConnections: 10,
+//        onDrain: function() {
+//            start();
+//        },
+//        callback: function(error, result, $) {
+//            equal(typeof result.body, 'string');
+//            if (typeof result.body === 'string') {
+//                ok(result.body.indexOf('Google') >= 0);
+//            } else {
+//                ok(true);
+//            }
+//        }
+//    });
+//    c.queue('http://google.com');
+//});

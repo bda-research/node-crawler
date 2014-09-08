@@ -1,11 +1,10 @@
 var Crawler = require('../../lib/crawler').Crawler;
 var expect = require('chai').expect;
-var DEBUG = true;
 var c;
+
 describe("Encoding", function() {
     beforeEach(function() {
         c = new Crawler({
-            debug: DEBUG,
             forceUTF8: true
         });
     });
