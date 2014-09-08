@@ -38,24 +38,22 @@
     "url": "https://github.com/sylvinus/node-crawler.git"
   },
   "dependencies": {
-    "htmlparser": "^1.7.7",
-    "request": "^2.34.0",
-    "jsdom": "^0.10.5",
-    "generic-pool": "^2.0.4",
-    "underscore": "^1.6.0",
-    "jschardet": "^1.1.0",
-    "iconv-lite": "^0.4.0-pre3",
-    "qunit": "^0.6.3",
-    "iconv": "^2.1.0",
-    "compression": "^1.0.2"
+    "request": "2.42.0",
+    "jsdom": "0.11.1",
+    "generic-pool": "2.1.1",
+    "underscore": "1.6.0",
+    "jschardet": "1.1.0",
+    "iconv-lite": "0.4.4",
+    "iconv": "2.1.4",
+    "compression": "1.1.0"
   },
   "optionalDependencies": {
     "iconv": "*"
   },
   "devDependencies": {
-    "qunit": "^0.6.4",
-    "express": "^4.2.0",
-    "memwatch": "^0.2.2"
+    "qunit": "0.7.2",
+    "express": "4.2.0",
+    "memwatch": "0.2.2"
   },
   "scripts": {
     "test": "node test/testrunner.js"
