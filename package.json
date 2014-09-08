@@ -51,9 +51,9 @@
     "iconv": "*"
   },
   "devDependencies": {
-    "qunit": "0.7.2",
-    "express": "4.2.0",
-    "memwatch": "0.2.2"
+    "memwatch": "0.2.2",
+    "mocha": "1.21.4",
+    "chai": "1.9.1"
   },
   "scripts": {
     "test": "node test/testrunner.js"

@@ -3,8 +3,7 @@ var Crawler = require('../../lib/crawler').Crawler;
 QUnit.module('simple');
 
 var DEBUG = false;
-var MOCKPORT = 30045;
-
+var httpbinHost = 'httpbin.org';
 
 test('inline html', function() {
     expect(2);
@@ -40,11 +39,11 @@ test('one request', function() {
         },
         callback: function(error, result, $) {
             equal(error, null);
-            ok(result.body.length > 1000);
+            ok(result.statusCode === 418);
         }
     });
 
-    c.queue(['http://google.com/']);
+    c.queue(['http://'+httpbinHost+'/status/418']);
 
 });
 
@@ -65,7 +64,7 @@ test('two requests', function() {
         }
     });
 
-    c.queue(['http://google.com/', 'http://google.fr/']);
+    c.queue(['http://'+httpbinHost+'/html', 'http://'+httpbinHost]);
 });
 
 
@@ -102,11 +101,16 @@ test('one request + user agent', function() {
         },
         callback: function(error, result, $) {
             equal(error, null);
-            ok(result.body === 'Your user agent: test/1.2');
+            try {
+                var body = JSON.parse(result.body);
+            } catch (ex) {
+                console.log(ex);
+            }
+            ok(body['user-agent'] === 'test/1.2');
         }
     });
 
-    c.queue(['http://127.0.0.1:' + MOCKPORT + '/echo_useragent']);
+    c.queue(['http://'+httpbinHost+'/user-agent']);
 });
 
 test("one requrest + referer", function () {
@@ -125,7 +129,7 @@ test("one requrest + referer", function () {
         }
     });
 
-    c.queue(["http://127.0.0.1:"+MOCKPORT+"/echo_referer"]);
+    c.queue(['http://'+httpbinHost+'/get']);
 
 });
 
@@ -147,7 +151,7 @@ test('Auto-disabling of jQuery if no html tag first', function() {
         }
     });
 
-    c.queue(['http://127.0.0.1:'+MOCKPORT+'/echo_useragent']);
+    c.queue(['http://'+httpbinHost+'/user-agent']);
 });
 
 
