@@ -4,6 +4,10 @@ node_js:
 os:
   - linux
   - osx
+
+before_install:
+  - curl https://raw.github.com/creationix/nvm/master/install.sh | sh
+
 matrix:
   allow_failures:
     - os: osx
