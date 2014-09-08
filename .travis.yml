@@ -4,3 +4,9 @@ node_js:
 os:
   - linux
   - osx
+matrix:
+  include:
+    - os: osx
+          env: TEST_SUITE=suite_2_7
+  allow_failures:
+    - os: osx
