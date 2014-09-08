@@ -56,7 +56,7 @@
     "chai": "1.9.1"
   },
   "scripts": {
-    "test": "node test/testrunner.js"
+    "test": "./node_modules/mocha/bin/mocha test/*"
   },
   "engines": [
     "node >=0.10.x"
