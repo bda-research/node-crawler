@@ -9,7 +9,7 @@ describe("Encoding", function() {
         });
     });
     it('should parse latin-1', function(done) {
-        setTimeout(5000);
+        this.timeout(5000);
         c.queue([{
             uri: 'http://czyborra.com/charsets/iso8859.html',
             callback: function(error, result) {
