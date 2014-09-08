@@ -1,66 +1,40 @@
-//var Crawler = require('../../lib/crawler').Crawler;
-//var _ = require('underscore');
-//
-//QUnit.module('links');
-//
-//var DEBUG = true;
-//var MOCKPORT = 30045;
-//
-//
-//test('links resolve to absolute urls', function() {
-//    expect(2);
-//    stop();
-//
-//    var c = new Crawler({
-//        debug: DEBUG,
-//        timeout: 500,
-//        retryTimeout: 1000,
-//        retries: 1,
-//        onDrain: function() {
-//            start();
-//        }
-//    });
-//
-//    c.queue([{
-//        uri: 'http://127.0.0.1:' + MOCKPORT + '/mockfiles/links1.html',
-//        callback: function(error, result, $) {
-//
-//            var links = _.map($('a'), function(a) {
-//                return a.href;
-//            });
-//
-//            //Both links should be resolve to absolute URLs
-//            equal(links[0],'http://127.0.0.1:30045/mockfiles/links2.html');
-//            equal(links[1],'http://127.0.0.1:30045/mockfiles/links2.html');
-//        }
-//    }]);
-//});
-//
-//test("relative links resolve to absolute urls after redirect", function() {
-//    expect( 1 );
-//
-//    stop();
-//
-//    var c = new Crawler({
-//        "debug":DEBUG,
-//        "timeout":500,
-//        "retryTimeout":1000,
-//        "retries":1,
-//        "onDrain":function() {
-//            start();
-//        }
-//    });
-//
-//    c.queue([{
-//        "uri":"http://127.0.0.1:"+MOCKPORT+"/redirect/links2.html",
-//        "callback":function(error,result,$) {
-//
-//            var links = _.map($("a"),function(a) {
-//                return a.href;
-//            });
-//
-//            // relative link should be resolve to correct absolute URL
-//            equal(links[0],"http://127.0.0.1:"+MOCKPORT+"/mockfiles/links1.html");
-//        }
-//    }]);
-//});
+var Crawler = require('../../lib/crawler').Crawler;
+var expect = require('chai').expect;
+var _ = require('underscore');
+var httpbinHost = 'httpbin.org';
+var c;
+
+describe("Links", function() {
+    beforeEach(function() {
+        c = new Crawler({
+            forceUTF8: true
+        });
+    });
+    it('should resolved links to absolute urls', function(done) {
+        c.queue([{
+            uri : 'http://'+httpbinHost+'/links/3/0',
+            callback: function(error, result, $) {
+
+                var links = _.map($('a'), function(a) {
+                    return a.href;
+                });
+                //Both links should be resolve to absolute URLs
+                expect(links[0]).to.equal('http://'+httpbinHost+'/links/3/1');
+                expect(links[1]).to.equal('http://'+httpbinHost+'/links/3/2');
+                expect(error).to.be.null;
+                done();
+            }
+        }]);
+    });
+    it('should resolved links to absolute urls after redirect', function(done) {
+        c.queue([{
+            uri : 'http://'+httpbinHost+'/redirect-to?url=http://example.com/',
+            callback: function(error, result, $) {
+
+                expect(result.uri).to.equal('http://example.com/');
+                expect(error).to.be.null;
+                done();
+            }
+        }]);
+    });
+});
