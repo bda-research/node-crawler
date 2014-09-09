@@ -5,8 +5,8 @@ node_js:
 os:
   - linux
   - osx
-install:
-  - sh ./travis_scripts/install.sh
+before_install:
+  - sh ./travis_scripts/before_install.sh
 
 matrix:
   allow_failures:
