@@ -1,6 +1,7 @@
 language: node_js
 node_js:
   - 0.10
+  - 0.11
 os:
   - linux
   - osx
@@ -10,4 +11,5 @@ install:
 matrix:
   allow_failures:
     - os: osx
+    - node_js: 0.11
 
