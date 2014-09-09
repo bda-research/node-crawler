@@ -51,7 +51,7 @@
     "iconv": "*"
   },
   "devDependencies": {
-    "memwatch": "0.2.2",
+    //"memwatch": "0.2.2",
     "mocha": "1.21.4",
     "chai": "1.9.1"
   },
