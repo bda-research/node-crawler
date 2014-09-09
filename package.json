@@ -51,9 +51,9 @@
     "iconv": "*"
   },
   "devDependencies": {
-    "memwatch": "0.2.2",
     "mocha": "1.21.4",
-    "chai": "1.9.1"
+    "chai": "1.9.1",
+    "memwatch": "git://github.com/paulvalla/node-memwatch.git"
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --reporter spec --bail --timeout 10000 test/units/*.js"
