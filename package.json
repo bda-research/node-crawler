@@ -56,7 +56,7 @@
     "chai": "1.9.1"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --reporter spec --bail test/units/*.js"
+    "test": "./node_modules/mocha/bin/mocha --reporter spec --bail --timeout 10000 test/units/*.js"
   },
   "engines": [
     "node >=0.10.x"

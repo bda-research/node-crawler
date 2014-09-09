@@ -1,139 +1,120 @@
-//var Crawler = require('../../lib/crawler').Crawler;
-//
-//QUnit.module('simple');
-//
-//var DEBUG = false;
-//var httpbinHost = 'httpbin.org';
-//
-//test('inline html', function() {
-//    expect(2);
-//
-//    stop();
-//
-//    var c = new Crawler({
-//        debug: DEBUG,
-//        onDrain: function() {
-//            start();
-//        }
-//    });
-//
-//    c.queue({
-//        html: '<p><i>great!</i></p>',
-//        callback: function(error, result, $) {
-//            equal(error, null);
-//            equal($('i').html(), 'great!');
-//        }
-//    });
-//
-//});
-//
-//
-//test('one request', function() {
-//    expect(2);
-//    stop();
-//
-//    var c = new Crawler({
-//        debug: DEBUG,
-//        onDrain: function() {
-//            start();
-//        },
-//        callback: function(error, result, $) {
-//            equal(error, null);
-//            ok(result.statusCode === 418);
-//        }
-//    });
-//
-//    c.queue(['http://'+httpbinHost+'/status/418']);
-//
-//});
-//
-//test('two requests', function() {
-//    expect( 4 );
-//
-//    stop();
-//
-//    var c = new Crawler({
-//        debug: DEBUG,
-//        onDrain: function() {
-//            start();
-//        },
-//        callback: function(error, result, $) {
-//            equal(error, null);
-//            ok(result.body.length > 1000);
-//
-//        }
-//    });
-//
-//    c.queue(['http://'+httpbinHost+'/html', 'http://'+httpbinHost]);
-//});
-//
-//
-//test('one request gzipped', function() {
-//    expect(3);
-//    stop();
-//
-//    var c = new Crawler({
-//        debug:DEBUG,
-//        onDrain: function() {
-//            start();
-//        },
-//        callback:function(error,result,$) {
-//            equal(error,null);
-//            ok(result.body.indexOf('User-Agent')>0);
-//            ok(result.headers['content-encoding']=='gzip');
-//        }
-//    });
-//
-//    c.queue(['http://httpbin.org/gzip']);
-//});
-//
-//
-//test('one request + user agent', function() {
-//    expect( 2 );
-//    stop();
-//
-//    var c = new Crawler({
-//        debug: DEBUG,
-//        userAgent: 'test/1.2',
-//        jQuery: false,
-//        onDrain: function() {
-//            start();
-//        },
-//        callback: function(error, result, $) {
-//            equal(error, null);
-//            try {
-//                var body = JSON.parse(result.body);
-//            } catch (ex) {
-//                console.log(ex);
-//            }
-//            ok(body['user-agent'] === 'test/1.2');
-//        }
-//    });
-//
-//    c.queue(['http://'+httpbinHost+'/user-agent']);
-//});
-//
-//test("one requrest + referer", function () {
-//    expect( 2 );
-//
-//    stop();
-//
-//    var c = new Crawler({
-//        "debug":DEBUG,
-//        "referer":"http://spoofed.com",
-//        "jQuery":false,
-//        "callback":function(error,result,$) {
-//            equal(error,null);
-//            ok(result.body=="Your referer: http://spoofed.com");
-//            start();
-//        }
-//    });
-//
-//    c.queue(['http://'+httpbinHost+'/get']);
-//
-//});
-//
-//
+var Crawler = require('../../lib/crawler').Crawler;
+var expect = require('chai').expect;
+var httpbinHost = 'httpbin.org';
+var c;
+
+describe('Simple test', function() {
+    describe('html options', function() {
+        beforeEach(function() {
+            c = new Crawler({
+                forceUTF8: true
+            });
+        });
+        it('should work on inline html', function(done) {
+            c.queue([{
+                html: '<p><i>great!</i></p>',
+                callback: function(error, result, $) {
+                    expect(error).to.be.null;
+                    expect($('i').html()).to.equal('great!');
+                    done();
+                }
+            }]);
+        });
+    });
+    describe('simple requests', function() {
+        afterEach(function() {
+            c = {};
+        });
+        it('should crawl one request', function(done) {
+            c = new Crawler({
+                callback: function(error, result, $) {
+                    expect(error).to.be.null;
+                    expect(result.statusCode).to.equal(200);
+                    done();
+                }
+            });
+            c.queue(['http://'+httpbinHost+'/status/200']);
+        });
+        it('should crawl two request request and execute the onDrain() callback', function(done) {
+            c = new Crawler({
+                callback: function(error, result, $) {
+                    expect(error).to.be.null;
+                    expect(result.body.length).to.be.above(1000);
+                },
+                onDrain: function() {
+                    done();
+                }
+            });
+            c.queue(['http://'+httpbinHost+'/html', 'http://'+httpbinHost]);
+        });
+        it('should parse a gzip response', function(done) {
+            c = new Crawler({
+                callback:function(error, result, $) {
+                    expect(error).to.be.null;
+                    expect(result.body.indexOf('User-Agent')).to.be.above(0);
+                    expect(result.headers['content-encoding']).to.equal('gzip');
+                    done();
+                }
+            });
+            c.queue(['http://httpbin.org/gzip']);
+        });
+        it('should use the provided user-agent', function(done) {
+            c = new Crawler({
+                userAgent: 'test/1.2',
+                jQuery: false,
+                callback:function(error, result, $) {
+                    expect(error).to.be.null;
+                    try {
+                        var body = JSON.parse(result.body);
+                    } catch (ex) {
+                        expect(false).to.be.true;
+                    }
+                     expect(body['user-agent']).to.equal('test/1.2');
+                    done();
+                }
+            });
+            c.queue(['http://'+httpbinHost+'/user-agent']);
+        });
+        it('should spoof the referer', function(done) {
+            c = new Crawler({
+                referer: 'http://spoofed.com',
+                jQuery: false,
+                callback:function(error, result, $) {
+                    expect(error).to.be.null;
+                    try {
+                        var body = JSON.parse(result.body);
+                    } catch (ex) {
+                        expect(false).to.be.true;
+                    }
+                    expect(body['headers']['Referer']).to.equal('http://spoofed.com');
+                    done();
+                }
+            });
+            c.queue(['http://'+httpbinHost+'/headers']);
+        });
+        it('should enable jQuery by default', function(done) {
+            c = new Crawler({
+                callback:function(error, result, $) {
+                    expect(error).to.be.null;
+                    expect($).not.to.be.null;
+                    done();
+                }
+            });
+            c.queue(['http://'+httpbinHost+'/']);
+        });
+        it('should auto-disabling of jQuery if no html tag first', function(done) {
+            c = new Crawler({
+                jQuery: true,
+                callback:function(error, result, $) {
+                    expect(error).to.be.null;
+                    expect($).to.be.undefined;
+                    done();
+                }
+            });
+            c.queue(['http://'+httpbinHost+'/status/200']);
+        });
+    })
+});
 //test('Auto-disabling of jQuery if no html tag first', function() {
 //    expect(2);
 //    stop();
