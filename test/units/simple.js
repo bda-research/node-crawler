@@ -102,6 +102,17 @@ describe('Simple test', function() {
             });
             c.queue(['http://'+httpbinHost+'/']);
         });
+        it('should disable jQuery', function(done) {
+            c = new Crawler({
+                jQuery: false,
+                callback:function(error, result, $) {
+                    expect(error).to.be.null;
+                    expect($).to.be.undefined;
+                    done();
+                }
+            });
+            c.queue(['http://'+httpbinHost+'/']);
+        });
         it('should auto-disabling of jQuery if no html tag first', function(done) {
             c = new Crawler({
                 jQuery: true,
@@ -113,47 +124,17 @@ describe('Simple test', function() {
             });
             c.queue(['http://'+httpbinHost+'/status/200']);
         });
+        it('should run the readme examples', function(done) {
+            c = new Crawler({
+                maxConnections: 10,
+                onDrain: function() {
+                    done();
+                },
+                callback: function(error, result, $) {
+                    expect(typeof result.body).to.equal('string');
+                }
+            });
+            c.queue('http://google.com');
+        });
     })
 });
-//test('Auto-disabling of jQuery if no html tag first', function() {
-//    expect(2);
-//    stop();
-//
-//    var c = new Crawler({
-//        debug: DEBUG,
-//        onDrain: function() {
-//            start();
-//        },
-//        userAgent: 'test/1.2',
-//        forceUTF8: true,
-//        callback: function(error, result, $) {
-//            equal(error, null);
-//            ok(result.body === 'Your user agent: test/1.2');
-//        }
-//    });
-//
-//    c.queue(['http://'+httpbinHost+'/user-agent']);
-//});
-//
-//
-//test('from the readme',function() {
-//
-//    expect( 2 );
-//    stop();
-//
-//    var c = new Crawler({
-//        maxConnections: 10,
-//        onDrain: function() {
-//            start();
-//        },
-//        callback: function(error, result, $) {
-//            equal(typeof result.body, 'string');
-//            if (typeof result.body === 'string') {
-//                ok(result.body.indexOf('Google') >= 0);
-//            } else {
-//                ok(true);
-//            }
-//        }
-//    });
-//    c.queue('http://google.com');
-//});
