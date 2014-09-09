@@ -43,7 +43,7 @@ describe('Leaks', function() {
         }
     });
 
-    it('should NOT leak with JSDOM disabled, crawling 10k urls', function(done) {
+    it('should NOT leak with JSDOM disabled, crawling 10k urls', function(done){
 
         //disabled mocha timeout for this particular test
         this.timeout(999999999);
@@ -60,9 +60,8 @@ describe('Leaks', function() {
                 // Wait a bit for the GC to kick in
                 setTimeout(function() {
                     var diff = hd.end();
-                    console.log(diff.change.size_bytes);
-                    //Should have almost not changed, less then 1000kb
-                    expect(diff.change.size_bytes).to.be.below(1000000);
+                    //Should have almost not changed, less then 100kb
+                    expect(diff.change.size_bytes).to.be.below(100000);
                     done();
                 }, 10000);
             }
