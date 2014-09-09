@@ -1,6 +1,6 @@
 var Crawler = require('../../lib/crawler').Crawler;
 var expect = require('chai').expect;
-var httpbinHost = 'httpbin.org';
+var httpbinHost = 'localhost:8000';
 
 describe('Error', function() {
     describe('timeout', function() {

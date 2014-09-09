@@ -1,10 +1,13 @@
 language: node_js
 node_js:
   - 0.10
-  - 0.11
 os:
   - linux
   - osx
+install:
+  - sh ./travis_scripts/install.sh
+
 matrix:
   allow_failures:
     - os: osx
+
