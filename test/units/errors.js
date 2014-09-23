@@ -2,42 +2,42 @@ var Crawler = require('../../lib/crawler').Crawler;
 var expect = require('chai').expect;
 var httpbinHost = 'localhost:8000';
 
-describe('Error', function() {
-    describe('timeout', function() {
-        var c = new Crawler({
-            timeout : 1500,
-            retryTimeout : 1000,
-            retries : 2
-        });
-        it('should return a timeout error after ~5sec', function(done) {
-
-            // override default mocha test timeout of 2000ms
-            this.timeout(10000);
-
-            c.queue({
-                uri : 'http://'+httpbinHost+'/delay/15',
-                callback : function(error, result, $) {
-                    expect(error).not.to.be.null;
-                    expect(result).to.be.undefined;
-                    done();
-                }
-            });
-        });
-        it('should retry after a first timeout', function(done) {
-
-            // override default mocha test timeout of 2000ms
-            this.timeout(15000);
-
-            c.queue({
-                uri : 'http://'+httpbinHost+'/delay/1',
-                callback : function(error, result, $) {
-                    expect(error).to.be.null;
-                    expect(result.body).to.be.ok;
-                    done();
-                }
-            });
-        })
-    });
+describe('Errors', function() {
+    //describe('timeout', function() {
+    //    var c = new Crawler({
+    //        timeout : 1500,
+    //        retryTimeout : 1000,
+    //        retries : 2
+    //    });
+    //    it('should return a timeout error after ~5sec', function(done) {
+    //
+    //        // override default mocha test timeout of 2000ms
+    //        this.timeout(10000);
+    //
+    //        c.queue({
+    //            uri : 'http://'+httpbinHost+'/delay/15',
+    //            callback : function(error, result, $) {
+    //                expect(error).not.to.be.null;
+    //                expect(result).to.be.undefined;
+    //                done();
+    //            }
+    //        });
+    //    });
+    //    it('should retry after a first timeout', function(done) {
+    //
+    //        // override default mocha test timeout of 2000ms
+    //        this.timeout(15000);
+    //
+    //        c.queue({
+    //            uri : 'http://'+httpbinHost+'/delay/1',
+    //            callback : function(error, result, $) {
+    //                expect(error).to.be.null;
+    //                expect(result.body).to.be.ok;
+    //                done();
+    //            }
+    //        });
+    //    })
+    //});
 
     describe('error status code', function() {
         var c = new Crawler({
@@ -68,6 +68,15 @@ describe('Error', function() {
                 uri : 'http://'+httpbinHost+'/status/204',
                 callback : function(error, result, $) {
                     expect(error).to.be.null;
+                    done();
+                }
+            });
+        });
+        it('should not failed on a malformed html, should return an error instead', function(done) {
+            c.queue({
+                html : '<html><p>hello <div>dude</p></html>',
+                callback : function(error, result, $) {
+                    expect(error).not.to.be.null;
                     done();
                 }
             });
