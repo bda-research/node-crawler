@@ -41,11 +41,10 @@
     "request": "2.42.0",
     "jsdom": "0.11.1",
     "generic-pool": "2.1.1",
-    "underscore": "1.6.0",
     "jschardet": "1.1.0",
     "iconv-lite": "0.4.4",
     "iconv": "2.1.4",
-    "compression": "1.1.0"
+    "lodash": "^2.4.1"
   },
   "optionalDependencies": {
     "iconv": "*"
