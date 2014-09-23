@@ -54,7 +54,7 @@ Crash course
 ------------
 
 ```javascript
-var Crawler = require("crawler").Crawler;
+var Crawler = require("crawler");
 
 var c = new Crawler({
 "maxConnections":10,
