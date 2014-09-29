@@ -10,7 +10,7 @@ It features:
  * Priority of requests
  * forceUTF8 mode to let node-crawler deal for you with charset detection and conversion
  * A local cache
-
+ * for node 0.8 and 0.10 support
 The argument for creating this package was made at ParisJS #2 in 2010 ( [lightning talk slides](http://www.slideshare.net/sylvinus/web-crawling-with-nodejs) )
 
 Help & Forks welcomed!
