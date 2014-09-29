@@ -155,6 +155,24 @@ describe('Simple test', function() {
                 uri: uriFunction(statusCode)
             });
         });
+        it('should work if uri is a function, example from Readme', function(done) {
+            var googleSearch = function(search) {
+                return 'http://www.google.fr/search?q=' + search;
+            };
+            c = new Crawler({
+                maxConnections: 10,
+                onDrain: function() {
+                    done();
+                },
+                callback: function(error, result, $) {
+                    expect(typeof result.statusCode).to.equal('number');
+                    expect(result.statusCode).to.equal(200);
+                }
+            });
+            c.queue({
+                uri: googleSearch('cheese')
+            });
+        });
 
         it('should work if jquery is set instead of jQuery when building Crawler', function(done) {
             c = new Crawler({

@@ -80,6 +80,14 @@ c.queue([{
 "uri":"http://parishackers.org/",
 "jQuery":false,
 
+// Queue using a function
+var googleSearch = function(search) {
+  return 'http://www.google.fr/search?q=' + search;
+};
+c.queue({
+  uri: googleSearch('cheese')
+});
+
 // The global callback won't be called
 "callback":function(error,result) {
     console.log("Grabbed",result.body.length,"bytes");
