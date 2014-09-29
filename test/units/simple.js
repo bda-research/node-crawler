@@ -182,10 +182,12 @@ describe('Simple test', function() {
                     done();
                 },
                 callback: function(error, result, $) {
-                    expect(result.body).to.equal('string');
+                    expect($).not.to.be.undefined;
+                    expect(result.options.jQuery).to.be.true;
+                    expect(result.options.jquery).to.be.undefined;
                 }
             });
-            c.queue(['http://'+httpbinHost+'/status/200']);
+            c.queue(['http://'+httpbinHost]);
         });
 
         it('should work if jquery is set instead of jQuery when queuing', function(done) {
@@ -196,13 +198,16 @@ describe('Simple test', function() {
                     done();
                 },
                 callback: function(error, result, $) {
-                    expect(result.body).to.equal('string');
+                    expect($).to.be.undefined;
+                    expect(result.options.jQuery).to.be.false;
                 }
             });
-            c.queue({
-                uri: 'http://'+httpbinHost+'/status/200',
-                jquery : false
-            });
+            c.queue([
+                {
+                    uri: 'http://'+httpbinHost,
+                    jquery : false
+                }
+            ]);
         });
     })
 });
