@@ -10,7 +10,8 @@ It features:
  * Priority of requests
  * forceUTF8 mode to let node-crawler deal for you with charset detection and conversion
  * A local cache
- * for node 0.8 and 0.10 support
+ * node 0.8 and 0.10 support
+
 The argument for creating this package was made at ParisJS #2 in 2010 ( [lightning talk slides](http://www.slideshare.net/sylvinus/web-crawling-with-nodejs) )
 
 Help & Forks welcomed!
@@ -20,7 +21,7 @@ How to install
 
     $ npm install crawler
 
-###Contextify
+###Building Contextify
 
 [Contextify](https://npmjs.org/package/contextify) is a dependency of [jsdom](https://github.com/tmpvar/jsdom), used for running `<script>` tags within the page. 
 
@@ -158,12 +159,18 @@ Memory leaks
 
 When using timeouts, to avoid triggering [Node #3076](https://github.com/joyent/node/pull/3076) you should use Node > 0.8.14
 
-There is now a complete memory leak test for node-crawler :)
-
-
 How to test
 -----------
 
+### Install and run Httpbin
+
+node-crawler use a local httpbin for testing purpose. You can install httpbin as a library from PyPI and run it as a WSGI app. For example, using Gunicorn:
+
+    $ pip install httpbin
+    // launch httpbin as a daemon with 6 worker on localhost
+    $ gunicorn httpbin:app -b 127.0.0.1:8000 -w 6 --daemon
+
+    // Finally
     $ npm install && npm test
 
 Feel free to add more tests!
