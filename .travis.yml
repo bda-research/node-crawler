@@ -12,3 +12,4 @@ before_install:
 matrix:
   allow_failures:
     - os: osx
+    - node_js : 0.11
