@@ -136,5 +136,55 @@ describe('Simple test', function() {
             });
             c.queue('http://google.com');
         });
+        it('should work if uri is a function', function(done) {
+            var statusCode = 200;
+            var uriFunction = function(statusCode) {
+                return 'http://'+httpbinHost+'/status/'+statusCode;
+            };
+            c = new Crawler({
+                maxConnections: 10,
+                onDrain: function() {
+                    done();
+                },
+                callback: function(error, result, $) {
+                    expect(typeof result.statusCode).to.equal('number');
+                    expect(result.statusCode).to.equal(statusCode);
+                }
+            });
+            c.queue({
+                uri: uriFunction(statusCode)
+            });
+        });
+
+        it('should work if jquery is set instead of jQuery when building Crawler', function(done) {
+            c = new Crawler({
+                maxConnections: 10,
+                jquery: true,
+                onDrain: function() {
+                    done();
+                },
+                callback: function(error, result, $) {
+                    expect(result.body).to.equal('string');
+                }
+            });
+            c.queue(['http://'+httpbinHost+'/status/200']);
+        });
+
+        it('should work if jquery is set instead of jQuery when queuing', function(done) {
+            c = new Crawler({
+                maxConnections: 10,
+                jQuery: true,
+                onDrain: function() {
+                    done();
+                },
+                callback: function(error, result, $) {
+                    expect(result.body).to.equal('string');
+                }
+            });
+            c.queue({
+                uri: 'http://'+httpbinHost+'/status/200',
+                jquery : false
+            });
+        });
     })
 });
