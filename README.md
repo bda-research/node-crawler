@@ -22,7 +22,7 @@ How to install
 
 ###Contextify
 
-[Contextify](https://npmjs.org/package/contextify) is a dependency of [jsdom](https://github.com/tmpvar/jsdom), used for running `<script>` tags within the page. 
+[Contextify](https://npmjs.org/package/contextify) is a dependency of [jsdom](https://github.com/tmpvar/jsdom), used for running `<script>` tags within the page.
 
 Unfortunately, doing this kind of magic requires C++. And in Node.js, using C++ from JavaScript means using "native modules." Native modules are compiled at installation time so that they work precisely for your machine; that is, you don't download a contextify binary from npm, but instead build one locally after downloading the source from npm.
 
@@ -132,7 +132,7 @@ Server-side DOM options:
 Charset encoding:
 
  * forceUTF8: Boolean, if true will try to detect the page charset and convert it to UTF8 if necessary. Never worry about encoding anymore! (Default false),
- * incomingEncoding: String, with forceUTF8: true to set encoding manually (Default null) 
+ * incomingEncoding: String, with forceUTF8: true to set encoding manually (Default null)
      `incomingEncoding : 'windows-1255'` for example
 
 Cache:
@@ -144,6 +144,7 @@ Other:
 
  * userAgent: String, defaults to "node-crawler/[version]"
  * referer: String, if truthy sets the HTTP referer header
+ * rateLimits: Number of milliseconds to delay between each requests (Default 0)
 
 Memory leaks
 ------------
