@@ -152,7 +152,7 @@ Other:
 
  * userAgent: String, defaults to "node-crawler/[version]"
  * referer: String, if truthy sets the HTTP referer header
- * rateLimits: Number of milliseconds to delay between each requests (Default 0)
+ * rateLimits: Number of milliseconds to delay between each requests (Default 0) Note that this option will force crawler to use only one connection (for now)
 
 Memory leaks
 ------------

@@ -1,10 +1,10 @@
-var Crawler = require('../../lib/crawler').Crawler;
+var Crawler = require('../../lib/crawler');
 var expect = require('chai').expect;
-var httpbinHost = 'httpbin.org';
+var httpbinHost = 'localhost:8000';
 
 describe('Limits', function() {
     describe('rate limits', function() {
-        var startTime, c;
+        var startTime, c, cb;
         beforeEach(function() {
             startTime = new Date().getTime();
             c = new Crawler({
@@ -18,6 +18,7 @@ describe('Limits', function() {
                 var endTime = new Date().getTime(),
                     deltaTime = endTime - startTime;
                 count++;
+                console.log(count, deltaTime);
                 if (count === 1) {
                     expect(deltaTime).above(5000);
                     expect(deltaTime).below(10000);

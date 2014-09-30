@@ -51,12 +51,17 @@ describe('Simple test', function() {
             c = new Crawler({
                 callback:function(error, result, $) {
                     expect(error).to.be.null;
-                    expect(result.body.indexOf('User-Agent')).to.be.above(0);
-                    expect(result.headers['content-encoding']).to.equal('gzip');
+                    try {
+                        var body = JSON.parse(result.body);
+                    } catch (ex) {
+                        expect(false).to.be.true;
+                    }
+                    expect(body.gzipped).to.be.true;
+                    expect(body.headers['Accept-Encoding']).to.equal('gzip');
                     done();
                 }
             });
-            c.queue(['http://httpbin.org/gzip']);
+            c.queue('http://'+httpbinHost+'/gzip');
         });
         it('should use the provided user-agent', function(done) {
             c = new Crawler({
