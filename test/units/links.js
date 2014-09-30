@@ -1,7 +1,7 @@
-var Crawler = require('../../lib/crawler').Crawler;
+var Crawler = require('../../lib/crawler');
 var expect = require('chai').expect;
-var _ = require('underscore');
-var httpbinHost = 'httpbin.org';
+var _ = require('lodash');
+var httpbinHost = 'localhost:8000';
 var c;
 
 describe("Links", function() {

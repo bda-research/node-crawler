@@ -10,7 +10,7 @@ It features:
  * Priority of requests
  * forceUTF8 mode to let node-crawler deal for you with charset detection and conversion
  * A local cache
-
+ * for node 0.8 and 0.10 support
 The argument for creating this package was made at ParisJS #2 in 2010 ( [lightning talk slides](http://www.slideshare.net/sylvinus/web-crawling-with-nodejs) )
 
 Help & Forks welcomed!
@@ -54,7 +54,7 @@ Crash course
 ------------
 
 ```javascript
-var Crawler = require("crawler").Crawler;
+var Crawler = require("crawler");
 
 var c = new Crawler({
 "maxConnections":10,
@@ -79,6 +79,14 @@ c.queue(["http://jamendo.com/","http://tedxparis.com"]);
 c.queue([{
 "uri":"http://parishackers.org/",
 "jQuery":false,
+
+// Queue using a function
+var googleSearch = function(search) {
+  return 'http://www.google.fr/search?q=' + search;
+};
+c.queue({
+  uri: googleSearch('cheese')
+});
 
 // The global callback won't be called
 "callback":function(error,result) {

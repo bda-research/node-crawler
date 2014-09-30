@@ -41,17 +41,15 @@
     "request": "2.42.0",
     "jsdom": "0.11.1",
     "generic-pool": "2.1.1",
-    "underscore": "1.6.0",
     "jschardet": "1.1.0",
     "iconv-lite": "0.4.4",
     "iconv": "2.1.4",
-    "compression": "1.1.0"
+    "lodash": "2.4.1"
   },
   "optionalDependencies": {
     "iconv": "*"
   },
   "devDependencies": {
-    "memwatch": "0.2.2",
     "mocha": "1.21.4",
     "chai": "1.9.1"
   },
@@ -59,7 +57,7 @@
     "test": "./node_modules/mocha/bin/mocha --reporter spec --bail --timeout 10000 test/units/*.js"
   },
   "engines": [
-    "node >=0.10.x"
+    "node >=0.8.x"
   ],
   "directories": {
     "lib": "lib"
