@@ -38,13 +38,14 @@
     "url": "https://github.com/sylvinus/node-crawler.git"
   },
   "dependencies": {
-    "request": "2.42.0",
-    "jsdom": "0.11.1",
+    "cheerio": "^0.17.0",
     "generic-pool": "2.1.1",
-    "jschardet": "1.1.0",
-    "iconv-lite": "0.4.4",
     "iconv": "2.1.4",
-    "lodash": "2.4.1"
+    "iconv-lite": "0.4.4",
+    "jschardet": "1.1.0",
+    "jsdom": "0.11.1",
+    "lodash": "2.4.1",
+    "request": "2.42.0"
   },
   "optionalDependencies": {
     "iconv": "*"
