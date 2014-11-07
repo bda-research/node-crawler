@@ -28,11 +28,12 @@ describe('Jquery testing', function() {
             });
     });
     describe('Jquery injection', function() {
-        it('should enable jsdom by default', function(done) {
+        it('should enable cheerio by default', function(done) {
             c = new Crawler({
                 callback:function(error, result, $) {
                     expect(error).to.be.null;
-                    expect($.fn.jquery).to.equal('1.8.3');
+                    expect($.fn).to.be.undefined;
+                    expect(typeof $.root).to.equal('function');
                     done();
                 }
             });
