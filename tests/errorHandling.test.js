@@ -2,6 +2,7 @@
 
 var Crawler = require('../lib/crawler');
 var expect = require('chai').expect;
+var jsdom = require('jsdom');
 var httpbinHost = 'localhost:8000';
 
 describe('Errors', function() {
@@ -86,22 +87,10 @@ describe('Errors', function() {
                 }
             });
         });
-        it('should return an error on a malformed html if jQuery is true', function(done) {
+        it('should return an error on a malformed html if jQuery is jsdom', function(done) {
             c.queue({
                 html : '<html><p>hello <div>dude</p></html>',
-                jQuery : true,
-                callback : function(error, response) {
-                    expect(error).not.to.be.null;
-                    expect(response).to.be.undefined;
-                    done();
-                }
-            });
-        });
-        it('should return an error if can\'t read jquery', function(done) {
-            c.queue({
-                html : '<html><p>hello <div>dude</p></html>',
-                jQuery : true,
-                jQueryUrl : 'foobarsaucisson',
+                jQuery : jsdom,
                 callback : function(error, response) {
                     expect(error).not.to.be.null;
                     expect(response).to.be.undefined;

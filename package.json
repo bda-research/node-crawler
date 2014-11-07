@@ -43,7 +43,6 @@
     "iconv": "2.1.4",
     "iconv-lite": "0.4.4",
     "jschardet": "1.1.0",
-    "jsdom": "0.11.1",
     "lodash": "2.4.1",
     "request": "2.42.0"
   },
@@ -54,7 +53,8 @@
     "chai": "1.9.2",
     "mocha": "1.21.4",
     "mocha-testdata": "1.1.0",
-    "sinon": "1.11.1"
+    "sinon": "1.11.1",
+    "jsdom": "0.11.1"
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --reporter spec --bail --timeout 10000 tests/*.js"

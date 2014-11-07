@@ -3,16 +3,18 @@
 var Crawler = require('../lib/crawler');
 var expect = require('chai').expect;
 var _ = require('lodash');
+var jsdom = require('jsdom');
 var httpbinHost = 'localhost:8000';
 var c;
 
 describe('Links', function() {
     beforeEach(function() {
         c = new Crawler({
-            forceUTF8: true
+            forceUTF8: true,
+            jquery: jsdom
         });
     });
-    it('should resolved links to absolute urls', function(done) {
+    it('should resolved links to absolute urls with jsdom', function(done) {
         c.queue([{
             uri : 'http://'+httpbinHost+'/links/3/0',
             callback: function(error, result, $) //noinspection BadExpressionStatementJS,BadExpressionStatementJS

@@ -3,6 +3,8 @@
 var Crawler = require('../lib/crawler');
 var expect = require('chai').expect;
 var given = require('mocha-testdata');
+var path = require('path');
+var jsdom = require('jsdom');
 
 var httpbinHost = 'localhost:8000';
 var c;
@@ -12,7 +14,7 @@ describe('Jquery testing', function() {
         c = {};
     });
     describe('Jquery parsing', function() {
-        given.async('jsdom', 'cheerio')
+        given.async(jsdom, 'cheerio')
             .it('should work on inline html', function(done, jquery) {
                 c = new Crawler();
                 c.queue([{
@@ -39,12 +41,12 @@ describe('Jquery testing', function() {
             });
             c.queue(['http://'+httpbinHost+'/']);
         });
-        given.async('jsdom', {name: 'jsdom'}).it('should enable jsdom if set', function(done, jquery) {
+        given.async(jsdom).it('should enable jsdom if set', function(done, jquery) {
             c = new Crawler({
                 jquery: jquery,
                 callback:function(error, result, $) {
                     expect(error).to.be.null;
-                    expect($.fn.jquery).to.equal('1.8.3');
+                    expect($.fn.jquery).to.equal('2.1.1');
                     done();
                 }
             });
@@ -84,7 +86,7 @@ describe('Jquery testing', function() {
             });
             c.queue(['http://'+httpbinHost+'/']);
         });
-        given.async('cheerio', 'jsdom').it('should auto-disable jQuery if no html tag first', function(done, jquery) {
+        given.async('cheerio', jsdom).it('should auto-disable jQuery if no html tag first', function(done, jquery) {
             c = new Crawler({
                 jQuery: jquery,
                 callback:function(error, result, $) {
