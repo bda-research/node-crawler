@@ -12,7 +12,8 @@ describe('Request tests', function() {
     it('should crawl one request', function(done) {
         c = new Crawler({
             jquery: false,
-            callback: function(error, result) {
+            callback: function(error, result) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
+            {
                 expect(error).to.be.null;
                 expect(result.statusCode).to.equal(200);
                 done();

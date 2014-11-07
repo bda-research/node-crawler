@@ -19,7 +19,8 @@ describe('Errors', function() {
 
             c.queue({
                 uri : 'http://'+httpbinHost+'/delay/15',
-                callback : function(error, response) {
+                callback : function(error, response) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
+                {
                     expect(error).not.to.be.null;
                     expect(response).to.be.undefined;
                     done();

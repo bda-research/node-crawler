@@ -15,7 +15,8 @@ describe('Links', function() {
     it('should resolved links to absolute urls', function(done) {
         c.queue([{
             uri : 'http://'+httpbinHost+'/links/3/0',
-            callback: function(error, result, $) {
+            callback: function(error, result, $) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
+            {
 
                 var links = _.map($('a'), function(a) {
                     return a.href;

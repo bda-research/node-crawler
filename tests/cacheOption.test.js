@@ -16,7 +16,8 @@ describe('Cache features tests', function() {
                 maxConnections: 1,
                 cache: true,
                 jquery: false,
-                onDrain: function () {
+                onDrain: function () //noinspection BadExpressionStatementJS,BadExpressionStatementJS
+                {
                     expect(spy.calledOnce).to.be.true;
                     done();
                 },

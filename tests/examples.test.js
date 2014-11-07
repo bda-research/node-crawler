@@ -31,7 +31,8 @@ describe('Simple test', function() {
         c.queue([{
             uri: 'http://www.google.com',
             jquery: true,
-            callback : function(error, result, $) {
+            callback : function(error, result, $) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
+            {
                 expect($).not.to.be.null;
                 expect(typeof result.body).to.equal('string');
                 done();

@@ -18,7 +18,8 @@ describe('Jquery testing', function() {
                 c.queue([{
                     html: '<p><i>great!</i></p>',
                     jquery: jquery,
-                    callback: function(error, result, $) {
+                    callback: function(error, result, $) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
+                    {
                         expect(error).to.be.null;
                         expect($('i').html()).to.equal('great!');
                         done();
