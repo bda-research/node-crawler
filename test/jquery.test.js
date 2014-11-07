@@ -80,9 +80,9 @@ describe('Jquery testing', function() {
             });
             c.queue(['http://'+httpbinHost+'/']);
         });
-        it('should auto-disabling of jQuery if no html tag first', function(done) {
+        given.async('cheerio', 'jsdom').it('should auto-disable jQuery if no html tag first', function(done, jquery) {
             c = new Crawler({
-                jQuery: true,
+                jQuery: jquery,
                 callback:function(error, result, $) {
                     expect(error).to.be.null;
                     expect($).to.be.undefined;
@@ -124,6 +124,20 @@ describe('Jquery testing', function() {
                     jquery : false
                 }
             ]);
+        });
+        it('should not inject jquery if jquery is set to undefined', function(done) {
+            c = new Crawler({
+                maxConnections: 10,
+                jquery: undefined,
+                onDrain: function() {
+                    done();
+                },
+                callback: function(error, result, $) {
+                    expect($).to.be.undefined;
+                    expect(result.options.jQuery).to.be.undefined;
+                }
+            });
+            c.queue(['http://'+httpbinHost]);
         });
     });
     describe('Cheerio specific test', function() {
