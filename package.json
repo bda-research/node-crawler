@@ -20,7 +20,7 @@
     },
     {
       "name": "Paul Valla",
-      "email": "paul.valla+nodecrawler@gmail.com",
+      "email": "bonjour@pol.ninja",
       "url": "http://www.pol.ninja/"
     }
   ],
@@ -38,7 +38,7 @@
     "url": "https://github.com/sylvinus/node-crawler.git"
   },
   "dependencies": {
-    "cheerio": "^0.17.0",
+    "cheerio": "0.17.0",
     "generic-pool": "2.1.1",
     "iconv": "2.1.4",
     "iconv-lite": "0.4.4",
@@ -51,7 +51,7 @@
     "iconv": "*"
   },
   "devDependencies": {
-    "chai": "1.9.1",
+    "chai": "1.9.2",
     "mocha": "1.21.4",
     "mocha-testdata": "^1.1.0"
   },
