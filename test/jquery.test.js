@@ -141,6 +141,28 @@ describe('Jquery testing', function() {
         });
     });
     describe('Cheerio specific test', function() {
-
+        it('should inject cheerio with options', function(done) {
+            var cheerioConf = {
+                name: 'cheerio',
+                options: {
+                    normalizeWhitespace: true,
+                    xmlMode: true
+                }
+            };
+            c = new Crawler({
+                maxConnections: 10,
+                jquery: cheerioConf,
+                onDrain: function() {
+                    done();
+                },
+                callback: function(error, result, $) {
+                    expect($._options.normalizeWhitespace).to.be.true;
+                    expect($._options.xmlMode).to.be.true;
+                    // check if the default value of decodeEntities is still true
+                    expect($._options.decodeEntities).to.be.true;
+                }
+            });
+            c.queue(['http://'+httpbinHost]);
+        });
     });
 });
