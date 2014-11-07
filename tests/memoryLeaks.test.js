@@ -1,4 +1,6 @@
-//var Crawler = require('../../lib/crawler').Crawler;
+//'use strict';
+//
+// var Crawler = require('../../lib/crawler').Crawler;
 //var expect = require('chai').expect;
 //var _ = require('underscore');
 //var memwatch = require('memwatch');

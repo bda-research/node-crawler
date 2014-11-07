@@ -1,3 +1,5 @@
+'use strict';
+
 var Crawler = require('../lib/crawler');
 var expect = require('chai').expect;
 var given = require('mocha-testdata');

@@ -1,6 +1,7 @@
+'use strict';
+
 var Crawler = require('../lib/crawler');
 var expect = require('chai').expect;
-var httpbinHost = 'localhost:8000';
 var c;
 
 describe('Simple test', function() {
@@ -19,7 +20,7 @@ describe('Simple test', function() {
             onDrain: function() {
                 done();
             },
-            callback: function(error, result, $) {
+            callback: function(error, result) {
                 expect(typeof result.body).to.equal('string');
             }
         });
@@ -30,7 +31,8 @@ describe('Simple test', function() {
         c.queue([{
             uri: 'http://www.google.com',
             jquery: true,
-            callback : function(error,result,$) {
+            callback : function(error, result, $) {
+                expect($).not.to.be.null;
                 expect(typeof result.body).to.equal('string');
                 done();
             }

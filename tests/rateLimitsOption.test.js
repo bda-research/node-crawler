@@ -1,3 +1,5 @@
+'use strict';
+
 var Crawler = require('../lib/crawler');
 var expect = require('chai').expect;
 var httpbinHost = 'localhost:8000';
@@ -18,7 +20,7 @@ describe('Limits', function() {
                 var endTime = new Date().getTime(),
                     deltaTime = endTime - startTime;
                 count++;
-                console.log(count, deltaTime);
+                //console.log(count, deltaTime);
                 if (count === 1) {
                     expect(deltaTime).above(5000);
                     expect(deltaTime).below(10000);
@@ -30,7 +32,7 @@ describe('Limits', function() {
                     expect(deltaTime).below(20000);
                     done();
                 }
-            }
+            };
             c.queue([{
                 uri: 'http://' + httpbinHost + '/ip',
                 callback: cb

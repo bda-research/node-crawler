@@ -38,7 +38,7 @@
     "url": "https://github.com/sylvinus/node-crawler.git"
   },
   "dependencies": {
-    "cheerio": "0.17.0",
+    "cheerio": "0.18.0",
     "generic-pool": "2.1.1",
     "iconv": "2.1.4",
     "iconv-lite": "0.4.4",

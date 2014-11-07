@@ -1,10 +1,12 @@
+'use strict';
+
 var Crawler = require('../lib/crawler');
 var expect = require('chai').expect;
 var _ = require('lodash');
 var httpbinHost = 'localhost:8000';
 var c;
 
-describe("Links", function() {
+describe('Links', function() {
     beforeEach(function() {
         c = new Crawler({
             forceUTF8: true
@@ -29,7 +31,7 @@ describe("Links", function() {
     it('should resolved links to absolute urls after redirect', function(done) {
         c.queue([{
             uri : 'http://'+httpbinHost+'/redirect-to?url=http://example.com/',
-            callback: function(error, result, $) {
+            callback: function(error, result) {
 
                 expect(result.uri).to.equal('http://example.com/');
                 expect(error).to.be.null;

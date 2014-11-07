@@ -1,3 +1,5 @@
+'use strict';
+
 var Crawler = require('../lib/crawler');
 var expect = require('chai').expect;
 var sinon = require('sinon');
@@ -24,7 +26,7 @@ describe('Cache features tests', function() {
                 }
             });
             var spy = sinon.spy(c, '_buildHttpRequest');
-            c.queue(['http://' + httpbinHost, 'http://' + httpbinHost, 'http://' + httpbinHost, 'http://' + httpbinHost]);
+            c.queue(['http://'+httpbinHost, 'http://' + httpbinHost, 'http://' + httpbinHost, 'http://' + httpbinHost]);
         });
     });
 
