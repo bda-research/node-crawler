@@ -4,227 +4,73 @@ var httpbinHost = 'localhost:8000';
 var c;
 
 describe('Simple test', function() {
-    describe('html options', function() {
-        beforeEach(function() {
-            c = new Crawler({
-                forceUTF8: true
-            });
-        });
-        it('should work on inline html', function(done) {
-            c.queue([{
-                html: '<p><i>great!</i></p>',
-                callback: function(error, result, $) {
-                    expect(error).to.be.null;
-                    expect($('i').html()).to.equal('great!');
-                    done();
-                }
-            }]);
+    beforeEach(function() {
+        c = new Crawler({
+            forceUTF8: true
         });
     });
-    describe('simple requests', function() {
-        afterEach(function() {
-            c = {};
+    afterEach(function() {
+        c = {};
+    });
+    it('should run the readme examples', function(done) {
+        c = new Crawler({
+            maxConnections: 10,
+            jquery: true,
+            onDrain: function() {
+                done();
+            },
+            callback: function(error, result, $) {
+                expect(typeof result.body).to.equal('string');
+            }
         });
-        it('should crawl one request', function(done) {
-            c = new Crawler({
-                callback: function(error, result, $) {
-                    expect(error).to.be.null;
-                    expect(result.statusCode).to.equal(200);
-                    done();
-                }
-            });
-            c.queue(['http://'+httpbinHost+'/status/200']);
+        c.queue('http://google.com');
+    });
+    it('should run the with an array queue', function(done) {
+        c = new Crawler();
+        c.queue([{
+            uri: 'http://www.google.com',
+            jquery: true,
+            callback : function(error,result,$) {
+                expect(typeof result.body).to.equal('string');
+                done();
+            }
+        }]);
+    });
+    it('should work if uri is a function', function(done) {
+        var statusCode = 200;
+        var uriFunction = function(statusCode) {
+            return 'http://'+httpbinHost+'/status/'+statusCode;
+        };
+        c = new Crawler({
+            maxConnections: 10,
+            onDrain: function() {
+                done();
+            },
+            callback: function(error, result, $) {
+                expect(typeof result.statusCode).to.equal('number');
+                expect(result.statusCode).to.equal(statusCode);
+            }
         });
-        it('should crawl two request request and execute the onDrain() callback', function(done) {
-            c = new Crawler({
-                callback: function(error, result, $) {
-                    expect(error).to.be.null;
-                    expect(result.body.length).to.be.above(1000);
-                },
-                onDrain: function() {
-                    done();
-                }
-            });
-            c.queue(['http://'+httpbinHost+'/html', 'http://'+httpbinHost]);
+        c.queue({
+            uri: uriFunction(statusCode)
         });
-        it('should parse a gzip response', function(done) {
-            c = new Crawler({
-                callback:function(error, result, $) {
-                    expect(error).to.be.null;
-                    try {
-                        var body = JSON.parse(result.body);
-                    } catch (ex) {
-                        expect(false).to.be.true;
-                    }
-                    expect(body.gzipped).to.be.true;
-                    expect(body.headers['Accept-Encoding']).to.equal('gzip');
-                    done();
-                }
-            });
-            c.queue('http://'+httpbinHost+'/gzip');
+    });
+    it('should work if uri is a function, example from Readme', function(done) {
+        var googleSearch = function(search) {
+            return 'http://www.google.fr/search?q=' + search;
+        };
+        c = new Crawler({
+            maxConnections: 10,
+            onDrain: function() {
+                done();
+            },
+            callback: function(error, result, $) {
+                expect(typeof result.statusCode).to.equal('number');
+                expect(result.statusCode).to.equal(200);
+            }
         });
-        it('should use the provided user-agent', function(done) {
-            c = new Crawler({
-                userAgent: 'test/1.2',
-                jQuery: false,
-                callback:function(error, result, $) {
-                    expect(error).to.be.null;
-                    try {
-                        var body = JSON.parse(result.body);
-                    } catch (ex) {
-                        expect(false).to.be.true;
-                    }
-                     expect(body['user-agent']).to.equal('test/1.2');
-                    done();
-                }
-            });
-            c.queue(['http://'+httpbinHost+'/user-agent']);
+        c.queue({
+            uri: googleSearch('cheese')
         });
-        it('should spoof the referer', function(done) {
-            c = new Crawler({
-                referer: 'http://spoofed.com',
-                jQuery: false,
-                callback:function(error, result, $) {
-                    expect(error).to.be.null;
-                    try {
-                        var body = JSON.parse(result.body);
-                    } catch (ex) {
-                        expect(false).to.be.true;
-                    }
-                    expect(body['headers']['Referer']).to.equal('http://spoofed.com');
-                    done();
-                }
-            });
-            c.queue(['http://'+httpbinHost+'/headers']);
-        });
-        it('should enable jQuery by default', function(done) {
-            c = new Crawler({
-                callback:function(error, result, $) {
-                    expect(error).to.be.null;
-                    expect($).not.to.be.null;
-                    done();
-                }
-            });
-            c.queue(['http://'+httpbinHost+'/']);
-        });
-        it('should disable jQuery', function(done) {
-            c = new Crawler({
-                jQuery: false,
-                callback:function(error, result, $) {
-                    expect(error).to.be.null;
-                    expect($).to.be.undefined;
-                    done();
-                }
-            });
-            c.queue(['http://'+httpbinHost+'/']);
-        });
-        it('should auto-disabling of jQuery if no html tag first', function(done) {
-            c = new Crawler({
-                jQuery: true,
-                callback:function(error, result, $) {
-                    expect(error).to.be.null;
-                    expect($).to.be.undefined;
-                    done();
-                }
-            });
-            c.queue(['http://'+httpbinHost+'/status/200']);
-        });
-        it('should run the readme examples', function(done) {
-            c = new Crawler({
-                maxConnections: 10,
-                jquery: true,
-                onDrain: function() {
-                    done();
-                },
-                callback: function(error, result, $) {
-                    expect(typeof result.body).to.equal('string');
-                }
-            });
-            c.queue('http://google.com');
-        });
-        it('should run the with an array queue', function(done) {
-            c = new Crawler();
-            c.queue([{
-                uri: 'http://www.google.com',
-                jquery: true,
-                callback : function(error,result,$) {
-                    expect(typeof result.body).to.equal('string');
-                    done();
-                }
-            }]);
-        });
-        it('should work if uri is a function', function(done) {
-            var statusCode = 200;
-            var uriFunction = function(statusCode) {
-                return 'http://'+httpbinHost+'/status/'+statusCode;
-            };
-            c = new Crawler({
-                maxConnections: 10,
-                onDrain: function() {
-                    done();
-                },
-                callback: function(error, result, $) {
-                    expect(typeof result.statusCode).to.equal('number');
-                    expect(result.statusCode).to.equal(statusCode);
-                }
-            });
-            c.queue({
-                uri: uriFunction(statusCode)
-            });
-        });
-        it('should work if uri is a function, example from Readme', function(done) {
-            var googleSearch = function(search) {
-                return 'http://www.google.fr/search?q=' + search;
-            };
-            c = new Crawler({
-                maxConnections: 10,
-                onDrain: function() {
-                    done();
-                },
-                callback: function(error, result, $) {
-                    expect(typeof result.statusCode).to.equal('number');
-                    expect(result.statusCode).to.equal(200);
-                }
-            });
-            c.queue({
-                uri: googleSearch('cheese')
-            });
-        });
-
-        it('should work if jquery is set instead of jQuery when building Crawler', function(done) {
-            c = new Crawler({
-                maxConnections: 10,
-                jquery: true,
-                onDrain: function() {
-                    done();
-                },
-                callback: function(error, result, $) {
-                    expect($).not.to.be.undefined;
-                    expect(result.options.jQuery).to.be.true;
-                    expect(result.options.jquery).to.be.undefined;
-                }
-            });
-            c.queue(['http://'+httpbinHost]);
-        });
-
-        it('should work if jquery is set instead of jQuery when queuing', function(done) {
-            c = new Crawler({
-                maxConnections: 10,
-                jQuery: true,
-                onDrain: function() {
-                    done();
-                },
-                callback: function(error, result, $) {
-                    expect($).to.be.undefined;
-                    expect(result.options.jQuery).to.be.false;
-                }
-            });
-            c.queue([
-                {
-                    uri: 'http://'+httpbinHost,
-                    jquery : false
-                }
-            ]);
-        });
-    })
+    });
 });

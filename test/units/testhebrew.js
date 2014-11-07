@@ -4,7 +4,7 @@
 
 
 
-var cral = require('../lib/crawler');
+var cral = require('../../lib/crawler');
 
 var crawler = new cral.Crawler();
 

@@ -1,4 +1,4 @@
-var Crawler = require("../lib/crawler").Crawler;
+var Crawler = require("../../lib/crawler");
 
 var c = new Crawler({
     "maxConnections":1,
