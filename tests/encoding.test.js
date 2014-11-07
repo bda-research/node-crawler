@@ -1,8 +1,8 @@
-var Crawler = require('../../lib/crawler');
+var Crawler = require('../lib/crawler');
 var expect = require('chai').expect;
 var c;
 
-describe("Encoding", function() {
+describe('Encoding', function() {
     beforeEach(function() {
         c = new Crawler({
             forceUTF8: true

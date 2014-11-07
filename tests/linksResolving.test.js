@@ -1,4 +1,4 @@
-var Crawler = require('../../lib/crawler');
+var Crawler = require('../lib/crawler');
 var expect = require('chai').expect;
 var _ = require('lodash');
 var httpbinHost = 'localhost:8000';
