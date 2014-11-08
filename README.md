@@ -72,6 +72,7 @@ c.queue([{
     html: '<p>This is a <strong>test</strong></p>'
 }]);
 ```
+For more examples, look at the [tests](https://github.com/sylvinus/node-crawler/tree/master/test).
 
 Options reference
 -----------------
