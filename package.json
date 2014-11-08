@@ -1,6 +1,6 @@
 {
   "name": "crawler",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Crawler is a web spider written with Nodejs. It gives you the full power of jQuery on the server to parse a big number of pages as they are downloaded, asynchronously. Scraping should be simple and fun!",
   "keywords": [
     "dom",
