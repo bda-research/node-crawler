@@ -86,9 +86,9 @@ the request() method.
 
 Basic request options:
 
- * uri: String, the URL you want to crawl
- * timeout : Number, in milliseconds        (Default 60000)
- * method, xxx: [All mikeal's requests options are accepted](https://github.com/mikeal/request#requestoptions-callback)
+ * `uri`: String, the URL you want to crawl
+ * `timeout` : Number, in milliseconds        (Default 60000)
+ * [All mikeal's requests options are accepted](https://github.com/mikeal/request#requestoptions-callback)
 
 Callbacks:
 
