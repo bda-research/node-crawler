@@ -197,6 +197,8 @@ Rough todolist
  * Refactoring the code to be more maintenable, it's spaghetti code in there !
  * Have a look at the Cache feature and refactor it
  * Same for the Pool
+ * Proxy feature
+ * This issue: https://github.com/sylvinus/node-crawler/issues/118
  * Make Sizzle tests pass (jsdom bug? https://github.com/tmpvar/jsdom/issues#issue/81)
  * More crawling tests
  * Document the API more (+ the result object)
