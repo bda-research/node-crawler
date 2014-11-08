@@ -7,7 +7,7 @@ node-crawler aims to be the best crawling/scraping package for Node.
 
 It features:
  * A clean, simple API
- * server-side DOM & automatic jQuery insertion
+ * server-side DOM & automatic jQuery insertion with Cheerio (default) or JSDOM
  * Configurable pool size and retries
  * Priority of requests
  * forceUTF8 mode to let node-crawler deal for you with charset detection and conversion
@@ -28,17 +28,20 @@ Crash course
 
 ```javascript
 var Crawler = require("crawler");
+var url = require('url');
 
 var c = new Crawler({
     maxConnections : 10,
 
     // This will be called for each crawled page
     callback : function (error, result, $) {
-
+        var baseUrl = result.uri;
+        
         // $ is Cheerio by default, a lean implementation of core jQuery designed specifically for the server
-        $('#content a').each(function(index, a) {
-            c.queue(a.href);
-        });
+        $('a').each(function(index, a) {
+                    var toQueueUrl = $(a).attr('href');
+                    c.queue(toQueueUrl);
+                });
     }
 });
 
