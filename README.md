@@ -23,36 +23,6 @@ How to install
 
     $ npm install crawler
 
-###Building Contextify
-
-[Contextify](https://npmjs.org/package/contextify) is a dependency of [jsdom](https://github.com/tmpvar/jsdom), used for running `<script>` tags within the page.
-
-Unfortunately, doing this kind of magic requires C++. And in Node.js, using C++ from JavaScript means using "native modules." Native modules are compiled at installation time so that they work precisely for your machine; that is, you don't download a contextify binary from npm, but instead build one locally after downloading the source from npm.
-
-Getting C++ compiled within npm's installation system can be tricky, especially for Windows users. Thus, one of the most common problems with jsdom is trying to use it without the proper compilation tools installed. Here's what you need to compile Contextify, and thus to install jsdom:
-
-#### Windows
-
-- The latest version of [Node.js for Windows](http://nodejs.org/download/)
-- A copy of [Visual Studio Express 2013 for Windows Desktop](http://www.visualstudio.com/downloads/download-visual-studio-vs#d-express-windows-desktop)
-- A copy of [Python 2.7](http://www.python.org/download/), installed in the default location of `C:\Python27`
-
-There are some slight modifications to this that can work; for example other Visual Studio versions often work too. But it's tricky, so start with the basics!
-
-#### Mac
-
-- XCode needs to be installed
-- "Command line tools for XCode" need to be installed
-- Launch XCode once to accept the license, etc. and ensure it's properly installed
-
-#### Linux
-
-You'll need various build tools installed, like `make`, Python 2.7, and a compiler toolchain. How to install these will be specific to your distro, if you don't already have them.
-
-sources :
-1. https://github.com/tmpvar/jsdom#contextify
-2. https://github.com/brianmcd/contextify/wiki/Windows-Installation-Guide
-
 Crash course
 ------------
 
@@ -60,16 +30,16 @@ Crash course
 var Crawler = require("crawler");
 
 var c = new Crawler({
-"maxConnections":10,
+    maxConnections : 10,
 
-// This will be called for each crawled page
-"callback":function(error,result,$) {
+    // This will be called for each crawled page
+    callback : function (error, result, $) {
 
-    // $ is a jQuery instance scoped to the server-side DOM of the page
-    $("#content a").each(function(index,a) {
-        c.queue(a.href);
-    });
-}
+        // $ is Cheerio by default, a lean implementation of core jQuery designed specifically for the server
+        $("#content a").each(function(index,a) {
+            c.queue(a.href);
+        });
+    }
 });
 
 // Queue just one URL, with default callback
@@ -157,11 +127,6 @@ Other:
  * referer: String, if truthy sets the HTTP referer header
  * rateLimits: Number of milliseconds to delay between each requests (Default 0) Note that this option will force crawler to use only one connection (for now)
 
-Memory leaks
-------------
-
-When using timeouts, to avoid triggering [Node #3076](https://github.com/joyent/node/pull/3076) you should use Node > 0.8.14
-
 How to test
 -----------
 
@@ -194,48 +159,4 @@ Rough todolist
 ChangeLog
 ---------
 
-0.2.6
- - Spring Cleaning !!
- - Update all dependencies to new versions
-
-0.2.5
- - Fix `options.encoding = null`, thanks @trantorLiu
- - Basic auth support, thanks @paulvalla
- - Updated jsdom dependency to 0.8.2 + others, Node 0.10.x support, thanks @bkw
- - Highlight code in docs, thanks @namuol
- - Detect non-html responses
- - Proxy list support
-
-0.2.4
- - Fixed a bug with response.body being a Buffer in some cases
- - Wrapped jsdom calls in a try/catch to isolate us from crashes
-
-0.2.3
- - Added gzip support
- - Support for userAgent option
- - Added fallback on iconv-lite and marked iconv as optional dependency
-
-0.2.2
- - Fix relative link bug, all a.href should be absolute when crawling a remote URL
- - Updated default jQuery to 1.8.3, request to 2.12.0, genericpool to 2.0.2
- - Fixed memory leak by adding the autoWindowClose option
- - Added memory leak test
-
-0.2.1
- - Updated jsdom to 0.2.19
-
-0.2.0
- - Updated code & dependencies for node 0.6/0.8, cleaned package.json
- - Added a forceUTF8 mode
- - Added real unit tests & travis-ci
- - Added some docs!
- - Added onDrain()
- - Code refactor
- - [BACKWARD-INCOMPATIBLE] Timeout parameters now in milliseconds (weren't documented)
-
-0.1.0
- - Updated dependencies, notably node 0.4.x
- - Fixes jQuery being redownloaded at each page + include it in the tree
- - Cache support
- - Retries
- - Updated priority support with new generic-pool>=1.0.4
+See https://github.com/sylvinus/node-crawler/releases
