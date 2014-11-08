@@ -31,7 +31,7 @@ describe('Links', function() {
             }
         }]);
     });
-    it('should resolved links to absolute urls after redirect', function(done) {
+    it('should resolved links to absolute urls after redirect with jsdom', function(done) {
         c.queue([{
             uri : 'http://'+httpbinHost+'/redirect-to?url=http://example.com/',
             callback: function(error, result) {

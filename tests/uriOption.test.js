@@ -5,7 +5,7 @@ var expect = require('chai').expect;
 var httpbinHost = 'localhost:8000';
 var c;
 
-describe('Simple test', function() {
+describe('Uri Options', function() {
     afterEach(function() {
         c = {};
     });
