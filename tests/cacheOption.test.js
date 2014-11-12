@@ -31,12 +31,26 @@ describe('Cache features tests', function() {
         });
     });
 
-    //describe('Skip Duplicate', function() {
-    //    afterEach(function () {
-    //        c = {};
-    //    });
-    //    it('should skip previous crawled urls', function (done) {});
-    //    it('should not skip one single url', function (done) {});
-    //});
+    describe('Skip Duplicate active', function() {
+        afterEach(function () {
+            c = {};
+        });    
+        
+        it('should not skip one single url', function (done) {
+            c = new Crawler({
+                jquery: false,
+                skipDuplicates: true,
+                callback: function (error, result) {
+                    expect(error).to.be.null;
+                    expect(result.statusCode).to.equal(200);
+                    done();
+                },
+            });
+
+            c.queue('http://' + httpbinHost + '/status/200');
+        });
+
+        //it('should skip previous crawled urls', function (done) {});
+    });
 });
 
