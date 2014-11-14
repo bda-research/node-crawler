@@ -2,12 +2,13 @@
 
 var Crawler = require('../lib/crawler');
 var expect = require('chai').expect;
+var sinon = require('sinon');
 var httpbinHost = 'localhost:8000';
-var c;
+var c, spy;
 
 describe('Uri Options', function() {
     afterEach(function() {
-        c = {};
+        c = spy = {};
     });
     it('should work if uri is a function', function(done) {
         var statusCode = 200;
@@ -46,5 +47,19 @@ describe('Uri Options', function() {
         c.queue({
             uri: googleSearch('cheese')
         });
+    });
+    it('should skip if the uri is undefined or an empty string', function(done) {
+        c = new Crawler({
+            onDrain: function() {
+                expect(spy.calledOnce).to.be.true;
+                done();
+            },
+            callback: function(error, result) {
+                expect(typeof result.statusCode).to.equal('number');
+                expect(result.statusCode).to.equal(200);
+            }
+        });
+        spy = sinon.spy(c, '_pushToQueue');
+        c.queue([undefined, 'http://'+httpbinHost]);
     });
 });
