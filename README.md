@@ -1,5 +1,9 @@
 [![Build Status](https://travis-ci.org/sylvinus/node-crawler.svg?branch=master)](https://travis-ci.org/sylvinus/node-crawler)
 
+Current Goal
+------
+Refactoring the code to be more maintenable, it's spaghetti code in there !
+
 node-crawler
 ------------
 
