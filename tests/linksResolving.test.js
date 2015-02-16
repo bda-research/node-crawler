@@ -1,19 +1,24 @@
-var Crawler = require('../../lib/crawler').Crawler;
+'use strict';
+
+var Crawler = require('../lib/crawler');
 var expect = require('chai').expect;
-var _ = require('underscore');
-var httpbinHost = 'httpbin.org';
+var _ = require('lodash');
+var jsdom = require('jsdom');
+var httpbinHost = 'localhost:8000';
 var c;
 
-describe("Links", function() {
+describe('Links', function() {
     beforeEach(function() {
         c = new Crawler({
-            forceUTF8: true
+            forceUTF8: true,
+            jquery: jsdom
         });
     });
-    it('should resolved links to absolute urls', function(done) {
+    it('should resolved links to absolute urls with jsdom', function(done) {
         c.queue([{
             uri : 'http://'+httpbinHost+'/links/3/0',
-            callback: function(error, result, $) {
+            callback: function(error, result, $) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
+            {
 
                 var links = _.map($('a'), function(a) {
                     return a.href;
@@ -26,10 +31,10 @@ describe("Links", function() {
             }
         }]);
     });
-    it('should resolved links to absolute urls after redirect', function(done) {
+    it('should resolved links to absolute urls after redirect with jsdom', function(done) {
         c.queue([{
             uri : 'http://'+httpbinHost+'/redirect-to?url=http://example.com/',
-            callback: function(error, result, $) {
+            callback: function(error, result) {
 
                 expect(result.uri).to.equal('http://example.com/');
                 expect(error).to.be.null;
