@@ -1,8 +1,12 @@
 [![Build Status](https://travis-ci.org/sylvinus/node-crawler.svg?branch=master)](https://travis-ci.org/sylvinus/node-crawler)
 
-Current Goal
+Node Crawler is no more maintained
 ------
-Refactoring the code to be more maintenable, it's spaghetti code in there !
+Have a look at alternatives modules:
+
+* [node-spider](https://github.com/mikeal/spider)
+* [node-simplecrawler](https://github.com/cgiffard/node-simplecrawler)
+* [phantomJS](http://phantomjs.org/)
 
 node-crawler
 ------------
