@@ -40,7 +40,7 @@
   "dependencies": {
     "cheerio": "0.18.0",
     "generic-pool": "2.1.1",
-    "iconv": "2.1.4",
+    "iconv": "2.1.6",
     "iconv-lite": "0.4.4",
     "jschardet": "1.1.0",
     "lodash": "2.4.1",
