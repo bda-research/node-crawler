@@ -117,13 +117,13 @@ describe('Errors', function() {
                 }
             });
         });
-        it('should return an error on a malformed html if jQuery is jsdom', function(done) {
+        it('should not return an error on a malformed html if jQuery is jsdom', function(done) {
             c.queue({
                 html : '<html><p>hello <div>dude</p></html>',
                 jQuery : jsdom,
                 callback : function(error, response) {
-                    expect(error).not.to.be.null;
-                    expect(response).to.be.undefined;
+                    expect(error).to.be.null;
+                    expect(response).not.to.be.undefined;
                     done();
                 }
             });

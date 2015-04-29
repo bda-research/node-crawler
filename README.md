@@ -1,8 +1,12 @@
 [![Build Status](https://travis-ci.org/sylvinus/node-crawler.svg?branch=master)](https://travis-ci.org/sylvinus/node-crawler)
 
-Current Goal
+Node Crawler is not maintained at the moment (unless critical bug)
 ------
-Refactoring the code to be more maintenable, it's spaghetti code in there !
+Have a look at alternatives modules:
+
+* [node-spider](https://github.com/mikeal/spider)
+* [node-simplecrawler](https://github.com/cgiffard/node-simplecrawler)
+* [phantomJS](http://phantomjs.org/)
 
 node-crawler
 ------------
@@ -16,7 +20,7 @@ It features:
  * Priority of requests
  * forceUTF8 mode to let node-crawler deal for you with charset detection and conversion
  * A local cache
- * node 0.8 and 0.10 support
+ * node 0.10 and 0.12 support
 
 The argument for creating this package was made at ParisJS #2 in 2010 ( [lightning talk slides](http://www.slideshare.net/sylvinus/web-crawling-with-nodejs) )
 
