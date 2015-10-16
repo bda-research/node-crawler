@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/sylvinus/node-crawler.svg?branch=master)](https://travis-ci.org/sylvinus/node-crawler)
 
-Node Crawler is not maintained at the moment (unless critical bug)
+Node Crawler is not maintained at the moment
 ------
 Have a look at alternatives modules:
 
