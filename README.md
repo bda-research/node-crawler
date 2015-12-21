@@ -36,7 +36,6 @@ Crash course
 
 ```javascript
 var Crawler = require("crawler");
-var url = require('url');
 
 var c = new Crawler({
     maxConnections : 10,
