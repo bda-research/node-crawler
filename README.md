@@ -1,12 +1,7 @@
 [![Build Status](https://travis-ci.org/sylvinus/node-crawler.svg?branch=master)](https://travis-ci.org/sylvinus/node-crawler)
 
-Node Crawler is not maintained at the moment
+Project ownership change in progress, please read [#168](https://github.com/sylvinus/node-crawler/issues/168#issuecomment-237381273)
 ------
-Have a look at alternatives modules:
-
-* [node-spider](https://github.com/mikeal/spider)
-* [node-simplecrawler](https://github.com/cgiffard/node-simplecrawler)
-* [phantomJS](http://phantomjs.org/)
 
 node-crawler
 ------------
