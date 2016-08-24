@@ -1,8 +1,5 @@
 [![Build Status](https://travis-ci.org/sylvinus/node-crawler.svg?branch=master)](https://travis-ci.org/sylvinus/node-crawler)
 
-Project ownership change in progress, please read [#168](https://github.com/sylvinus/node-crawler/issues/168#issuecomment-237381273)
-------
-
 node-crawler
 ------------
 
