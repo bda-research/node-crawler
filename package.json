@@ -1,6 +1,6 @@
 {
-  "name": "node-webcrawler",
-  "version": "0.7.5",
+  "name": "crawler",
+  "version": "1.0.0",
   "description": "Crawler is a web spider written with Nodejs. It gives you the full power of jQuery on the server to parse a big number of pages as they are downloaded, asynchronously",
   "main": "./lib/crawler.js",
   "directories": {
@@ -11,28 +11,28 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/bda-research/node-webcrawler.git"
+    "url": "https://github.com/bda-research/node-crawler.git"
   },
   "dependencies": {
     "charset-parser": "^0.2.0",
-    "cheerio": "0.19.0",
-    "generic-pool": "2.2.0",
-    "iconv": "2.1.7",
-    "iconv-lite": "0.4.8",
-    "lodash": "3.8.0",
-    "request": "2.74.0",
+    "cheerio": "^0.19.0",
+    "generic-pool": "^2.2.0",
+    "iconv": "^2.1.7",
+    "iconv-lite": "^0.4.8",
+    "lodash": "^3.8.0",
+    "request": "^2.74.0",
     "seenreq": "^0.1.7",
-      "bottleneck":"1.9.1"
+      "bottleneck":"^1.9.1"
   },
   "optionalDependencies": {
     "iconv": "*"
   },
   "devDependencies": {
-    "chai": "2.3.0",
-    "mocha": "2.2.5",
-    "mocha-testdata": "1.1.0",
-    "sinon": "1.14.1",
-    "jsdom": "3.1.2"
+    "chai": "^2.3.0",
+    "mocha": "^2.2.5",
+    "mocha-testdata": "^1.1.0",
+    "sinon": "^1.14.1",
+    "jsdom": "^3.1.2"
   },
   "keywords": [
     "dom",
@@ -42,12 +42,15 @@
     "scraper",
     "scraping",
     "jquery",
-    "crawler"
+    "crawler",
+    "nodejs"
   ],
-  "author": "Mike Chen",
-  "license": "ISC",
+  "licenses": [{
+      "type": "MIT",
+      "url": "http://github.com/bda-research/node-crawler/blob/master/LICENSE.txt"
+  }],
   "bugs": {
-    "url": "https://github.com/bda-research/node-webcrawler/issues"
+    "url": "https://github.com/bda-research/node-crawler/issues"
   },
-  "homepage": "https://github.com/bda-research/node-webcrawler"
+  "homepage": "https://github.com/bda-research/node-crawler"
 }

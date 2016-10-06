@@ -1,27 +1,29 @@
-[![build status](https://secure.travis-ci.org/bda-research/node-webcrawler.png)](https://travis-ci.org/bda-research/node-webcrawler)
-The original [node-crawler](https://github.com/sylvinus/node-crawler) has been transfered to us, this repo is going to merge with it.
+[![build status](https://secure.travis-ci.org/bda-research/node-crawler.png)](https://travis-ci.org/bda-research/node-crawler)
+node-crawler
 ------------
+best crawling/scraping package for Node
+
+we are going to release beta version of 1.0.0, help and forks are welcomed :)
 
 Features:
  * server-side DOM & automatic jQuery insertion with Cheerio (default) or JSDOM
  * Configurable pool size and retries
- * Priority of requests
+ * Control rate limit
+ * Priority queue of requests
  * forceUTF8 mode to let crawler deal for you with charset detection and conversion
 
-Here is the [CHANGELOG](https://github.com/bda-research/node-webcrawler/blob/master/CHANGELOG.md)
- 
-Help & Forks welcomed!
+Here is the [CHANGELOG](https://github.com/bda-research/node-crawler/blob/master/CHANGELOG.md)
 
 How to install
 --------------
 
-    $ npm install node-webcrawler
+    $ npm install crawler
 
 Crash course
 ------------
 
 ```javascript
-var Crawler = require("node-webcrawler");
+var Crawler = require("crawler");
 var url = require('url');
 
 var c = new Crawler({
@@ -70,7 +72,7 @@ Work with `bottleneck`
 Control rate limits for each connection, usually used with proxy.
 
 ```javascript
-var Crawler = require("node-webcrawler");
+var Crawler = require("crawler");
 
 var c = new Crawler({
     maxConnections : 3,
@@ -209,7 +211,7 @@ For a full list of options and their effects, see [this](https://github.com/fb55
 In order to work with JSDOM you will have to install it in your project folder `npm install jsdom`, deal with [compiling C++](https://github.com/tmpvar/jsdom#contextify) and pass it to crawler.
 ```javascript
 var jsdom = require('jsdom');
-var Crawler = require('node-webcrawler');
+var Crawler = require('crawler');
 
 var c = new Crawler({
     jQuery: jsdom
@@ -221,7 +223,7 @@ How to test
 
 ### Install and run Httpbin
 
-node-webcrawler use a local httpbin for testing purpose. You can install httpbin as a library from PyPI and run it as a WSGI app. For example, using Gunicorn:
+crawler use a local httpbin for testing purpose. You can install httpbin as a library from PyPI and run it as a WSGI app. For example, using Gunicorn:
 
     $ pip install httpbin
     // launch httpbin as a daemon with 6 worker on localhost
@@ -235,21 +237,20 @@ node-webcrawler use a local httpbin for testing purpose. You can install httpbin
 After [installing Docker](http://docs.docker.com/), you can run:
 
     // Builds the local test environment
-    $ docker build -t node-webcrawler .
+    $ docker build -t node-crawler .
 
     // Runs tests
-    $ docker run node-webcrawler sh -c "gunicorn httpbin:app -b 127.0.0.1:8000 -w 6 --daemon && npm install && npm test"
+    $ docker run node-crawler sh -c "gunicorn httpbin:app -b 127.0.0.1:8000 -w 6 --daemon && npm install && npm test"
 
     // You can also ssh into the container for easier debugging
-    $ docker run -i -t node-webcrawler bash
+    $ docker run -i -t node-crawler bash
 
     
-[![build status](https://secure.travis-ci.org/bda-research/node-webcrawler.png)](https://travis-ci.org/bda-research/node-webcrawler)
+[![build status](https://secure.travis-ci.org/bda-research/node-crawler.png)](https://travis-ci.org/bda-research/node-crawler)
 
 Rough todolist
 --------------
 
- * Using bottleneck to deal with rate limits
  * Introducing zombie to deal with page with complex ajax
  * Refactoring the code to be more maintenable, it's spaghetti code in there !
  * Proxy feature
@@ -263,4 +264,4 @@ Rough todolist
 ChangeLog
 ---------
 
-See https://github.com/bda-research/node-webcrawler/releases
+See https://github.com/bda-research/node-crawler/releases
