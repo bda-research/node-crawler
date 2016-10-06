@@ -42,7 +42,7 @@ describe('Request tests', function() {
                 try {
                     var body = JSON.parse(result.body);
                     expect(body.gzipped).to.be.true;
-                    expect(body.headers['Accept-Encoding']).to.equal('gzip');
+                    expect(body.headers['Accept-Encoding']).to.match(/gzip/);
                 } catch (ex) {
                     expect(false).to.be.true;
                 }

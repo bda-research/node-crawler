@@ -60,6 +60,6 @@ describe('Uri Options', function() {
             }
         });
         spy = sinon.spy(c, '_pushToQueue');
-        c.queue([undefined, 'http://'+httpbinHost]);
+        c.queue([undefined,null,[], 'http://'+httpbinHost]);
     });
 });

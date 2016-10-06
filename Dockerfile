@@ -1,7 +1,7 @@
 # Use the official Docker images
 # https://registry.hub.docker.com/_/node/
 #
-FROM node:0.10-onbuild
+FROM node:0.12.7
 
 RUN apt-get update
 

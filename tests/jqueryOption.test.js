@@ -34,7 +34,7 @@ describe('Jquery testing', function() {
             c = new Crawler({
                 callback:function(error, result, $) {
                     expect(error).to.be.null;
-                    expect($.fn).to.be.undefined;
+                    expect(typeof $).to.equal('function');
                     expect(typeof $.root).to.equal('function');
                     done();
                 }
@@ -57,7 +57,7 @@ describe('Jquery testing', function() {
                 jquery: jquery,
                 callback:function(error, result, $) {
                     expect(error).to.be.null;
-                    expect($.fn).to.be.undefined;
+                    expect(typeof $).to.equal('function');
                     expect(typeof $.root).to.equal('function');
                     done();
                 }

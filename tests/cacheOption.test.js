@@ -13,7 +13,8 @@ describe('Cache features tests', function() {
         });
         it.skip('should crawl one url', function (done) {
             c = new Crawler({
-                maxConnections: 1,
+		maxConnections:1,
+		debug:true,
                 cache: true,
                 jquery: false,
                 onDrain: function () //noinspection BadExpressionStatementJS,BadExpressionStatementJS
