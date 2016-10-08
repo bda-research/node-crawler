@@ -17,17 +17,17 @@ node-webcrawler ChangeLog
 
 0.5.2 version changelog:
  * you can manually terminate all the resources in your pool, when `onDrain` called, before their timeouts have been reached
- * add a read-only property `queueSize` to crawler
+ * add a read-only property `queueSize` to crawler [whether queue is empty#148](https://github.com/bda-research/node-crawler/issues/148)
  
 0.6.0 version changelog:
  * add `bottleneck` to implement rate limit, one can set limit for each connection at same time.
  
 0.6.3 version changelog:
- * you could also get `result.options` from callback even when some errors ouccurred
+ * you could also get `result.options` from callback even when some errors ouccurred [cannot get options if error#127](https://github.com/bda-research/node-crawler/issues/127)
  * add test for `bottleneck`
 
 0.6.5
- * fix a deep and big bug when initializing Pool, that may lead to sequence execution. [issue](https://github.com/bda-research/node-webcrawler/issues/2)
+ * fix a deep and big bug when initializing Pool, that may lead to sequence execution. [Concurrent would reduced to 1 if you have number of tasks more than maxConnections#2](https://github.com/bda-research/node-webcrawler/issues/2)
  * print log of Pool status
 
 0.6.9
@@ -45,5 +45,5 @@ node-webcrawler ChangeLog
  * upgrade `seenreq` version to 0.1.7
 
 0.7.5
- * delete entity in options before copy, and assgin after, `jar` is one of the typical properties which is an `Entity` wich functions
+ * delete entity in options before copy, and assgin after, `jar` is one of the typical properties which is an `Entity` wich functions [Fixed entities in options#177](https://github.com/bda-research/node-crawler/issues/177)
  * upgrade `request` to version 2.74.0
