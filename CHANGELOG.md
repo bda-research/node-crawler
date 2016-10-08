@@ -17,7 +17,7 @@ node-webcrawler ChangeLog
 
 0.5.2 version changelog:
  * you can manually terminate all the resources in your pool, when `onDrain` called, before their timeouts have been reached
- * add a read-only property `queueSize` to crawler [#148](https://github.com/bda-research/node-crawler/issues/148)
+ * add a read-only property `queueSize` to crawler [#148](https://github.com/bda-research/node-crawler/issues/148) [#76](https://github.com/bda-research/node-crawler/issues/76) [#107](https://github.com/bda-research/node-crawler/issues/107)
  
 0.6.0 version changelog:
  * add `bottleneck` to implement rate limit, one can set limit for each connection at same time.
