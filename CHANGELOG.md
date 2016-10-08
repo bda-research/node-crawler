@@ -13,7 +13,7 @@ node-webcrawler ChangeLog
  
 0.5.1 version changelog:
  * remove cache feature, it's useless
- * add `localAddress`, `time`, `tunnel`, `proxyHeaderWhiteList`, `proxyHeaderExclusiveList` properties to pass to `request`
+ * add `localAddress`, `time`, `tunnel`, `proxyHeaderWhiteList`, `proxyHeaderExclusiveList` properties to pass to `request` [#155](https://github.com/bda-research/node-crawler/issues/155)
 
 0.5.2 version changelog:
  * you can manually terminate all the resources in your pool, when `onDrain` called, before their timeouts have been reached
@@ -47,3 +47,8 @@ node-webcrawler ChangeLog
 0.7.5
  * delete entity in options before copy, and assgin after, `jar` is one of the typical properties which is an `Entity` wich functions [Fixed entities in options#177](https://github.com/bda-research/node-crawler/issues/177)
  * upgrade `request` to version 2.74.0
+
+1.0.0
+ * upgrade jsdom up to 9.6.x
+ * remove 0.10 and 0.12 support [#170](https://github.com/bda-research/node-crawler/issues/170)
+ * control dependencies version using ^ [#169](https://github.com/bda-research/node-crawler/issues/169)
