@@ -23,7 +23,7 @@ node-webcrawler ChangeLog
  * add `bottleneck` to implement rate limit, one can set limit for each connection at same time.
  
 0.6.3 version changelog:
- * you could also get `result.options` from callback even when some errors ouccurred [#127](https://github.com/bda-research/node-crawler/issues/127)
+ * you could also get `result.options` from callback even when some errors ouccurred [#127](https://github.com/bda-research/node-crawler/issues/127) [#86](https://github.com/bda-research/node-crawler/issues/86)
  * add test for `bottleneck`
 
 0.6.5
