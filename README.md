@@ -5,6 +5,9 @@ node-crawler
 
 node-crawler aims to be the best crawling/scraping package for Node.
 
+new release is coming, please pay attention to [#176](https://github.com/bda-research/node-crawler/issues/176)
+---------
+
 It features:
  * A clean, simple API
  * server-side DOM & automatic jQuery insertion with Cheerio (default) or JSDOM
