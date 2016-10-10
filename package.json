@@ -57,7 +57,7 @@
     "jsdom": "3.1.1"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --reporter spec --bail --timeout 10000 tests/*.js"
+    "test": "./node_modules/mocha/bin/mocha --reporter spec --bail --timeout 1000000 tests/optionsFunction.test.js"
   },
   "engines": [
     "node >=0.8.x"
