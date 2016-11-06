@@ -52,3 +52,4 @@ node-webcrawler ChangeLog
  * upgrade jsdom up to 9.6.x
  * remove 0.10 and 0.12 support [#170](https://github.com/bda-research/node-crawler/issues/170)
  * control dependencies version using ^ [#169](https://github.com/bda-research/node-crawler/issues/169)
+ * replace bottleneck by bottleneckp, which has priority
