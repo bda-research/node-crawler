@@ -1,7 +1,7 @@
 # Use the official Docker images
 # https://registry.hub.docker.com/_/node/
 #
-FROM node:4.6.0
+FROM node:6.9.1
 
 RUN apt-get update
 

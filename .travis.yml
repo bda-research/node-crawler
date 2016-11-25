@@ -8,7 +8,7 @@ os:
   - osx
 before_install:
   - sh ./travis_scripts/before_install.sh
-
+  
 matrix:
   allow_failures:
     - os: osx
