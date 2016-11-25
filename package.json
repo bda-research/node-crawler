@@ -14,13 +14,14 @@
     "url": "https://github.com/bda-research/node-crawler.git"
   },
   "dependencies": {
+    "bottleneckp": "~1.1.0",
     "charset-parser": "^0.2.0",
     "cheerio": "^0.22.0",
     "iconv-lite": "^0.4.8",
     "lodash": "^3.8.0",
     "request": "~2.67.0",
     "seenreq": "^0.1.7",
-      "bottleneckp":"~1.1.0"
+    "type-is": "^1.6.14"
   },
   "devDependencies": {
     "chai": "^2.3.0",
@@ -40,10 +41,12 @@
     "crawler",
     "nodejs"
   ],
-  "licenses": [{
+  "licenses": [
+    {
       "type": "MIT",
       "url": "http://github.com/bda-research/node-crawler/blob/master/LICENSE.txt"
-  }],
+    }
+  ],
   "bugs": {
     "url": "https://github.com/bda-research/node-crawler/issues"
   },
