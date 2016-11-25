@@ -19,11 +19,11 @@ describe('Errors', function() {
             this.timeout(10000);
 
             c.queue({
-                uri : 'http://'+httpbinHost+'/delay/15',
+                uri : 'http://'+httpbinHost+'/delay/3',
                 callback : function(error, response) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
                 {
                     expect(error).not.to.be.null;
-		    if(process.version.split('.')[1] > '4'){
+		    if(process.version.replace(/^v/,'').split('.')[0] > '4'){
 			expect(error.code).to.equal("ESOCKETTIMEDOUT");
 		    }else{
 			expect(error.code).to.equal("ETIMEDOUT");
