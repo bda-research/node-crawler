@@ -1,9 +1,7 @@
 [![build status](https://secure.travis-ci.org/bda-research/node-crawler.png)](https://travis-ci.org/bda-research/node-crawler)
 # node-crawler
 
-best crawling/scraping package for Node
-
-we are going to release beta version of 1.0.0, help and forks are welcomed :)
+Best crawling/scraping package for Node, 1.0.0 is released, happy hacking :)
 
 Features:
  * server-side DOM & automatic jQuery insertion with Cheerio (default) or JSDOM

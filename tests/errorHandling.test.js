@@ -23,7 +23,12 @@ describe('Errors', function() {
                 callback : function(error, response) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
                 {
                     expect(error).not.to.be.null;
-		    expect(error.code).to.equal("ESOCKETTIMEDOUT");
+		    if(process.version.split('.')[1] > '4'){
+			expect(error.code).to.equal("ESOCKETTIMEDOUT");
+		    }else{
+			expect(error.code).to.equal("ETIMEDOUT");
+		    }
+
                     //expect(response).to.be.undefined;
                     done();
                 }
