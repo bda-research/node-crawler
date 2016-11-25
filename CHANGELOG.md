@@ -35,22 +35,22 @@ node-webcrawler ChangeLog
  * fix a deep and big bug when initializing Pool, that may lead to sequence execution. [#2](https://github.com/bda-research/node-webcrawler/issues/2)
  * print log of Pool status
 
-0.6.3 version changelog:
+0.6.3
  * you could also get `result.options` from callback even when some errors ouccurred [#127](https://github.com/bda-research/node-crawler/issues/127) [#86](https://github.com/bda-research/node-crawler/issues/86)
  * add test for `bottleneck`
 
-0.6.0 version changelog:
+0.6.0
  * add `bottleneck` to implement rate limit, one can set limit for each connection at same time.
  
-0.5.2 version changelog:
+0.5.2
  * you can manually terminate all the resources in your pool, when `onDrain` called, before their timeouts have been reached
  * add a read-only property `queueSize` to crawler [#148](https://github.com/bda-research/node-crawler/issues/148) [#76](https://github.com/bda-research/node-crawler/issues/76) [#107](https://github.com/bda-research/node-crawler/issues/107)
  
-0.5.1 version changelog:
+0.5.1
  * remove cache feature, it's useless
  * add `localAddress`, `time`, `tunnel`, `proxyHeaderWhiteList`, `proxyHeaderExclusiveList` properties to pass to `request` [#155](https://github.com/bda-research/node-crawler/issues/155)
 
-0.5.0 version changelog:
+0.5.0
  * parse charset from `content-type` in http headers or meta tag in html, then convert
  * big5 charset is avaliable as the `iconv-lite` has already supported it 
  * default enable gzip in request header
