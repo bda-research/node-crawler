@@ -15,29 +15,33 @@ describe('Simple test', function() {
     it('should run the first readme examples', function(done) {
         c = new Crawler({
             maxConnections: 10,
-            onDrain: function() {
-                done();
-            },
             callback: function(error, result) {
+		expect(error).to.be.null;
                 expect(typeof result.body).to.equal('string');
             }
         });
-        c.queue('http://google.com');
+	
+	c.on('drain', function() {
+            done();
+        });
+	
+        c.queue('http://www.amazon.com');
     });
     it('should run the readme examples', function(done) {
         c = new Crawler({
             maxConnections: 10,
-            onDrain: function() {
-                expect(spy.calledTwice).to.be.true;
-                done();
-            },
             callback: function(error, result, $) {
+		expect(error).to.be.null;
                 var baseUrl = result.uri;
                 $('a').each(function(index, a) {
                     var toQueueUrl = url.resolve(baseUrl, $(a).attr('href'));
                     c.queue(toQueueUrl);
                 });
             }
+        });
+	c.on('drain',function() {
+            expect(spy.calledTwice).to.be.true;
+            done();
         });
         spy = sinon.spy(c, 'queue');
         c.queue('http://'+httpbinHost+'/links/1/1');

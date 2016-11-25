@@ -86,7 +86,18 @@ describe('Jquery testing', function() {
             });
             c.queue(['http://'+httpbinHost+'/']);
         });
-        given.async('cheerio', jsdom).it('should auto-disable jQuery if no html tag first', function(done, jquery) {
+        given.async('cheerio', jsdom).it('should also enable jQuery even if body is empty, to prevent `$ is not a function` error', function(done, jquery) {
+            c = new Crawler({
+                jQuery: jquery,
+                callback:function(error, result, $) {
+                    expect(error).to.be.null;
+                    expect($).not.to.be.undefined;
+                    done();
+                }
+            });
+            c.queue(['http://'+httpbinHost+'/status/200']);
+        });
+	given.async('cheerio', jsdom).it('should disable jQuery if body is not text/html ', function(done, jquery) {
             c = new Crawler({
                 jQuery: jquery,
                 callback:function(error, result, $) {
@@ -95,20 +106,21 @@ describe('Jquery testing', function() {
                     done();
                 }
             });
-            c.queue(['http://'+httpbinHost+'/status/200']);
+            c.queue(['http://'+httpbinHost+'/get']);
         });
         it('should work if jquery is set instead of jQuery when building Crawler', function(done) {
             c = new Crawler({
                 maxConnections: 10,
                 jquery: true,
-                onDrain: function() {
-                    done();
-                },
                 callback: function(error, result, $) {
                     expect($).not.to.be.undefined;
                     expect(result.options.jQuery).to.be.true;
                     expect(result.options.jquery).to.be.undefined;
                 }
+            });
+
+	    c.on('drain',function() {
+                done();
             });
             c.queue(['http://'+httpbinHost]);
         });
@@ -116,14 +128,14 @@ describe('Jquery testing', function() {
             c = new Crawler({
                 maxConnections: 10,
                 jQuery: true,
-                onDrain: function() {
-                    done();
-                },
                 callback: function(error, result, $) {
                     expect($).to.be.undefined;
                     expect(result.options.jQuery).to.be.false;
                 }
             });
+	    c.on('drain',function() {
+                done();
+            })
             c.queue([
                 {
                     uri: 'http://'+httpbinHost,
@@ -135,13 +147,13 @@ describe('Jquery testing', function() {
             c = new Crawler({
                 maxConnections: 10,
                 jquery: undefined,
-                onDrain: function() {
-                    done();
-                },
                 callback: function(error, result, $) {
                     expect($).to.be.undefined;
                     expect(result.options.jQuery).to.be.undefined;
                 }
+            });
+	    c.on('drain',function() {
+                done();
             });
             c.queue(['http://'+httpbinHost]);
         });
@@ -158,15 +170,15 @@ describe('Jquery testing', function() {
             c = new Crawler({
                 maxConnections: 10,
                 jquery: cheerioConf,
-                onDrain: function() {
-                    done();
-                },
                 callback: function(error, result, $) {
                     expect($._options.normalizeWhitespace).to.be.true;
                     expect($._options.xmlMode).to.be.true;
                     // check if the default value of decodeEntities is still true
                     expect($._options.decodeEntities).to.be.true;
                 }
+            });
+	    c.on('drain',function() {
+                done();
             });
             c.queue(['http://'+httpbinHost]);
         });

@@ -1,6 +1,6 @@
 [![build status](https://secure.travis-ci.org/bda-research/node-crawler.png)](https://travis-ci.org/bda-research/node-crawler)
-node-crawler
-------------
+# node-crawler
+
 best crawling/scraping package for Node
 
 we are going to release beta version of 1.0.0, help and forks are welcomed :)
@@ -14,13 +14,13 @@ Features:
 
 Here is the [CHANGELOG](https://github.com/bda-research/node-crawler/blob/master/CHANGELOG.md)
 
-How to install
---------------
+# How to install
+
 
     $ npm install crawler
 
-Crash course
-------------
+# Crash course
+
 
 ```javascript
 var Crawler = require("crawler");
@@ -67,8 +67,8 @@ c.queue([{
 }]);
 ```
 
-Work with `bottleneck`
---------------------
+# Work with `bottleneck`
+
 Control rate limits for each connection, usually used with proxy.
 
 ```javascript
@@ -106,8 +106,8 @@ c.queue({
 
 ```
 
-Options reference
------------------
+# Options reference
+
 
 You can pass these options to the Crawler() constructor if you want them to be global or as
 items in the queue() calls if you want them to be specific to that item (overwriting global options)
@@ -139,18 +139,17 @@ Retry options:
 
 Server-side DOM options:
 
- * `jQuery`: true, false or ConfObject (Default true)
+ * `jQuery`: true, false, "whacko" or ConfObject (Default true). Crawler will use 
 
 Charset encoding:
 
- * `forceUTF8`: Boolean, if true will get charset from HTTP headers or meta tag in html and convert it to UTF8 if necessary. Never worry about encoding anymore! (Default false),
+ * `forceUTF8`: Boolean, if true will get charset from HTTP headers or meta tag in html and convert it to UTF8 if necessary. Never worry about encoding anymore! (Default true),
  * `incomingEncoding`: String, with forceUTF8: true to set encoding manually (Default null)
      `incomingEncoding : 'windows-1255'` for example
 
 Cache:
 
- * `cache`: Boolean, if true stores requests' result in memory (Default false), not recommend if you are doing with huge amount of pages as the process will exhaust momery
- * `skipDuplicates`: Boolean, if true skips URIs that were already crawled, without even calling callback() (Default false)
+ * `skipDuplicates`: Boolean, if true skips URIs that were already crawled, without even calling callback() (Default false). This is not recommended, it's better to handle outside `Crawler` use [seenreq](https://github.com/mike442144/seenreq)
 
 Other:
  * `rotateUA`: Boolean, if true, `userAgent` should be an array, and rotate it (Default false) 
@@ -159,26 +158,43 @@ Other:
  * `rateLimits`: Number of milliseconds to delay between each requests (Default 0) 
 
  
-Class:Crawler
--------------
+# Class:Crawler
 
-Instance of Crawler
+## Event: 'limiterChange'
+ * `options` [Options](#options-reference)
+ * `limiter` String
 
-__crawler.queue(uri|options)__
- * `uri` String, `options` is [Options](#options-reference)
+Emitted when limiter has been changed.
 
-__crawler.queueSize__
+## Event: 'request'
+ * `options` [Options](#options-reference)
+
+Emitted when crawler is ready to send a request.
+
+## Event: 'drain'
+
+Emitted when queue is empty.
+
+
+## crawler.queue(uri|options)
+ * `uri` String
+ * `options` [Options](#options-reference)
+
+Enqueue a task and wait for it to be excuted.
+
+## crawler.queueSize
+ * Number
 
 Size of queue, read-only
 
  
-Working with Cheerio or JSDOM
------------------------------
+# Working with Cheerio or JSDOM
+
 
 Crawler by default use [Cheerio](https://github.com/cheeriojs/cheerio) instead of [Jsdom](https://github.com/tmpvar/jsdom). Jsdom is more robust but can be hard to install (espacially on windows) because of [contextify](https://github.com/tmpvar/jsdom#contextify).
 Which is why, if you want to use jsdom you will have to build it, and `require('jsdom')` in your own script before passing it to crawler. This is to avoid cheerio crawler user to build jsdom when installing crawler.
 
-###Working with Cheerio
+## Working with Cheerio
 ```javascript
 jQuery: true //(default)
 //OR
@@ -206,7 +222,7 @@ For a full list of options and their effects, see [this](https://github.com/fb55
 [htmlparser2's options](https://github.com/fb55/htmlparser2/wiki/Parser-options).
 [source](https://github.com/cheeriojs/cheerio#loading)
 
-###Working with JSDOM
+## Working with JSDOM
 
 In order to work with JSDOM you will have to install it in your project folder `npm install jsdom`, deal with [compiling C++](https://github.com/tmpvar/jsdom#contextify) and pass it to crawler.
 ```javascript
@@ -218,10 +234,10 @@ var c = new Crawler({
 });
 ```
 
-How to test
------------
+# How to test
 
-### Install and run Httpbin
+
+## Install and run Httpbin
 
 crawler use a local httpbin for testing purpose. You can install httpbin as a library from PyPI and run it as a WSGI app. For example, using Gunicorn:
 
@@ -232,7 +248,7 @@ crawler use a local httpbin for testing purpose. You can install httpbin as a li
     // Finally
     $ npm install && npm test
 
-### Alternative: Docker
+## Alternative: Docker
 
 After [installing Docker](http://docs.docker.com/), you can run:
 
@@ -248,8 +264,7 @@ After [installing Docker](http://docs.docker.com/), you can run:
     
 [![build status](https://secure.travis-ci.org/bda-research/node-crawler.png)](https://travis-ci.org/bda-research/node-crawler)
 
-Rough todolist
---------------
+# Rough todolist
 
  * Introducing zombie to deal with page with complex ajax
  * Refactoring the code to be more maintenable, it's spaghetti code in there !
@@ -261,7 +276,6 @@ Rough todolist
  * Option to wait for callback to finish before freeing the pool resource (via another callback like next())
 
 
-ChangeLog
----------
+# ChangeLog
 
-See https://github.com/bda-research/node-crawler/releases
+See [CHANGELOG](https://github.com/bda-research/node-crawler/blob/master/CHANGELOG.md)

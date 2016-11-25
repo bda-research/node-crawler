@@ -16,6 +16,7 @@ describe('Limits', function() {
         it('should delay 5000 milliseconds between each requests', function(done) {
 	    c = new Crawler({
 		rateLimits: 2000,
+		jQuery:false,
 		maxConnections:1
 	    });
             this.timeout(20000);
@@ -55,6 +56,7 @@ describe('Limits', function() {
 	it('should delay certain time between requests of key', function(done) {
 	    c = new Crawler({
 		rateLimits: 1500,
+		jQuery:false,
 		maxConnections:3
 	    });
             this.timeout(20000);

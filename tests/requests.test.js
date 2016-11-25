@@ -27,10 +27,10 @@ describe('Request tests', function() {
             callback: function(error, result) {
                 expect(error).to.be.null;
                 expect(result.body.length).to.be.above(1000);
-            },
-            onDrain: function() {
-                done();
             }
+        });
+	c.on('drain',function() {
+            done();
         });
         c.queue(['http://'+httpbinHost+'/html', 'http://'+httpbinHost]);
     });
