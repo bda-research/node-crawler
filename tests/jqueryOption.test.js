@@ -69,7 +69,7 @@ describe('Jquery testing', function() {
                 jQuery: false,
                 callback:function(error, result, $) {
                     expect(error).to.be.null;
-                    expect($).to.be.undefined;
+                    expect($).to.be.null;
                     done();
                 }
             });
@@ -80,7 +80,7 @@ describe('Jquery testing', function() {
                 jquery: jquery,
                 callback:function(error, result, $) {
                     expect(error).to.be.null;
-                    expect($).to.be.undefined;
+                    expect($).to.be.null;
                     done();
                 }
             });
@@ -91,7 +91,7 @@ describe('Jquery testing', function() {
                 jQuery: jquery,
                 callback:function(error, result, $) {
                     expect(error).to.be.null;
-                    expect($).not.to.be.undefined;
+                    expect($).not.to.be.null;
                     done();
                 }
             });
@@ -102,7 +102,7 @@ describe('Jquery testing', function() {
                 jQuery: jquery,
                 callback:function(error, result, $) {
                     expect(error).to.be.null;
-                    expect($).to.be.undefined;
+                    expect($).to.be.null;
                     done();
                 }
             });
@@ -112,30 +112,29 @@ describe('Jquery testing', function() {
             c = new Crawler({
                 maxConnections: 10,
                 jquery: true,
-                callback: function(error, result, $) {
+                callback: function(error, result, $,next) {
                     expect($).not.to.be.undefined;
                     expect(result.options.jQuery).to.be.true;
                     expect(result.options.jquery).to.be.undefined;
+		    next();
                 }
             });
 
-	    c.on('drain',function() {
-                done();
-            });
+	    c.on('drain',done);
             c.queue(['http://'+httpbinHost]);
         });
         it('should work if jquery is set instead of jQuery when queuing', function(done) {
             c = new Crawler({
                 maxConnections: 10,
                 jQuery: true,
-                callback: function(error, result, $) {
-                    expect($).to.be.undefined;
+                callback: function(error, result, $,next) {
+                    expect($).to.be.null;
                     expect(result.options.jQuery).to.be.false;
+		    next();
                 }
             });
-	    c.on('drain',function() {
-                done();
-            })
+	    
+	    c.on('drain',done);
             c.queue([
                 {
                     uri: 'http://'+httpbinHost,
@@ -147,14 +146,14 @@ describe('Jquery testing', function() {
             c = new Crawler({
                 maxConnections: 10,
                 jquery: undefined,
-                callback: function(error, result, $) {
-                    expect($).to.be.undefined;
+                callback: function(error, result, $,next) {
+                    expect($).to.be.null;
                     expect(result.options.jQuery).to.be.undefined;
+		    next();
                 }
             });
-	    c.on('drain',function() {
-                done();
-            });
+	    
+	    c.on('drain',done);
             c.queue(['http://'+httpbinHost]);
         });
     });
@@ -170,16 +169,16 @@ describe('Jquery testing', function() {
             c = new Crawler({
                 maxConnections: 10,
                 jquery: cheerioConf,
-                callback: function(error, result, $) {
+                callback: function(error, result, $,next) {
                     expect($._options.normalizeWhitespace).to.be.true;
                     expect($._options.xmlMode).to.be.true;
                     // check if the default value of decodeEntities is still true
                     expect($._options.decodeEntities).to.be.true;
+		    next();
                 }
             });
-	    c.on('drain',function() {
-                done();
-            });
+	    
+	    c.on('drain',done);
             c.queue(['http://'+httpbinHost]);
         });
     });

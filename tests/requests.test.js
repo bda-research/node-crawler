@@ -24,14 +24,14 @@ describe('Request tests', function() {
     it('should crawl two request request and execute the onDrain() callback', function(done) {
         c = new Crawler({
             jquery: false,
-            callback: function(error, result) {
+            callback: function(error, result,$,next) {
                 expect(error).to.be.null;
                 expect(result.body.length).to.be.above(1000);
+		next();
             }
         });
-	c.on('drain',function() {
-            done();
-        });
+	
+	c.on('drain',done);
         c.queue(['http://'+httpbinHost+'/html', 'http://'+httpbinHost]);
     });
     it('should crawl a gzip response', function(done) {

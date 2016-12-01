@@ -18,14 +18,14 @@ describe('Uri Options', function() {
         c = new Crawler({
             maxConnections: 10,
             jquery: false,
-            callback: function(error, result) {
+            callback: function(error, result,$,next) {
                 expect(typeof result.statusCode).to.equal('number');
                 expect(result.statusCode).to.equal(statusCode);
+		next();
             }
         });
-	c.on('drain',function() {
-            done();
-        });
+	
+	c.on('drain',done);
         c.queue({
             uri: uriFunction(statusCode)
         });
@@ -36,26 +36,28 @@ describe('Uri Options', function() {
         };
         c = new Crawler({
             maxConnections: 10,
-            callback: function(error, result) {
+            callback: function(error, result,$,next) {
                 expect(typeof result.statusCode).to.equal('number');
                 expect(result.statusCode).to.equal(200);
+		next();
             }
         });
-	c.on('drain',function() {
-            done();
-        });
+	
+	c.on('drain',done);
         c.queue({
             uri: googleSearch('cheese')
         });
     });
     it('should skip if the uri is undefined or an empty string', function(done) {
         c = new Crawler({
-            callback: function(error, result) {
+            callback: function(error, result,$,next) {
                 expect(typeof result.statusCode).to.equal('number');
                 expect(result.statusCode).to.equal(200);
+		next();
             }
         });
         spy = sinon.spy(c, '_pushToQueue');
+	
 	c.on('drain',function() {
             expect(spy.calledOnce).to.be.true;
             done();

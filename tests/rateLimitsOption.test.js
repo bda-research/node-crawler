@@ -13,20 +13,12 @@ describe('Limits', function() {
 	// 	maxConnections:1
         //     });
         // });
-        it('should delay 5000 milliseconds between each requests', function(done) {
-	    c = new Crawler({
-		rateLimits: 2000,
-		jQuery:false,
-		maxConnections:1
-	    });
-            this.timeout(20000);
-            var count = 0;
-            cb = function() {
+        it('should delay 2000 milliseconds between each requests', function(done) {
+	    cb = function(e,result,$,next) {
                 var endTime = new Date().getTime(),
                     deltaTime = endTime - startTime;
                 count++;
-                //console.log(count, deltaTime);
-		
+		next()
 		if(count === 1){
 		    expect(deltaTime).above(0);
                     expect(deltaTime).below(2000);
@@ -40,18 +32,17 @@ describe('Limits', function() {
 		    done();
                 }
             };
+	    c = new Crawler({
+		rateLimits: 2000,
+		jQuery:false,
+		maxConnections:1,
+		callback:cb
+	    });
+            this.timeout(20000);
+            var count = 0;            
 	    
             startTime = new Date().getTime();
-            c.queue([{
-                uri: 'http://' + httpbinHost + '/ip',
-                callback: cb
-            }, {
-                uri: 'http://' + httpbinHost + '/user-agent',
-                callback: cb
-            }, {
-                uri: 'http://' + httpbinHost + '/headers',
-                callback: cb
-            }]);
+            c.queue(['http://' + httpbinHost + '/ip','http://' + httpbinHost + '/user-agent','http://' + httpbinHost + '/headers']);
         });
 	it('should delay certain time between requests of key', function(done) {
 	    c = new Crawler({
@@ -61,11 +52,11 @@ describe('Limits', function() {
 	    });
             this.timeout(20000);
             var count = {'a':0,'b':0,'c':0};
-            cb = function(err,result) {
+            cb = function(err,result,$,next) {
                 var endTime = new Date().getTime(),
                     deltaTime = endTime - startTime;
                 ++count[result.options.limiter];
-		
+		next()
 		if(count[result.options.limiter] === 1){
 		    expect(deltaTime).above(0);
                     expect(deltaTime).below(1500);

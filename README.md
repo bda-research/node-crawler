@@ -126,7 +126,6 @@ Basic request options:
 Callbacks:
 
  * `callback(error, result, $)`: A request was completed
- * `onDrain(pool)`: There is no more queued requests, call `pool.destroyAllNow()` if you wanna release resources in pool to, or if you have follow-up tasks to queue you can ignore.
 
 Pool options:
 
@@ -173,10 +172,24 @@ Emitted when limiter has been changed.
 
 Emitted when crawler is ready to send a request.
 
+If you are going to modify options at last stage before requesting, just listen on it.
+
+```
+crawler.on('request',function(options){
+    options.qs.timestamp = new Date().getTime();
+});
+```
+
 ## Event: 'drain'
 
 Emitted when queue is empty.
 
+```
+crawler.on('drain',function(){
+    // For example, release a connection to database.
+    db.end();// close connection to MySQL
+});
+```
 
 ## crawler.queue(uri|options)
  * `uri` String
@@ -275,7 +288,6 @@ After [installing Docker](http://docs.docker.com/), you can run:
  * Make Sizzle tests pass (jsdom bug? https://github.com/tmpvar/jsdom/issues#issue/81)
  * More crawling tests
  * Document the API more (+ the result object)
- * Option to wait for callback to finish before freeing the pool resource (via another callback like next())
 
 
 # ChangeLog
