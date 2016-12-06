@@ -125,7 +125,18 @@ Basic request options:
 
 Callbacks:
 
- * `callback(error, result, $)`: A request was completed
+ * `callback(error, result, $, done)`: Function that will be excuted after a request was completed
+     * `error`: Error Messages (Default null)
+     * `result`: Result of this task, [click](https://) for detail description
+         * `result.statusCode`: HTTP status code,`200` for example
+         * `result.body`: HTTP response content,`<html><body>content</body></html>` for example
+         * `result.headers`: HTTP response headers
+         * `result.request`: Detail request information
+             * `result.request.uri`: HTTP request entity of parsed url,[click](https://nodejs.org/api/url.html#url_url_strings_and_url_objects) for detail description
+             * `result.request.method`: HTTP request method,`GET` for example
+             * `result.request.headers`: HTTP request headers
+     * `$`: DOM selector of result html page, [click](https://api.jquery.com/category/selectors/) for detail description
+     * `done`: Function that must be called when you complete your task
 
 Pool options:
 
@@ -157,6 +168,7 @@ Other:
  * `userAgent`: String or Array, if `rotateUA` is false, but `userAgent` is array, will use first one. 
  * `referer`: String, if truthy sets the HTTP referer header
  * `rateLimits`: Number of milliseconds to delay between each requests (Default 0) 
+
 
  
 # Class:Crawler
@@ -250,6 +262,7 @@ var c = new Crawler({
 ```
 
 # How to test
+
 
 
 ## Install and run Httpbin
