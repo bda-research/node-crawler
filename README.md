@@ -127,7 +127,7 @@ Callbacks:
 
  * `callback(error, result, $, done)`: Function that will be excuted after a request was completed
      * `error`: Error Messages (Default null)
-     * `result`: Result of this task, [click](https://) for detail description
+     * `result`: Result of this task
          * `result.statusCode`: HTTP status code,`200` for example
          * `result.body`: HTTP response content,`<html><body>content</body></html>` for example
          * `result.headers`: HTTP response headers
