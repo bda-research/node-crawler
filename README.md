@@ -135,6 +135,7 @@ Callbacks:
              * `result.request.uri`: HTTP request entity of parsed url,[click](https://nodejs.org/api/url.html#url_url_strings_and_url_objects) for detail description
              * `result.request.method`: HTTP request method,`GET` for example
              * `result.request.headers`: HTTP request headers
+         * `result.options`: [Options](#options-reference) of this task
      * `$`: DOM selector of result html page, [click](https://api.jquery.com/category/selectors/) for detail description
      * `done`: Function that must be called when you complete your task
 
