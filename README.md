@@ -271,7 +271,7 @@ After [installing Docker](http://docs.docker.com/), you can run:
     $ docker build -t node-crawler .
 
     // Runs tests
-    $ docker run node-crawler sh -c "gunicorn httpbin:app -b 127.0.0.1:8000 -w 6 --daemon && npm install && npm test"
+    $ docker run node-crawler sh -c "gunicorn httpbin:app -b 127.0.0.1:8000 -w 6 --daemon && cd /usr/local/lib/node_modules/crawler && npm install && npm test"
 
     // You can also ssh into the container for easier debugging
     $ docker run -i -t node-crawler bash
