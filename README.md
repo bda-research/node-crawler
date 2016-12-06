@@ -31,14 +31,15 @@ var url = require('url');
 var c = new Crawler({
     maxConnections : 10,
     // This will be called for each crawled page
-    callback : function (error, result, $) {
+    callback : function (error, result, $, done) {
         // $ is Cheerio by default
         //a lean implementation of core jQuery designed specifically for the server
-		if(error){
-			console.log(error);
-		}else{
-			console.log($("title").text());
-		}
+        if(error){
+            console.log(error);
+        }else{
+            console.log($("title").text());
+        }
+        done();
     }
 });
 
@@ -54,12 +55,13 @@ c.queue([{
     jQuery: false,
 
     // The global callback won't be called
-    callback: function (error, result) {
-		if(error){
-			console.log(error);
-		}else{
-			console.log('Grabbed', result.body.length, 'bytes');
-		}
+    callback: function (error, result, $, done) {
+        if(error){
+            console.log(error);
+        }else{
+            console.log('Grabbed', result.body.length, 'bytes');
+        }
+        done();
     }
 }]);
 
@@ -79,12 +81,13 @@ var Crawler = require("crawler");
 var c = new Crawler({
     maxConnections : 3,
     rateLimits:2000,
-    callback : function (error, result, $) {
-		if(error){
-			console.error(error);
-		}else{
-			console.log($('title').text());
-		}
+    callback : function (error, result, $, done) {
+        if(error){
+            console.error(error);
+        }else{
+            console.log($('title').text());
+        }
+        done();
     }
 });
 
@@ -166,6 +169,17 @@ Other:
  * `limiter` String
 
 Emitted when limiter has been changed.
+
+## Event: 'schedule'
+ * `options` [Options](#options-reference)
+
+Emitted when a task is being added to scheduler.
+
+```
+crawler.on('schedule',function(options){
+    options.proxy = "http://proxy:port";
+});
+```
 
 ## Event: 'request'
  * `options` [Options](#options-reference)
@@ -284,11 +298,8 @@ After [installing Docker](http://docs.docker.com/), you can run:
  * Introducing zombie to deal with page with complex ajax
  * Refactoring the code to be more maintenable, it's spaghetti code in there !
  * Proxy feature
- * This issue: https://github.com/sylvinus/node-crawler/issues/118
  * Make Sizzle tests pass (jsdom bug? https://github.com/tmpvar/jsdom/issues#issue/81)
  * More crawling tests
- * Document the API more (+ the result object)
-
 
 # ChangeLog
 

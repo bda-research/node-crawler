@@ -12,6 +12,10 @@ node-webcrawler ChangeLog
  * use event listener on `request` and `drain` instead of global function [#144](https://github.com/bda-research/node-crawler/issues/144)
  * default set forceUTF8 to true
  * detect `ESOCKETTIMEDOUT` instead of `ETIMEDOUT` when timeout in test
+ * add `done` function in callback to avoid async trap
+ * do not convert response body to string if `encoding` is null [#118](https://github.com/bda-research/node-crawler/issues/118)
+ * add result document [#68](https://github.com/bda-research/node-crawler/issues/68) [#116](https://github.com/bda-research/node-crawler/issues/116)
+ * add event `schedule` which is emitted when a task is being added to scheduler
  
 0.7.5
  * delete entity in options before copy, and assgin after, `jar` is one of the typical properties which is an `Entity` wich functions [#177](https://github.com/bda-research/node-crawler/issues/177)

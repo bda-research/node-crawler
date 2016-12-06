@@ -85,4 +85,19 @@ describe('Request tests', function() {
         });
         c.queue(['http://'+httpbinHost+'/headers']);
     });
+    
+    it('response body should be a buffer if encoding is null', function(done) {
+        c = new Crawler({
+            referer: 'http://spoofed.com',
+            jQuery: false,
+	    encoding: null,
+            callback:function(error, result) {
+                expect(error).to.be.null;
+		expect(result.body).to.be.instanceof(Buffer);
+                done();
+            }
+        });
+	
+        c.queue(['http://'+httpbinHost+'//stream-bytes/512']);
+    });
 });
