@@ -32,7 +32,7 @@ describe('Uri Options', function() {
     });
     it('should work if uri is a function, example from Readme', function(done) {
         var googleSearch = function(search) {
-            return 'http://www.google.fr/search?q=' + search;
+            return 'http://www.bing.com/search?q=' + search;
         };
         c = new Crawler({
             maxConnections: 10,

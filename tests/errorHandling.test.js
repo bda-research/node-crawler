@@ -23,11 +23,13 @@ describe('Errors', function() {
                 callback : function(error, response) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
                 {
                     expect(error).not.to.be.null;
-		    if(process.version.replace(/^v/,'').split('.')[0] > '4'){
-			expect(error.code).to.equal("ESOCKETTIMEDOUT");
-		    }else{
-			expect(error.code).to.equal("ETIMEDOUT");
-		    }
+                    expect(error.code == "ETIMEDOUT" || error.code == "ESOCKETTIMEDOUT" ).to.be.true;
+		 //    if(process.version.replace(/^v/,'').split('.')[0] > '4'){
+   //          expect(error.code).to.equal("ESOCKETTIMEDOUT");
+			
+		 //    }else{
+			// expect(error.code).to.equal("ETIMEDOUT");
+		 //    }
 
                     //expect(response).to.be.undefined;
                     done();

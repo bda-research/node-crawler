@@ -24,7 +24,7 @@ describe('Simple test', function() {
         });
 	
 	c.on('drain', done);
-        c.queue('http://joshfire.com');
+        c.queue('http://github.com');
     });
     it('should run the readme examples', function(done) {
         c = new Crawler({
@@ -49,7 +49,7 @@ describe('Simple test', function() {
     it('should run the with an array queue', function(done) {
         c = new Crawler();
         c.queue([{
-            uri: 'http://www.google.com',
+            uri: 'http://www.github.com',
             jquery: true,
             callback : function(error, result, $, next) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
             {
