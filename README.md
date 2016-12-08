@@ -73,14 +73,26 @@ c.queue([{
 
 # Work with `bottleneck`
 
-Control rate limits for each connection, usually used with proxy.
+Control rate limit for with limiter. All tasks submit to a limiter will abide the `rateLimit` and `maxConnections` restrictions of the limiter. `rateLimit` is the minimum time gap between two tasks. `maxConnections` is the maximum number of tasks that can be running at the same time. Limiters are independent of each other. One common use case is setting different limiters for different proxies.
+
+To help you better understand `maxConnections`, here's an example. Say we have 10 tasks to do, `rateLimit` is set to 2000 ms, `maxConnections` is set to 3 and each task takes 10000 ms to finish. What happens will be as follows: 
+```
+00'----start doing task1
+02'----start doing task2
+04'----start doing task3
+10'----task1 done, start doing task4
+12'----task2 done, start doing task5
+...
+```
+
+Below is an example: 
 
 ```javascript
 var Crawler = require("crawler");
 
 var c = new Crawler({
-    maxConnections : 3,
-    rateLimits:2000,
+    maxConnections : 1,
+    rateLimit:2000,
     callback : function (error, result, $, done) {
         if(error){
             console.error(error);
@@ -142,9 +154,10 @@ Callbacks:
      * `$`: DOM selector of result html page, [click](https://api.jquery.com/category/selectors/) for detail description
      * `done`: Function that must be called when you complete your task
 
-Pool options:
+Schedule options:
 
  * `maxConnections`: Number, Size of the worker pool (Default 10),
+ * `rateLimit`: Number of milliseconds to delay between each requests (Default 0) 
  * `priorityRange`: Number, Range of acceptable priorities starting from 0 (Default 10),
  * `priority`: Number, Priority of this request (Default 5),
 
@@ -155,13 +168,12 @@ Retry options:
 
 Server-side DOM options:
 
- * `jQuery`: true, false, "whacko" or ConfObject (Default true). Crawler will use 
+ * `jQuery`: true, false, "whacko" or ConfObject (Default true). Crawler will use selected dom options to parse response.
 
 Charset encoding:
 
  * `forceUTF8`: Boolean, if true will get charset from HTTP headers or meta tag in html and convert it to UTF8 if necessary. Never worry about encoding anymore! (Default true),
- * `incomingEncoding`: String, with forceUTF8: true to set encoding manually (Default null)
-     `incomingEncoding : 'windows-1255'` for example
+ * `incomingEncoding`: String, with forceUTF8: true to set encoding manually (Default null). For example, `incomingEncoding : 'windows-1255'`. See [all supported encodings](https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings)
 
 Cache:
 
@@ -171,17 +183,10 @@ Other:
  * `rotateUA`: Boolean, if true, `userAgent` should be an array, and rotate it (Default false) 
  * `userAgent`: String or Array, if `rotateUA` is false, but `userAgent` is array, will use first one. 
  * `referer`: String, if truthy sets the HTTP referer header
- * `rateLimits`: Number of milliseconds to delay between each requests (Default 0) 
 
 
  
 # Class:Crawler
-
-## Event: 'limiterChange'
- * `options` [Options](#options-reference)
- * `limiter` String
-
-Emitted when limiter has been changed.
 
 ## Event: 'schedule'
  * `options` [Options](#options-reference)
@@ -193,6 +198,12 @@ crawler.on('schedule',function(options){
     options.proxy = "http://proxy:port";
 });
 ```
+
+## Event: 'limiterChange'
+ * `options` [Options](#options-reference)
+ * `limiter` String
+
+Emitted when limiter has been changed.
 
 ## Event: 'request'
  * `options` [Options](#options-reference)
@@ -304,16 +315,13 @@ After [installing Docker](http://docs.docker.com/), you can run:
     // You can also ssh into the container for easier debugging
     $ docker run -i -t node-crawler bash
 
-    
-[![build status](https://secure.travis-ci.org/bda-research/node-crawler.png)](https://travis-ci.org/bda-research/node-crawler)
+
 
 # Rough todolist
 
  * Introducing zombie to deal with page with complex ajax
- * Refactoring the code to be more maintenable, it's spaghetti code in there !
- * Proxy feature
+ * Refactoring the code to be more maintenable
  * Make Sizzle tests pass (jsdom bug? https://github.com/tmpvar/jsdom/issues#issue/81)
- * More crawling tests
 
 # ChangeLog
 
