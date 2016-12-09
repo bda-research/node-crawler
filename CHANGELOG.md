@@ -16,6 +16,8 @@ node-webcrawler ChangeLog
  * do not convert response body to string if `encoding` is null [#118](https://github.com/bda-research/node-crawler/issues/118)
  * add result document [#68](https://github.com/bda-research/node-crawler/issues/68) [#116](https://github.com/bda-research/node-crawler/issues/116)
  * add event `schedule` which is emitted when a task is being added to scheduler
+ * in callback, move $ into `res` because of weird API
+ * change rateLimits to rateLimit
  
 0.7.5
  * delete entity in options before copy, and assgin after, `jar` is one of the typical properties which is an `Entity` wich functions [#177](https://github.com/bda-research/node-crawler/issues/177)
