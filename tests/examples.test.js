@@ -31,10 +31,9 @@ describe('Simple test', function() {
             maxConnections: 10,
             callback: function(error, res, next) {
 		expect(error).to.be.null;
-                var baseUrl = res.uri;
 		var $ = res.$;
                 $('a').each(function(index, a) {
-                    var toQueueUrl = url.resolve(baseUrl, $(a).attr('href'));
+                    var toQueueUrl = url.resolve(res.request.uri.href, $(a).attr('href'));
                     c.queue(toQueueUrl);
                 });
 		next();

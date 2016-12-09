@@ -36,7 +36,7 @@ describe('Links', function() {
             uri : 'http://'+httpbinHost+'/redirect-to?url=http://example.com/',
             callback: function(error, res) {
 
-                expect(res.uri).to.equal('http://example.com/');
+                expect(res.request.uri.href).to.equal('http://example.com/');
                 expect(error).to.be.null;
                 done();
             }
