@@ -25,10 +25,11 @@
   },
   "devDependencies": {
     "chai": "^2.3.0",
+    "jsdom": "^9.6.0",
     "mocha": "^2.2.5",
     "mocha-testdata": "^1.1.0",
     "sinon": "^1.14.1",
-    "jsdom": "^9.6.0"
+    "whacko": "^0.19.1"
   },
   "keywords": [
     "dom",

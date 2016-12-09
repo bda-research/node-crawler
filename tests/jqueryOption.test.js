@@ -14,16 +14,16 @@ describe('Jquery testing', function() {
         c = {};
     });
     describe('Jquery parsing', function() {
-        given.async(jsdom, 'cheerio')
+        given.async(jsdom, 'cheerio','whacko')
             .it('should work on inline html', function(done, jquery) {
                 c = new Crawler();
                 c.queue([{
                     html: '<p><i>great!</i></p>',
                     jquery: jquery,
-                    callback: function(error, result, $) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
+                    callback: function(error, res) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
                     {
                         expect(error).to.be.null;
-                        expect($('i').html()).to.equal('great!');
+                        expect(res.$('i').html()).to.equal('great!');
                         done();
                     }
                 }]);
@@ -32,10 +32,10 @@ describe('Jquery testing', function() {
     describe('Jquery injection', function() {
         it('should enable cheerio by default', function(done) {
             c = new Crawler({
-                callback:function(error, result, $) {
+                callback:function(error, res) {
                     expect(error).to.be.null;
-                    expect(typeof $).to.equal('function');
-                    expect(typeof $.root).to.equal('function');
+                    expect(typeof res.$).to.equal('function');
+                    expect(typeof res.$.root).to.equal('function');
                     done();
                 }
             });
@@ -44,9 +44,9 @@ describe('Jquery testing', function() {
         given.async(jsdom).it('should enable jsdom if set', function(done, jquery) {
             c = new Crawler({
                 jquery: jquery,
-                callback:function(error, result, $) {
+                callback:function(error, res) {
                     expect(error).to.be.null;
-                    expect($.fn.jquery).to.equal('2.1.1');
+                    expect(res.$.fn.jquery).to.equal('2.1.1');
                     done();
                 }
             });
@@ -55,21 +55,33 @@ describe('Jquery testing', function() {
         given.async('cheerio', {name: 'cheerio'}).it('should enable cheerio if set', function(done, jquery) {
             c = new Crawler({
                 jquery: jquery,
-                callback:function(error, result, $) {
+                callback:function(error, res) {
                     expect(error).to.be.null;
-                    expect(typeof $).to.equal('function');
-                    expect(typeof $.root).to.equal('function');
+                    expect(typeof res.$).to.equal('function');
+                    expect(typeof res.$.root).to.equal('function');
                     done();
                 }
             });
             c.queue(['http://'+httpbinHost+'/']);
         });
+	it('should enable whacko if set',function(done){
+	    c = new Crawler({
+                jquery: 'whacko',
+                callback:function(error, res) {
+                    expect(error).to.be.null;
+                    expect(typeof res.$).to.equal('function');
+                    expect(typeof res.$.root).to.equal('function');
+                    done();
+                }
+            });
+            c.queue(['http://'+httpbinHost+'/']);
+	});
         it('should disable jQuery if set to false', function(done) {
             c = new Crawler({
                 jQuery: false,
-                callback:function(error, result, $) {
+                callback:function(error, res) {
                     expect(error).to.be.null;
-                    expect($).to.be.null;
+                    expect(res.$).to.be.empty;
                     done();
                 }
             });
@@ -78,9 +90,9 @@ describe('Jquery testing', function() {
         given.async('trucmuch', null, undefined).it('should not inject jquery', function(done, jquery) {
             c = new Crawler({
                 jquery: jquery,
-                callback:function(error, result, $) {
+                callback:function(error, res) {
                     expect(error).to.be.null;
-                    expect($).to.be.null;
+                    expect(res.$).to.be.undefined;
                     done();
                 }
             });
@@ -89,9 +101,9 @@ describe('Jquery testing', function() {
         given.async('cheerio', jsdom).it('should also enable jQuery even if body is empty, to prevent `$ is not a function` error', function(done, jquery) {
             c = new Crawler({
                 jQuery: jquery,
-                callback:function(error, result, $) {
+                callback:function(error, res) {
                     expect(error).to.be.null;
-                    expect($).not.to.be.null;
+                    expect(res.$).not.to.be.empty;
                     done();
                 }
             });
@@ -100,9 +112,9 @@ describe('Jquery testing', function() {
 	given.async('cheerio', jsdom).it('should disable jQuery if body is not text/html ', function(done, jquery) {
             c = new Crawler({
                 jQuery: jquery,
-                callback:function(error, result, $) {
+                callback:function(error, res) {
                     expect(error).to.be.null;
-                    expect($).to.be.null;
+                    expect(res.$).to.be.empty;
                     done();
                 }
             });
@@ -112,10 +124,10 @@ describe('Jquery testing', function() {
             c = new Crawler({
                 maxConnections: 10,
                 jquery: true,
-                callback: function(error, result, $,next) {
-                    expect($).not.to.be.undefined;
-                    expect(result.options.jQuery).to.be.true;
-                    expect(result.options.jquery).to.be.undefined;
+                callback: function(error, res,next) {
+                    expect(res.$).not.to.be.undefined;
+                    expect(res.options.jQuery).to.be.true;
+                    expect(res.options.jquery).to.be.undefined;
 		    next();
                 }
             });
@@ -127,9 +139,9 @@ describe('Jquery testing', function() {
             c = new Crawler({
                 maxConnections: 10,
                 jQuery: true,
-                callback: function(error, result, $,next) {
-                    expect($).to.be.null;
-                    expect(result.options.jQuery).to.be.false;
+                callback: function(error, res,next) {
+                    expect(res.$).to.be.undefined;
+                    expect(res.options.jQuery).to.be.false;
 		    next();
                 }
             });
@@ -146,9 +158,9 @@ describe('Jquery testing', function() {
             c = new Crawler({
                 maxConnections: 10,
                 jquery: undefined,
-                callback: function(error, result, $,next) {
-                    expect($).to.be.null;
-                    expect(result.options.jQuery).to.be.undefined;
+                callback: function(error, res,next) {
+                    expect(res.$).to.be.undefined;
+                    expect(res.options.jQuery).to.be.undefined;
 		    next();
                 }
             });
@@ -169,11 +181,11 @@ describe('Jquery testing', function() {
             c = new Crawler({
                 maxConnections: 10,
                 jquery: cheerioConf,
-                callback: function(error, result, $,next) {
-                    expect($._options.normalizeWhitespace).to.be.true;
-                    expect($._options.xmlMode).to.be.true;
+                callback: function(error, res,next) {
+                    expect(res.$._options.normalizeWhitespace).to.be.true;
+                    expect(res.$._options.xmlMode).to.be.true;
                     // check if the default value of decodeEntities is still true
-                    expect($._options.decodeEntities).to.be.true;
+                    expect(res.$._options.decodeEntities).to.be.true;
 		    next();
                 }
             });

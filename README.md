@@ -31,12 +31,13 @@ var url = require('url');
 var c = new Crawler({
     maxConnections : 10,
     // This will be called for each crawled page
-    callback : function (error, result, $, done) {
-        // $ is Cheerio by default
-        //a lean implementation of core jQuery designed specifically for the server
+    callback : function (error, res, done) {
         if(error){
             console.log(error);
         }else{
+            var $ = res.$;
+            // $ is Cheerio by default
+            //a lean implementation of core jQuery designed specifically for the server
             console.log($("title").text());
         }
         done();
@@ -55,11 +56,11 @@ c.queue([{
     jQuery: false,
 
     // The global callback won't be called
-    callback: function (error, result, $, done) {
+    callback: function (error, res, done) {
         if(error){
             console.log(error);
         }else{
-            console.log('Grabbed', result.body.length, 'bytes');
+            console.log('Grabbed', res.body.length, 'bytes');
         }
         done();
     }
@@ -93,10 +94,11 @@ var Crawler = require("crawler");
 var c = new Crawler({
     maxConnections : 1,
     rateLimit:2000,
-    callback : function (error, result, $, done) {
+    callback : function (error, res, done) {
         if(error){
             console.error(error);
         }else{
+            var $ = res.$;
             console.log($('title').text());
         }
         done();
@@ -134,55 +136,56 @@ the request() method.
 
 Basic request options:
 
- * `uri`: String, the URL you want to crawl
- * `timeout` : Number, in milliseconds        (Default 15000)
- * [All mikeal's requests options are accepted](https://github.com/mikeal/request#requestoptions-callback)
+ * `uri`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) The url you want to crawl.
+ * `timeout` : [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) In milliseconds (Default 15000).
+ * [All mikeal's requests options are accepted](https://github.com/mikeal/request#requestoptions-callback).
 
 Callbacks:
 
- * `callback(error, result, $, done)`: Function that will be excuted after a request was completed
-     * `error`: Error Messages (Default null)
-     * `result`: Result of this task
-         * `result.statusCode`: HTTP status code,`200` for example
-         * `result.body`: HTTP response content,`<html><body>content</body></html>` for example
-         * `result.headers`: HTTP response headers
-         * `result.request`: Detail request information
-             * `result.request.uri`: HTTP request entity of parsed url,[click](https://nodejs.org/api/url.html#url_url_strings_and_url_objects) for detail description
-             * `result.request.method`: HTTP request method,`GET` for example
-             * `result.request.headers`: HTTP request headers
-         * `result.options`: [Options](#options-reference) of this task
-     * `$`: DOM selector of result html page, [click](https://api.jquery.com/category/selectors/) for detail description
-     * `done`: Function that must be called when you complete your task
+ * `callback(error, res, done)`: Function that will be called after a request was completed
+     * `error`: [Error](https://nodejs.org/api/errors.html)
+     * `res`: [http.IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage) A response of standard IncomingMessage includes `$` and `options`
+         * `res.statusCode`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) HTTP status code. E.G.`200`
+         * `res.body`: [Buffer](https://nodejs.org/api/buffer.html) | [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) HTTP response content which could be a html page, plain text or xml document e.g.
+         * `res.headers`: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) HTTP response headers
+         * `res.request`: [Request](https://github.com/request/request)  An instance of Mikeal's `Request` instead of [http.ClientRequest](https://nodejs.org/api/http.html#http_class_http_clientrequest)
+             * `res.request.uri`: [urlObject](https://nodejs.org/api/url.html#url_url_strings_and_url_objects) HTTP request entity of parsed url
+             * `res.request.method`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) HTTP request method. E.G. `GET`
+             * `res.request.headers`: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) HTTP request headers
+         * `res.options`: [Options](#options-reference) of this task
+         * `$`: [jQuery Selector](https://api.jquery.com/category/selectors/) A selector for  html or xml document.
+     * `done`: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function) It must be called when you've done your work in callback.
 
 Schedule options:
 
- * `maxConnections`: Number, Size of the worker pool (Default 10),
- * `rateLimit`: Number of milliseconds to delay between each requests (Default 0) 
- * `priorityRange`: Number, Range of acceptable priorities starting from 0 (Default 10),
- * `priority`: Number, Priority of this request (Default 5),
+ * `maxConnections`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Size of the worker pool (Default 10).
+ * `rateLimit`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Number of milliseconds to delay between each requests (Default 0).
+ * `priorityRange`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Range of acceptable priorities starting from 0 (Default 10).
+ * `priority`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Priority of this request (Default 5).
 
 Retry options:
 
- * `retries`: Number of retries if the request fails (Default 3),
- * `retryTimeout`: Number of milliseconds to wait before retrying (Default 10000),
+ * `retries`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Number of retries if the request fails (Default 3),
+ * `retryTimeout`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Number of milliseconds to wait before retrying (Default 10000),
 
 Server-side DOM options:
 
- * `jQuery`: true, false, "whacko" or ConfObject (Default true). Crawler will use selected dom options to parse response.
+ * `jQuery`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type)|[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)|[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) Use `cheerio` with default configrations to inject document if true or "cheerio". Or use customized `cheerio` if an object with [Parser options](https://github.com/fb55/htmlparser2/wiki/Parser-options). Disable injecting jQuery selector if false. If you have memory leak issue in your project, use "whacko", an alternative parser,to avoid that. (Default true)
 
 Charset encoding:
 
- * `forceUTF8`: Boolean, if true will get charset from HTTP headers or meta tag in html and convert it to UTF8 if necessary. Never worry about encoding anymore! (Default true),
- * `incomingEncoding`: String, with forceUTF8: true to set encoding manually (Default null). For example, `incomingEncoding : 'windows-1255'`. See [all supported encodings](https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings)
+ * `forceUTF8`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true crawler will get charset from HTTP headers or meta tag in html and convert it to UTF8 if necessary. Never worry about encoding anymore! (Default true),
+ * `incomingEncoding`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) With forceUTF8: true to set encoding manually (Default null) so that crawler will not have to detect charset by itself. For example, `incomingEncoding : 'windows-1255'`. See [all supported encodings](https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings)
 
 Cache:
 
- * `skipDuplicates`: Boolean, if true skips URIs that were already crawled, without even calling callback() (Default false). This is not recommended, it's better to handle outside `Crawler` use [seenreq](https://github.com/mike442144/seenreq)
+ * `skipDuplicates`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true skips URIs that were already crawled, without even calling callback() (Default false). __This is not recommended__, it's better to handle outside `Crawler` use [seenreq](https://github.com/mike442144/seenreq)
 
 Other:
- * `rotateUA`: Boolean, if true, `userAgent` should be an array, and rotate it (Default false) 
- * `userAgent`: String or Array, if `rotateUA` is false, but `userAgent` is array, will use first one. 
- * `referer`: String, if truthy sets the HTTP referer header
+
+ * `rotateUA`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true, `userAgent` should be an array and rotate it (Default false) 
+ * `userAgent`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)|[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), If `rotateUA` is false, but `userAgent` is an array, crawler will use the first one.
+ * `referer`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) If truthy sets the HTTP referer header
 
 
  
@@ -193,7 +196,7 @@ Other:
 
 Emitted when a task is being added to scheduler.
 
-```
+```javascript
 crawler.on('schedule',function(options){
     options.proxy = "http://proxy:port";
 });
@@ -201,7 +204,7 @@ crawler.on('schedule',function(options){
 
 ## Event: 'limiterChange'
  * `options` [Options](#options-reference)
- * `limiter` String
+ * `limiter` [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)
 
 Emitted when limiter has been changed.
 
@@ -212,7 +215,7 @@ Emitted when crawler is ready to send a request.
 
 If you are going to modify options at last stage before requesting, just listen on it.
 
-```
+```javascript
 crawler.on('request',function(options){
     options.qs.timestamp = new Date().getTime();
 });
@@ -222,7 +225,7 @@ crawler.on('request',function(options){
 
 Emitted when queue is empty.
 
-```
+```javascript
 crawler.on('drain',function(){
     // For example, release a connection to database.
     db.end();// close connection to MySQL
@@ -230,13 +233,13 @@ crawler.on('drain',function(){
 ```
 
 ## crawler.queue(uri|options)
- * `uri` String
+ * `uri` [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)
  * `options` [Options](#options-reference)
 
 Enqueue a task and wait for it to be excuted.
 
 ## crawler.queueSize
- * Number
+ * [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type)
 
 Size of queue, read-only
 
@@ -263,7 +266,7 @@ jQuery: {
 ```
 These parsing options are taken directly from [htmlparser2](https://github.com/fb55/htmlparser2/wiki/Parser-options), therefore any options that can be used in `htmlparser2` are valid in cheerio as well. The default options are:
 
-```js
+```javascript
 {
     normalizeWhitespace: false,
     xmlMode: false,
@@ -278,6 +281,7 @@ For a full list of options and their effects, see [this](https://github.com/fb55
 ## Working with JSDOM
 
 In order to work with JSDOM you will have to install it in your project folder `npm install jsdom`, deal with [compiling C++](https://github.com/tmpvar/jsdom#contextify) and pass it to crawler.
+
 ```javascript
 var jsdom = require('jsdom');
 var Crawler = require('crawler');
@@ -295,26 +299,28 @@ var c = new Crawler({
 
 crawler use a local httpbin for testing purpose. You can install httpbin as a library from PyPI and run it as a WSGI app. For example, using Gunicorn:
 
-    $ pip install httpbin
-    // launch httpbin as a daemon with 6 worker on localhost
-    $ gunicorn httpbin:app -b 127.0.0.1:8000 -w 6 --daemon
-
-    // Finally
-    $ npm install && npm test
+```bash
+$ pip install httpbin
+# launch httpbin as a daemon with 6 worker on localhost
+$ gunicorn httpbin:app -b 127.0.0.1:8000 -w 6 --daemon
+# Finally
+$ npm install && npm test
+```
 
 ## Alternative: Docker
 
 After [installing Docker](http://docs.docker.com/), you can run:
 
-    // Builds the local test environment
-    $ docker build -t node-crawler .
+```bash
+# Builds the local test environment
+$ docker build -t node-crawler .
 
-    // Runs tests
-    $ docker run node-crawler sh -c "gunicorn httpbin:app -b 127.0.0.1:8000 -w 6 --daemon && cd /usr/local/lib/node_modules/crawler && npm install && npm test"
+# Runs tests
+$ docker run node-crawler sh -c "gunicorn httpbin:app -b 127.0.0.1:8000 -w 6 --daemon && cd /usr/local/lib/node_modules/crawler && npm install && npm test"
 
-    // You can also ssh into the container for easier debugging
-    $ docker run -i -t node-crawler bash
-
+# You can also ssh into the container for easier debugging
+$ docker run -i -t node-crawler bash
+```
 
 
 # Rough todolist

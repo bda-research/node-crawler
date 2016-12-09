@@ -9,12 +9,12 @@ describe('Limits', function() {
         var startTime, c, cb;
         // beforeEach(function() {
         //     c = new Crawler({
-        //         rateLimits: 5000,
+        //         rateLimit: 5000,
 	// 	maxConnections:1
         //     });
         // });
         it('should delay 2000 milliseconds between each requests', function(done) {
-	    cb = function(e,result,$,next) {
+	    cb = function(e,res,next) {
                 var endTime = new Date().getTime(),
                     deltaTime = endTime - startTime;
                 count++;
@@ -33,7 +33,7 @@ describe('Limits', function() {
                 }
             };
 	    c = new Crawler({
-		rateLimits: 2000,
+		rateLimit: 2000,
 		jQuery:false,
 		maxConnections:1,
 		callback:cb
@@ -46,25 +46,25 @@ describe('Limits', function() {
         });
 	it('should delay certain time between requests of key', function(done) {
 	    c = new Crawler({
-		rateLimits: 1500,
+		rateLimit: 1500,
 		jQuery:false,
 		maxConnections:3
 	    });
             this.timeout(20000);
             var count = {'a':0,'b':0,'c':0};
-            cb = function(err,result,$,next) {
+            cb = function(err,res,next) {
                 var endTime = new Date().getTime(),
                     deltaTime = endTime - startTime;
-                ++count[result.options.limiter];
+                ++count[res.options.limiter];
 		next()
-		if(count[result.options.limiter] === 1){
+		if(count[res.options.limiter] === 1){
 		    expect(deltaTime).above(0);
                     expect(deltaTime).below(1500);
 		}
-                else if (count[result.options.limiter] === 2) {
+                else if (count[res.options.limiter] === 2) {
                     expect(deltaTime).above(1500);
                     expect(deltaTime).below(3000);
-                }else if (count[result.options.limiter] === 3) {
+                }else if (count[res.options.limiter] === 3) {
                     expect(deltaTime).above(3000);
                     expect(deltaTime).below(4500);
 		    done();

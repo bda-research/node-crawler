@@ -18,9 +18,9 @@ describe('Uri Options', function() {
         c = new Crawler({
             maxConnections: 10,
             jquery: false,
-            callback: function(error, result,$,next) {
-                expect(typeof result.statusCode).to.equal('number');
-                expect(result.statusCode).to.equal(statusCode);
+            callback: function(error, res,next) {
+                expect(typeof res.statusCode).to.equal('number');
+                expect(res.statusCode).to.equal(statusCode);
 		next();
             }
         });
@@ -36,9 +36,9 @@ describe('Uri Options', function() {
         };
         c = new Crawler({
             maxConnections: 10,
-            callback: function(error, result,$,next) {
-                expect(typeof result.statusCode).to.equal('number');
-                expect(result.statusCode).to.equal(200);
+            callback: function(error, res,next) {
+                expect(typeof res.statusCode).to.equal('number');
+                expect(res.statusCode).to.equal(200);
 		next();
             }
         });
@@ -50,9 +50,9 @@ describe('Uri Options', function() {
     });
     it('should skip if the uri is undefined or an empty string', function(done) {
         c = new Crawler({
-            callback: function(error, result,$,next) {
-                expect(typeof result.statusCode).to.equal('number');
-                expect(result.statusCode).to.equal(200);
+            callback: function(error, res,next) {
+                expect(typeof res.statusCode).to.equal('number');
+                expect(res.statusCode).to.equal(200);
 		next();
             }
         });

@@ -59,7 +59,7 @@ describe('Errors', function() {
         it('should not return an error on status code 400 (Bad Request)', function(done) {
             c.queue({
                 uri: 'http://' + httpbinHost + '/status/400',
-                callback: function(error, response, $){
+                callback: function(error, response){
                     expect(error).to.be.null;
                     expect(response.statusCode).to.equal(400);
                     done();
@@ -69,7 +69,7 @@ describe('Errors', function() {
         it('should not return an error on status code 401 (Unauthorized)', function(done) {
             c.queue({
                 uri: 'http://' + httpbinHost + '/status/401',
-                callback: function(error, response, $){
+                callback: function(error, response){
                     expect(error).to.be.null;
                     expect(response.statusCode).to.equal(401);
                     done();
@@ -79,7 +79,7 @@ describe('Errors', function() {
         it('should not return an error on status code 403 (Forbidden)', function(done) {
             c.queue({
                 uri: 'http://' + httpbinHost + '/status/403',
-                callback: function(error, response, $){
+                callback: function(error, response){
                     expect(error).to.be.null;
                     expect(response.statusCode).to.equal(403);
                     done();

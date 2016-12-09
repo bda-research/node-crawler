@@ -16,7 +16,7 @@ describe('Priority test', function() {
         c.queue([{
             uri: 'http://'+httpbinHost+'/links/0',
             priority: 4,
-            callback: function(error, result, $, havedone) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
+            callback: function(error, res, havedone) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
             {
                 havedone();
             }
@@ -25,8 +25,9 @@ describe('Priority test', function() {
         c.queue([{
             uri: 'http://'+httpbinHost+'/links/4',
             priority: 3,
-            callback: function(error, result, $, havedone) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
+            callback: function(error, res, havedone) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
             {
+		var $ = res.$;
                 spf[cnt++] = $('body').text().charAt($('body').text().length -2);
                 havedone();
             }
@@ -35,8 +36,9 @@ describe('Priority test', function() {
         c.queue([{
             uri: 'http://'+httpbinHost+'/links/5',
             priority: 2,
-            callback: function(error, result, $, havedone) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
+            callback: function(error, res, havedone) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
             {
+		var $ = res.$;
                 spf[cnt++] = $('body').text().charAt($('body').text().length -2);
                 havedone();
             }
@@ -45,15 +47,16 @@ describe('Priority test', function() {
         c.queue([{
             uri: 'http://'+httpbinHost+'/links/6',
             priority: 1,
-            callback: function(error, result, $, havedone) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
+            callback: function(error, res, havedone) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
             {
+		var $ = res.$;
                 spf[cnt++] = $('body').text().charAt($('body').text().length -2);
                 havedone();
             }
         }]);
     });
 
-    it('should result in order', function(done) {
+    it('should res in order', function(done) {
         this.timeout(5000);
         setTimeout(function() {
             expect(spf[0]).to.equal('5');

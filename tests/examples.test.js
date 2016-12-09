@@ -16,9 +16,9 @@ describe('Simple test', function() {
         c = new Crawler({
             maxConnections: 10,
 	    debug:true,
-            callback: function(error, result,$,next) {
+            callback: function(error, res,next) {
 		expect(error).to.be.null;
-                expect(typeof result.body).to.equal('string');
+                expect(typeof res.body).to.equal('string');
 		next();
             }
         });
@@ -29,9 +29,10 @@ describe('Simple test', function() {
     it('should run the readme examples', function(done) {
         c = new Crawler({
             maxConnections: 10,
-            callback: function(error, result, $, next) {
+            callback: function(error, res, next) {
 		expect(error).to.be.null;
-                var baseUrl = result.uri;
+                var baseUrl = res.uri;
+		var $ = res.$;
                 $('a').each(function(index, a) {
                     var toQueueUrl = url.resolve(baseUrl, $(a).attr('href'));
                     c.queue(toQueueUrl);
@@ -51,10 +52,10 @@ describe('Simple test', function() {
         c.queue([{
             uri: 'http://www.github.com',
             jquery: true,
-            callback : function(error, result, $, next) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
+            callback : function(error, res, next) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
             {
-                expect($).not.to.be.null;
-                expect(typeof result.body).to.equal('string');
+                expect(res.$).not.to.be.null;
+                expect(typeof res.body).to.equal('string');
 		next();
             }
         }]);
