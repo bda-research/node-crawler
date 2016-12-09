@@ -7,30 +7,6 @@ var httpbinHost = 'localhost:8000';
 var c;
 
 describe('Cache features tests', function() {
-    describe('Cache', function() {
-        afterEach(function () {
-            c = {};
-        });
-        it.skip('should crawl one url', function (done) {
-            c = new Crawler({
-                maxConnections: 1,
-                cache: true,
-                jquery: false,
-                onDrain: function () //noinspection BadExpressionStatementJS,BadExpressionStatementJS
-                {
-                    expect(spy.calledOnce).to.be.true;
-                    done();
-                },
-                callback: function (error, result) {
-                    expect(error).to.be.null;
-                    expect(result.statusCode).to.equal(200);
-                }
-            });
-            var spy = sinon.spy(c, '_buildHttpRequest');
-            c.queue(['http://'+httpbinHost, 'http://' + httpbinHost, 'http://' + httpbinHost, 'http://' + httpbinHost]);
-        });
-    });
-
     describe('Skip Duplicate active', function() {
         afterEach(function () {
             c = {};

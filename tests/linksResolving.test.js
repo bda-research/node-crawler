@@ -17,10 +17,10 @@ describe('Links', function() {
     it('should resolved links to absolute urls with jsdom', function(done) {
         c.queue([{
             uri : 'http://'+httpbinHost+'/links/3/0',
-            callback: function(error, result, $) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
+            callback: function(error, res) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
             {
 
-                var links = _.map($('a'), function(a) {
+                var links = _.map(res.$('a'), function(a) {
                     return a.href;
                 });
                 //Both links should be resolve to absolute URLs
@@ -34,9 +34,9 @@ describe('Links', function() {
     it('should resolved links to absolute urls after redirect with jsdom', function(done) {
         c.queue([{
             uri : 'http://'+httpbinHost+'/redirect-to?url=http://example.com/',
-            callback: function(error, result) {
+            callback: function(error, res) {
 
-                expect(result.uri).to.equal('http://example.com/');
+                expect(res.request.uri.href).to.equal('http://example.com/');
                 expect(error).to.be.null;
                 done();
             }

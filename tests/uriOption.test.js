@@ -18,48 +18,50 @@ describe('Uri Options', function() {
         c = new Crawler({
             maxConnections: 10,
             jquery: false,
-            onDrain: function() {
-                done();
-            },
-            callback: function(error, result) {
-                expect(typeof result.statusCode).to.equal('number');
-                expect(result.statusCode).to.equal(statusCode);
+            callback: function(error, res,next) {
+                expect(typeof res.statusCode).to.equal('number');
+                expect(res.statusCode).to.equal(statusCode);
+		next();
             }
         });
+	
+	c.on('drain',done);
         c.queue({
             uri: uriFunction(statusCode)
         });
     });
     it('should work if uri is a function, example from Readme', function(done) {
         var googleSearch = function(search) {
-            return 'http://www.google.fr/search?q=' + search;
+            return 'http://www.bing.com/search?q=' + search;
         };
         c = new Crawler({
             maxConnections: 10,
-            onDrain: function() {
-                done();
-            },
-            callback: function(error, result) {
-                expect(typeof result.statusCode).to.equal('number');
-                expect(result.statusCode).to.equal(200);
+            callback: function(error, res,next) {
+                expect(typeof res.statusCode).to.equal('number');
+                expect(res.statusCode).to.equal(200);
+		next();
             }
         });
+	
+	c.on('drain',done);
         c.queue({
             uri: googleSearch('cheese')
         });
     });
     it('should skip if the uri is undefined or an empty string', function(done) {
         c = new Crawler({
-            onDrain: function() {
-                expect(spy.calledOnce).to.be.true;
-                done();
-            },
-            callback: function(error, result) {
-                expect(typeof result.statusCode).to.equal('number');
-                expect(result.statusCode).to.equal(200);
+            callback: function(error, res,next) {
+                expect(typeof res.statusCode).to.equal('number');
+                expect(res.statusCode).to.equal(200);
+		next();
             }
         });
         spy = sinon.spy(c, '_pushToQueue');
-        c.queue([undefined, 'http://'+httpbinHost]);
+	
+	c.on('drain',function() {
+            expect(spy.calledOnce).to.be.true;
+            done();
+        });
+        c.queue([undefined,null,[], 'http://'+httpbinHost]);
     });
 });

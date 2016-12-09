@@ -19,11 +19,19 @@ describe('Errors', function() {
             this.timeout(10000);
 
             c.queue({
-                uri : 'http://'+httpbinHost+'/delay/15',
+                uri : 'http://'+httpbinHost+'/delay/3',
                 callback : function(error, response) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
                 {
                     expect(error).not.to.be.null;
-                    expect(response).to.be.undefined;
+                    expect(error.code == "ETIMEDOUT" || error.code == "ESOCKETTIMEDOUT" ).to.be.true;
+		 //    if(process.version.replace(/^v/,'').split('.')[0] > '4'){
+   //          expect(error.code).to.equal("ESOCKETTIMEDOUT");
+			
+		 //    }else{
+			// expect(error.code).to.equal("ETIMEDOUT");
+		 //    }
+
+                    //expect(response).to.be.undefined;
                     done();
                 }
             });
@@ -51,7 +59,7 @@ describe('Errors', function() {
         it('should not return an error on status code 400 (Bad Request)', function(done) {
             c.queue({
                 uri: 'http://' + httpbinHost + '/status/400',
-                callback: function(error, response, $){
+                callback: function(error, response){
                     expect(error).to.be.null;
                     expect(response.statusCode).to.equal(400);
                     done();
@@ -61,7 +69,7 @@ describe('Errors', function() {
         it('should not return an error on status code 401 (Unauthorized)', function(done) {
             c.queue({
                 uri: 'http://' + httpbinHost + '/status/401',
-                callback: function(error, response, $){
+                callback: function(error, response){
                     expect(error).to.be.null;
                     expect(response.statusCode).to.equal(401);
                     done();
@@ -71,7 +79,7 @@ describe('Errors', function() {
         it('should not return an error on status code 403 (Forbidden)', function(done) {
             c.queue({
                 uri: 'http://' + httpbinHost + '/status/403',
-                callback: function(error, response, $){
+                callback: function(error, response){
                     expect(error).to.be.null;
                     expect(response.statusCode).to.equal(403);
                     done();

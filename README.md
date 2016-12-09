@@ -1,33 +1,30 @@
-[![Build Status](https://travis-ci.org/sylvinus/node-crawler.svg?branch=master)](https://travis-ci.org/sylvinus/node-crawler)
 
-node-crawler
-------------
+# node-crawler
+[![npm package](https://nodei.co/npm/crawler.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/crawler/)
 
-node-crawler aims to be the best crawling/scraping package for Node.
+[![build status](https://secure.travis-ci.org/bda-research/node-crawler.png)](https://travis-ci.org/bda-research/node-crawler)
+[![Dependency Status](https://david-dm.org/bda-research/node-crawler/status.svg)](https://david-dm.org/bda-research/node-crawler)
 
-new release is coming, please pay attention to [#176](https://github.com/bda-research/node-crawler/issues/176)
----------
 
-It features:
- * A clean, simple API
+Most powerful crawling/scraping package for Node, happy hacking :)
+
+Features:
+
  * server-side DOM & automatic jQuery insertion with Cheerio (default) or JSDOM
  * Configurable pool size and retries
- * Priority of requests
- * forceUTF8 mode to let node-crawler deal for you with charset detection and conversion
- * A local cache
- * node 0.10 and 0.12 support
+ * Control rate limit
+ * Priority queue of requests
+ * forceUTF8 mode to let crawler deal for you with charset detection and conversion
 
-The argument for creating this package was made at ParisJS #2 in 2010 ( [lightning talk slides](http://www.slideshare.net/sylvinus/web-crawling-with-nodejs) )
+Here is the [CHANGELOG](https://github.com/bda-research/node-crawler/blob/master/CHANGELOG.md)
 
-Help & Forks welcomed!
+# How to install
 
-How to install
---------------
 
     $ npm install crawler
 
-Crash course
-------------
+# Crash course
+
 
 ```javascript
 var Crawler = require("crawler");
@@ -36,21 +33,24 @@ var url = require('url');
 var c = new Crawler({
     maxConnections : 10,
     // This will be called for each crawled page
-    callback : function (error, result, $) {
-        // $ is Cheerio by default
-        //a lean implementation of core jQuery designed specifically for the server
-        $('a').each(function(index, a) {
-            var toQueueUrl = $(a).attr('href');
-            c.queue(toQueueUrl);
-        });
+    callback : function (error, res, done) {
+        if(error){
+            console.log(error);
+        }else{
+            var $ = res.$;
+            // $ is Cheerio by default
+            //a lean implementation of core jQuery designed specifically for the server
+            console.log($("title").text());
+        }
+        done();
     }
 });
 
 // Queue just one URL, with default callback
-c.queue('http://joshfire.com');
+c.queue('http://www.amazon.com');
 
 // Queue a list of URLs
-c.queue(['http://jamendo.com/','http://tedxparis.com']);
+c.queue(['http://www.google.com/','http://www.yahoo.com']);
 
 // Queue URLs with custom callbacks & parameters
 c.queue([{
@@ -58,28 +58,77 @@ c.queue([{
     jQuery: false,
 
     // The global callback won't be called
-    callback: function (error, result) {
-        console.log('Grabbed', result.body.length, 'bytes');
+    callback: function (error, res, done) {
+        if(error){
+            console.log(error);
+        }else{
+            console.log('Grabbed', res.body.length, 'bytes');
+        }
+        done();
     }
 }]);
-
-// Queue using a function
-var googleSearch = function(search) {
-  return 'http://www.google.fr/search?q=' + search;
-};
-c.queue({
-  uri: googleSearch('cheese')
-});
 
 // Queue some HTML code directly without grabbing (mostly for tests)
 c.queue([{
     html: '<p>This is a <strong>test</strong></p>'
 }]);
 ```
-For more examples, look at the [tests](https://github.com/sylvinus/node-crawler/tree/master/tests).
 
-Options reference
------------------
+# Work with `bottleneck`
+
+Control rate limit for with limiter. All tasks submit to a limiter will abide the `rateLimit` and `maxConnections` restrictions of the limiter. `rateLimit` is the minimum time gap between two tasks. `maxConnections` is the maximum number of tasks that can be running at the same time. Limiters are independent of each other. One common use case is setting different limiters for different proxies.
+
+To help you better understand `maxConnections`, here's an example. Say we have 10 tasks to do, `rateLimit` is set to 2000 ms, `maxConnections` is set to 3 and each task takes 10000 ms to finish. What happens will be as follows: 
+```
+00'----start doing task1
+02'----start doing task2
+04'----start doing task3
+10'----task1 done, start doing task4
+12'----task2 done, start doing task5
+...
+```
+
+Below is an example: 
+
+```javascript
+var Crawler = require("crawler");
+
+var c = new Crawler({
+    maxConnections : 1,
+    rateLimit:2000,
+    callback : function (error, res, done) {
+        if(error){
+            console.error(error);
+        }else{
+            var $ = res.$;
+            console.log($('title').text());
+        }
+        done();
+    }
+});
+
+c.queue({
+    uri:"http://www.google.com",
+    limiter:"key1",// for connection of 'key1'
+    proxy:"http://user:pass@127.0.0.1:8080"
+});
+
+c.queue({
+    uri:"http://www.google.com",
+    limiter:"key2", // for connection of 'key2'
+    proxy:"http://user:pass@127.0.0.1:8082"
+});
+
+c.queue({
+    uri:"http://www.google.com",
+    limiter:"key3", // for connection of 'key3'
+    proxy:"http://user:pass@127.0.0.1:8081"
+});
+
+```
+
+# Options reference
+
 
 You can pass these options to the Crawler() constructor if you want them to be global or as
 items in the queue() calls if you want them to be specific to that item (overwriting global options)
@@ -89,55 +138,121 @@ the request() method.
 
 Basic request options:
 
- * `uri`: String, the URL you want to crawl
- * `timeout` : Number, in milliseconds        (Default 60000)
- * [All mikeal's requests options are accepted](https://github.com/mikeal/request#requestoptions-callback)
+ * `uri`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) The url you want to crawl.
+ * `timeout` : [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) In milliseconds (Default 15000).
+ * [All mikeal's requests options are accepted](https://github.com/mikeal/request#requestoptions-callback).
 
 Callbacks:
 
- * `callback(error, result, $)`: A request was completed
- * `onDrain()`: There is no more queued requests
+ * `callback(error, res, done)`: Function that will be called after a request was completed
+     * `error`: [Error](https://nodejs.org/api/errors.html)
+     * `res`: [http.IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage) A response of standard IncomingMessage includes `$` and `options`
+         * `res.statusCode`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) HTTP status code. E.G.`200`
+         * `res.body`: [Buffer](https://nodejs.org/api/buffer.html) | [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) HTTP response content which could be a html page, plain text or xml document e.g.
+         * `res.headers`: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) HTTP response headers
+         * `res.request`: [Request](https://github.com/request/request)  An instance of Mikeal's `Request` instead of [http.ClientRequest](https://nodejs.org/api/http.html#http_class_http_clientrequest)
+             * `res.request.uri`: [urlObject](https://nodejs.org/api/url.html#url_url_strings_and_url_objects) HTTP request entity of parsed url
+             * `res.request.method`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) HTTP request method. E.G. `GET`
+             * `res.request.headers`: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) HTTP request headers
+         * `res.options`: [Options](#options-reference) of this task
+         * `$`: [jQuery Selector](https://api.jquery.com/category/selectors/) A selector for  html or xml document.
+     * `done`: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function) It must be called when you've done your work in callback.
 
-Pool options:
+Schedule options:
 
- * `maxConnections`: Number, Size of the worker pool (Default 10),
- * `priorityRange`: Number, Range of acceptable priorities starting from 0 (Default 10),
- * `priority`: Number, Priority of this request (Default 5),
+ * `maxConnections`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Size of the worker pool (Default 10).
+ * `rateLimit`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Number of milliseconds to delay between each requests (Default 0).
+ * `priorityRange`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Range of acceptable priorities starting from 0 (Default 10).
+ * `priority`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Priority of this request (Default 5).
 
 Retry options:
 
- * `retries`: Number of retries if the request fails (Default 3),
- * `retryTimeout`: Number of milliseconds to wait before retrying (Default 10000),
+ * `retries`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Number of retries if the request fails (Default 3),
+ * `retryTimeout`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Number of milliseconds to wait before retrying (Default 10000),
 
 Server-side DOM options:
 
- * `jQuery`: true, false or ConfObject (Default true)
-   see below [Working with Cheerio or JSDOM](https://github.com/paulvalla/node-crawler/blob/master/README.md#working-with-cheerio-or-jsdom)
+ * `jQuery`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type)|[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)|[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) Use `cheerio` with default configrations to inject document if true or "cheerio". Or use customized `cheerio` if an object with [Parser options](https://github.com/fb55/htmlparser2/wiki/Parser-options). Disable injecting jQuery selector if false. If you have memory leak issue in your project, use "whacko", an alternative parser,to avoid that. (Default true)
 
 Charset encoding:
 
- * `forceUTF8`: Boolean, if true will try to detect the page charset and convert it to UTF8 if necessary. Never worry about encoding anymore! (Default false),
- * `incomingEncoding`: String, with forceUTF8: true to set encoding manually (Default null)
-     `incomingEncoding : 'windows-1255'` for example
+ * `forceUTF8`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true crawler will get charset from HTTP headers or meta tag in html and convert it to UTF8 if necessary. Never worry about encoding anymore! (Default true),
+ * `incomingEncoding`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) With forceUTF8: true to set encoding manually (Default null) so that crawler will not have to detect charset by itself. For example, `incomingEncoding : 'windows-1255'`. See [all supported encodings](https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings)
 
 Cache:
 
- * `cache`: Boolean, if true stores requests in memory (Default false)
- * `skipDuplicates`: Boolean, if true skips URIs that were already crawled, without even calling callback() (Default false)
+ * `skipDuplicates`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true skips URIs that were already crawled, without even calling callback() (Default false). __This is not recommended__, it's better to handle outside `Crawler` use [seenreq](https://github.com/mike442144/seenreq)
 
 Other:
 
- * `userAgent`: String, defaults to "node-crawler/[version]"
- * `referer`: String, if truthy sets the HTTP referer header
- * `rateLimits`: Number of milliseconds to delay between each requests (Default 0) Note that this option will force crawler to use only one connection (for now)
+ * `rotateUA`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true, `userAgent` should be an array and rotate it (Default false) 
+ * `userAgent`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)|[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), If `rotateUA` is false, but `userAgent` is an array, crawler will use the first one.
+ * `referer`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) If truthy sets the HTTP referer header
 
-Working with Cheerio or JSDOM
------------------------------
+
+ 
+# Class:Crawler
+
+## Event: 'schedule'
+ * `options` [Options](#options-reference)
+
+Emitted when a task is being added to scheduler.
+
+```javascript
+crawler.on('schedule',function(options){
+    options.proxy = "http://proxy:port";
+});
+```
+
+## Event: 'limiterChange'
+ * `options` [Options](#options-reference)
+ * `limiter` [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)
+
+Emitted when limiter has been changed.
+
+## Event: 'request'
+ * `options` [Options](#options-reference)
+
+Emitted when crawler is ready to send a request.
+
+If you are going to modify options at last stage before requesting, just listen on it.
+
+```javascript
+crawler.on('request',function(options){
+    options.qs.timestamp = new Date().getTime();
+});
+```
+
+## Event: 'drain'
+
+Emitted when queue is empty.
+
+```javascript
+crawler.on('drain',function(){
+    // For example, release a connection to database.
+    db.end();// close connection to MySQL
+});
+```
+
+## crawler.queue(uri|options)
+ * `uri` [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)
+ * `options` [Options](#options-reference)
+
+Enqueue a task and wait for it to be excuted.
+
+## crawler.queueSize
+ * [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type)
+
+Size of queue, read-only
+
+ 
+# Working with Cheerio or JSDOM
+
 
 Crawler by default use [Cheerio](https://github.com/cheeriojs/cheerio) instead of [Jsdom](https://github.com/tmpvar/jsdom). Jsdom is more robust but can be hard to install (espacially on windows) because of [contextify](https://github.com/tmpvar/jsdom#contextify).
 Which is why, if you want to use jsdom you will have to build it, and `require('jsdom')` in your own script before passing it to crawler. This is to avoid cheerio crawler user to build jsdom when installing crawler.
 
-###Working with Cheerio
+## Working with Cheerio
 ```javascript
 jQuery: true //(default)
 //OR
@@ -153,7 +268,7 @@ jQuery: {
 ```
 These parsing options are taken directly from [htmlparser2](https://github.com/fb55/htmlparser2/wiki/Parser-options), therefore any options that can be used in `htmlparser2` are valid in cheerio as well. The default options are:
 
-```js
+```javascript
 {
     normalizeWhitespace: false,
     xmlMode: false,
@@ -165,9 +280,10 @@ For a full list of options and their effects, see [this](https://github.com/fb55
 [htmlparser2's options](https://github.com/fb55/htmlparser2/wiki/Parser-options).
 [source](https://github.com/cheeriojs/cheerio#loading)
 
-###Working with JSDOM
+## Working with JSDOM
 
 In order to work with JSDOM you will have to install it in your project folder `npm install jsdom`, deal with [compiling C++](https://github.com/tmpvar/jsdom#contextify) and pass it to crawler.
+
 ```javascript
 var jsdom = require('jsdom');
 var Crawler = require('crawler');
@@ -177,50 +293,44 @@ var c = new Crawler({
 });
 ```
 
-How to test
------------
+# How to test
 
-### Install and run Httpbin
 
-node-crawler use a local httpbin for testing purpose. You can install httpbin as a library from PyPI and run it as a WSGI app. For example, using Gunicorn:
 
-    $ pip install httpbin
-    // launch httpbin as a daemon with 6 worker on localhost
-    $ gunicorn httpbin:app -b 127.0.0.1:8000 -w 6 --daemon
+## Install and run Httpbin
 
-    // Finally
-    $ npm install && npm test
+crawler use a local httpbin for testing purpose. You can install httpbin as a library from PyPI and run it as a WSGI app. For example, using Gunicorn:
 
-### Alternative: Docker
+```bash
+$ pip install httpbin
+# launch httpbin as a daemon with 6 worker on localhost
+$ gunicorn httpbin:app -b 127.0.0.1:8000 -w 6 --daemon
+# Finally
+$ npm install && npm test
+```
+
+## Alternative: Docker
 
 After [installing Docker](http://docs.docker.com/), you can run:
 
-    // Builds the local test environment
-    $ docker build -t node-crawler .
+```bash
+# Builds the local test environment
+$ docker build -t node-crawler .
 
-    // Runs tests
-    $ docker run node-crawler sh -c "gunicorn httpbin:app -b 127.0.0.1:8000 -w 6 --daemon && npm install && npm test"
+# Runs tests
+$ docker run node-crawler sh -c "gunicorn httpbin:app -b 127.0.0.1:8000 -w 6 --daemon && cd /usr/local/lib/node_modules/crawler && npm install && npm test"
 
-    // You can also ssh into the container for easier debugging
-    $ docker run -i -t node-crawler bash
+# You can also ssh into the container for easier debugging
+$ docker run -i -t node-crawler bash
+```
 
-[![build status](https://secure.travis-ci.org/sylvinus/node-crawler.png)](http://travis-ci.org/sylvinus/node-crawler)
 
-Rough todolist
---------------
+# Rough todolist
 
- * Refactoring the code to be more maintenable, it's spaghetti code in there !
- * Have a look at the Cache feature and refactor it
- * Same for the Pool
- * Proxy feature
- * This issue: https://github.com/sylvinus/node-crawler/issues/118
+ * Introducing zombie to deal with page with complex ajax
+ * Refactoring the code to be more maintenable
  * Make Sizzle tests pass (jsdom bug? https://github.com/tmpvar/jsdom/issues#issue/81)
- * More crawling tests
- * Document the API more (+ the result object)
- * Option to wait for callback to finish before freeing the pool resource (via another callback like next())
 
+# ChangeLog
 
-ChangeLog
----------
-
-See https://github.com/sylvinus/node-crawler/releases
+See [CHANGELOG](https://github.com/bda-research/node-crawler/blob/master/CHANGELOG.md)
