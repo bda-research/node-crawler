@@ -6,7 +6,7 @@
 [![Dependency Status](https://david-dm.org/bda-research/node-crawler/status.svg)](https://david-dm.org/bda-research/node-crawler)
 
 
-Most powerful crawling/scraping package for Node, happy hacking :)
+Most powerful crawling/scraping package for Node, happy hacking :). Now we are looking for a logo design, which need your help!
 
 Features:
 
@@ -15,6 +15,7 @@ Features:
  * Control rate limit
  * Priority queue of requests
  * forceUTF8 mode to let crawler deal for you with charset detection and conversion
+ * Compatible with 4.x or newer version
 
 Here is the [CHANGELOG](https://github.com/bda-research/node-crawler/blob/master/CHANGELOG.md)
 
