@@ -246,8 +246,7 @@ Size of queue, read-only
 # Working with Cheerio or JSDOM
 
 
-Crawler by default use [Cheerio](https://github.com/cheeriojs/cheerio) instead of [JSDOM](https://github.com/tmpvar/jsdom). JSDOM is more robust but can be hard to install (especially on windows) because of [contextify](https://github.com/tmpvar/jsdom#contextify).
-Which is why, if you want to use JSDOM you will have to build it, and `require('jsdom')` in your own script before passing it to crawler. This is to avoid cheerio crawler user to build JSDOM when installing crawler.
+Crawler by default use [Cheerio](https://github.com/cheeriojs/cheerio) instead of [JSDOM](https://github.com/tmpvar/jsdom). JSDOM is more robust, if you want to use JSDOM you will have to require it `require('jsdom')` in your own script before passing it to crawler.
 
 ## Working with Cheerio
 ```javascript
@@ -279,7 +278,7 @@ For a full list of options and their effects, see [this](https://github.com/fb55
 
 ## Working with JSDOM
 
-In order to work with JSDOM you will have to install it in your project folder `npm install jsdom`, deal with [compiling C++](https://github.com/tmpvar/jsdom#contextify) and pass it to crawler.
+In order to work with JSDOM you will have to install it in your project folder `npm install jsdom`, and pass it to crawler.
 
 ```javascript
 var jsdom = require('jsdom');
