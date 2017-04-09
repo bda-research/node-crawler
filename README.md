@@ -29,7 +29,6 @@ Here is the [CHANGELOG](https://github.com/bda-research/node-crawler/blob/master
 
 ```javascript
 var Crawler = require("crawler");
-var url = require('url');
 
 var c = new Crawler({
     maxConnections : 10,
