@@ -2,6 +2,7 @@
 
 var Crawler = require('../lib/crawler');
 var expect = require('chai').expect;
+var httpbinHost = 'localhost:8000';
 var c;
 
 describe('Encoding', function() {
@@ -25,7 +26,7 @@ describe('Encoding', function() {
     it('should return buffer if encoding = null', function(done) {
         this.timeout(5000);
         c.queue([{
-            uri: 'http://czyborra.com/charsets/iso8859.html',
+            uri: 'http://' + httpbinHost + '/html',
             encoding:null,
             callback: function(error, result) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
             {
@@ -57,6 +58,29 @@ describe('Encoding', function() {
             {
                 expect(error).to.be.null;
                 expect(result.body.indexOf('Jörg')).to.equal(-1);
+                done();
+            }
+        }]);
+    });
+
+    it('should parse charset from header ', function(done) {
+        c.queue([{
+            uri: 'http://' + httpbinHost + '/html',
+            callback: function(error, result) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
+            {
+                expect(error).to.be.null;
+                done();
+            }
+        }]);
+    });
+
+    it('should parse charset from meta tag in html if header does not contain content-type key ', function(done) {
+        c.queue([{
+            uri: 'http://czyborra.com/charsets/iso8859.html',
+            callback: function(error, result) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
+            {
+                expect(error).to.be.null;
+		expect(result.body.indexOf('Jörg')).to.be.above(0);
                 done();
             }
         }]);
