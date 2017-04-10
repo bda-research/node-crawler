@@ -77,55 +77,51 @@ c.queue([{
 
 # Work with `bottleneck`
 
-Control rate limit for with limiter. All tasks submit to a limiter will abide the `rateLimit` and `maxConnections` restrictions of the limiter. `rateLimit` is the minimum time gap between two tasks. `maxConnections` is the maximum number of tasks that can be running at the same time. Limiters are independent of each other. One common use case is setting different limiters for different proxies.
-
-To help you better understand `maxConnections`, here's an example. Say we have 10 tasks to do, `rateLimit` is set to 2000 ms, `maxConnections` is set to 3 and each task takes 10000 ms to finish. What happens will be as follows: 
-```
-00'----start doing task1
-02'----start doing task2
-04'----start doing task3
-10'----task1 done, start doing task4
-12'----task2 done, start doing task5
-...
-```
-
-Below is an example: 
+Control rate limit for with limiter. All tasks submit to a limiter will abide the `rateLimit` and `maxConnections` restrictions of the limiter. `rateLimit` is the minimum time gap between two tasks. `maxConnections` is the maximum number of tasks that can be running at the same time. Limiters are independent of each other. One common use case is setting different limiters for different proxies. One thing is worth noticing, when `rateLimit` is set to a non-zero value, `maxConnections` will be forced to 1.
 
 ```javascript
-var Crawler = require("crawler");
+var crawler = require('crawler');
 
 var c = new Crawler({
-    maxConnections : 1,
-    rateLimit:2000,
-    callback : function (error, res, done) {
-        if(error){
-            console.error(error);
-        }else{
+    rateLimit: 2000,
+    maxConnections: 1,
+    callback: function(error, res, done) {
+        if(error) {
+            console.log(error)
+        } else {
             var $ = res.$;
-            console.log($('title').text());
+            console.log($('title').text())
         }
         done();
     }
-});
+})
 
+// if you want to crawl some website with 2000ms gap between requests
+c.queue('http://www.somewebsite.com/page/1')
+c.queue('http://www.somewebsite.com/page/2')
+c.queue('http://www.somewebsite.com/page/3')
+
+// if you want to crawl some website using proxy with 2000ms gap between requests for each proxy
 c.queue({
-    uri:"http://www.google.com",
-    limiter:"key1",// for connection of 'key1'
-    proxy:"http://user:pass@127.0.0.1:8080"
-});
-
+    uri:'http://www.somewebsite.com/page/1',
+    limiter:'proxy_1',
+    proxy:'proxy_1'
+})
 c.queue({
-    uri:"http://www.google.com",
-    limiter:"key2", // for connection of 'key2'
-    proxy:"http://user:pass@127.0.0.1:8082"
-});
-
+    uri:'http://www.somewebsite.com/page/2',
+    limiter:'proxy_2',
+    proxy:'proxy_2'
+})
 c.queue({
-    uri:"http://www.google.com",
-    limiter:"key3", // for connection of 'key3'
-    proxy:"http://user:pass@127.0.0.1:8081"
-});
-
+    uri:'http://www.somewebsite.com/page/3',
+    limiter:'proxy_3',
+    proxy:'proxy_3'
+})
+c.queue({
+    uri:'http://www.somewebsite.com/page/4',
+    limiter:'proxy_1',
+    proxy:'proxy_1'
+})
 ```
 
 # Options reference
@@ -173,7 +169,7 @@ Retry options:
 
 Server-side DOM options:
 
- * `jQuery`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type)|[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)|[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) Use `cheerio` with default configrations to inject document if true or "cheerio". Or use customized `cheerio` if an object with [Parser options](https://github.com/fb55/htmlparser2/wiki/Parser-options). Disable injecting jQuery selector if false. If you have memory leak issue in your project, use "whacko", an alternative parser,to avoid that. (Default true)
+ * `jQuery`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type)|[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)|[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) Use `cheerio` with default configurations to inject document if true or "cheerio". Or use customized `cheerio` if an object with [Parser options](https://github.com/fb55/htmlparser2/wiki/Parser-options). Disable injecting jQuery selector if false. If you have memory leak issue in your project, use "whacko", an alternative parser,to avoid that. (Default true)
 
 Charset encoding:
 
@@ -239,7 +235,7 @@ crawler.on('drain',function(){
  * `uri` [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)
  * `options` [Options](#options-reference)
 
-Enqueue a task and wait for it to be excuted.
+Enqueue a task and wait for it to be executed.
 
 ## crawler.queueSize
  * [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type)
@@ -250,8 +246,7 @@ Size of queue, read-only
 # Working with Cheerio or JSDOM
 
 
-Crawler by default use [Cheerio](https://github.com/cheeriojs/cheerio) instead of [Jsdom](https://github.com/tmpvar/jsdom). Jsdom is more robust but can be hard to install (espacially on windows) because of [contextify](https://github.com/tmpvar/jsdom#contextify).
-Which is why, if you want to use jsdom you will have to build it, and `require('jsdom')` in your own script before passing it to crawler. This is to avoid cheerio crawler user to build jsdom when installing crawler.
+Crawler by default use [Cheerio](https://github.com/cheeriojs/cheerio) instead of [JSDOM](https://github.com/tmpvar/jsdom). JSDOM is more robust, if you want to use JSDOM you will have to require it `require('jsdom')` in your own script before passing it to crawler.
 
 ## Working with Cheerio
 ```javascript
@@ -283,7 +278,7 @@ For a full list of options and their effects, see [this](https://github.com/fb55
 
 ## Working with JSDOM
 
-In order to work with JSDOM you will have to install it in your project folder `npm install jsdom`, deal with [compiling C++](https://github.com/tmpvar/jsdom#contextify) and pass it to crawler.
+In order to work with JSDOM you will have to install it in your project folder `npm install jsdom`, and pass it to crawler.
 
 ```javascript
 var jsdom = require('jsdom');
@@ -329,8 +324,8 @@ $ docker run -i -t node-crawler bash
 # Rough todolist
 
  * Introducing zombie to deal with page with complex ajax
- * Refactoring the code to be more maintenable
- * Make Sizzle tests pass (jsdom bug? https://github.com/tmpvar/jsdom/issues#issue/81)
+ * Refactoring the code to be more maintainable
+ * Make Sizzle tests pass (JSDOM bug? https://github.com/tmpvar/jsdom/issues#issue/81)
 
 # ChangeLog
 
