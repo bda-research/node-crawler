@@ -325,6 +325,9 @@ $ docker run -i -t node-crawler bash
  * Introducing zombie to deal with page with complex ajax
  * Refactoring the code to be more maintainable
  * Make Sizzle tests pass (JSDOM bug? https://github.com/tmpvar/jsdom/issues#issue/81)
+ * Promise support
+ * Commander support
+ * Middleware support
 
 # ChangeLog
 
