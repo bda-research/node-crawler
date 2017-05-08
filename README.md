@@ -19,12 +19,14 @@ Features:
 
 Here is the [CHANGELOG](https://github.com/bda-research/node-crawler/blob/master/CHANGELOG.md)
 
-# How to install
+# Get started
+
+## How to install
 
 
     $ npm install crawler
 
-# Crash course
+## Usage
 
 
 ```javascript
@@ -75,56 +77,24 @@ c.queue([{
 }]);
 ```
 
-# Work with `bottleneck`
-
-Control rate limit for with limiter. All tasks submit to a limiter will abide the `rateLimit` and `maxConnections` restrictions of the limiter. `rateLimit` is the minimum time gap between two tasks. `maxConnections` is the maximum number of tasks that can be running at the same time. Limiters are independent of each other. One common use case is setting different limiters for different proxies. One thing is worth noticing, when `rateLimit` is set to a non-zero value, `maxConnections` will be forced to 1.
+## Slow down
+Use `reateLimit` to slow down when you are visiting web sites.
 
 ```javascript
-var crawler = require('crawler');
+var crawler = require("crawler");
 
 var c = new Crawler({
-    rateLimit: 2000,
-    maxConnections: 1,
-    callback: function(error, res, done) {
-        if(error) {
-            console.log(error)
-        } else {
-            var $ = res.$;
-            console.log($('title').text())
-        }
+    rateLimit: 1000, // `maxConnections` will be forced to 1
+    callback: function(err, res, done){
+       	console.log(res.$("title").text());
         done();
     }
-})
+});
 
-// if you want to crawl some website with 2000ms gap between requests
-c.queue('http://www.somewebsite.com/page/1')
-c.queue('http://www.somewebsite.com/page/2')
-c.queue('http://www.somewebsite.com/page/3')
-
-// if you want to crawl some website using proxy with 2000ms gap between requests for each proxy
-c.queue({
-    uri:'http://www.somewebsite.com/page/1',
-    limiter:'proxy_1',
-    proxy:'proxy_1'
-})
-c.queue({
-    uri:'http://www.somewebsite.com/page/2',
-    limiter:'proxy_2',
-    proxy:'proxy_2'
-})
-c.queue({
-    uri:'http://www.somewebsite.com/page/3',
-    limiter:'proxy_3',
-    proxy:'proxy_3'
-})
-c.queue({
-    uri:'http://www.somewebsite.com/page/4',
-    limiter:'proxy_1',
-    proxy:'proxy_1'
-})
+c.queue(tasks);//between two tasks, minimum time gap is 1000 (ms)
 ```
 
-# Options reference
+## Options reference
 
 
 You can pass these options to the Crawler() constructor if you want them to be global or as
@@ -186,7 +156,6 @@ Other:
  * `userAgent`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)|[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), If `rotateUA` is false, but `userAgent` is an array, crawler will use the first one.
  * `referer`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) If truthy sets the HTTP referer header
 
-
  
 # Class:Crawler
 
@@ -242,7 +211,57 @@ Enqueue a task and wait for it to be executed.
 
 Size of queue, read-only
 
- 
+
+## Work with bottleneck
+
+Control rate limit for with limiter. All tasks submit to a limiter will abide the `rateLimit` and `maxConnections` restrictions of the limiter. `rateLimit` is the minimum time gap between two tasks. `maxConnections` is the maximum number of tasks that can be running at the same time. Limiters are independent of each other. One common use case is setting different limiters for different proxies. One thing is worth noticing, when `rateLimit` is set to a non-zero value, `maxConnections` will be forced to 1.
+
+```javascript
+var crawler = require('crawler');
+
+var c = new Crawler({
+    rateLimit: 2000,
+    maxConnections: 1,
+    callback: function(error, res, done) {
+        if(error) {
+            console.log(error)
+        } else {
+            var $ = res.$;
+            console.log($('title').text())
+        }
+        done();
+    }
+})
+
+// if you want to crawl some website with 2000ms gap between requests
+c.queue('http://www.somewebsite.com/page/1')
+c.queue('http://www.somewebsite.com/page/2')
+c.queue('http://www.somewebsite.com/page/3')
+
+// if you want to crawl some website using proxy with 2000ms gap between requests for each proxy
+c.queue({
+    uri:'http://www.somewebsite.com/page/1',
+    limiter:'proxy_1',
+    proxy:'proxy_1'
+})
+c.queue({
+    uri:'http://www.somewebsite.com/page/2',
+    limiter:'proxy_2',
+    proxy:'proxy_2'
+})
+c.queue({
+    uri:'http://www.somewebsite.com/page/3',
+    limiter:'proxy_3',
+    proxy:'proxy_3'
+})
+c.queue({
+    uri:'http://www.somewebsite.com/page/4',
+    limiter:'proxy_1',
+    proxy:'proxy_1'
+})
+```
+
+
 # Working with Cheerio or JSDOM
 
 
