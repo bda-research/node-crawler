@@ -157,9 +157,9 @@ Other:
  * `referer`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) If truthy sets the HTTP referer header
 
  
-# Class:Crawler
+## Class:Crawler
 
-## Event: 'schedule'
+### Event: 'schedule'
  * `options` [Options](#options-reference)
 
 Emitted when a task is being added to scheduler.
@@ -170,13 +170,13 @@ crawler.on('schedule',function(options){
 });
 ```
 
-## Event: 'limiterChange'
+### Event: 'limiterChange'
  * `options` [Options](#options-reference)
  * `limiter` [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)
 
 Emitted when limiter has been changed.
 
-## Event: 'request'
+### Event: 'request'
  * `options` [Options](#options-reference)
 
 Emitted when crawler is ready to send a request.
@@ -189,7 +189,7 @@ crawler.on('request',function(options){
 });
 ```
 
-## Event: 'drain'
+### Event: 'drain'
 
 Emitted when queue is empty.
 
@@ -200,13 +200,13 @@ crawler.on('drain',function(){
 });
 ```
 
-## crawler.queue(uri|options)
+### crawler.queue(uri|options)
  * `uri` [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)
  * `options` [Options](#options-reference)
 
 Enqueue a task and wait for it to be executed.
 
-## crawler.queueSize
+### crawler.queueSize
  * [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type)
 
 Size of queue, read-only
@@ -262,12 +262,12 @@ c.queue({
 ```
 
 
-# Working with Cheerio or JSDOM
+## Work with Cheerio or JSDOM
 
 
 Crawler by default use [Cheerio](https://github.com/cheeriojs/cheerio) instead of [JSDOM](https://github.com/tmpvar/jsdom). JSDOM is more robust, if you want to use JSDOM you will have to require it `require('jsdom')` in your own script before passing it to crawler.
 
-## Working with Cheerio
+### Working with Cheerio
 ```javascript
 jQuery: true //(default)
 //OR
@@ -295,7 +295,7 @@ For a full list of options and their effects, see [this](https://github.com/fb55
 [htmlparser2's options](https://github.com/fb55/htmlparser2/wiki/Parser-options).
 [source](https://github.com/cheeriojs/cheerio#loading)
 
-## Working with JSDOM
+### Work with JSDOM
 
 In order to work with JSDOM you will have to install it in your project folder `npm install jsdom`, and pass it to crawler.
 
@@ -309,8 +309,6 @@ var c = new Crawler({
 ```
 
 # How to test
-
-
 
 ## Install and run Httpbin
 
@@ -348,7 +346,3 @@ $ docker run -i -t node-crawler bash
  * Promise support
  * Commander support
  * Middleware support
-
-# ChangeLog
-
-See [CHANGELOG](https://github.com/bda-research/node-crawler/blob/master/CHANGELOG.md)
