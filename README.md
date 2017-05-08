@@ -4,6 +4,7 @@
 
 [![build status](https://secure.travis-ci.org/bda-research/node-crawler.png)](https://travis-ci.org/bda-research/node-crawler)
 [![Dependency Status](https://david-dm.org/bda-research/node-crawler/status.svg)](https://david-dm.org/bda-research/node-crawler)
+[![Gitter](https://img.shields.io/badge/gitter-join_chat-blue.svg?style=flat-square)](https://gitter.im/node-crawler/discuss?utm_source=badge)
 
 
 Most powerful crawling/scraping package for Node, happy hacking :). Now we are looking for a logo design, which need your help!
@@ -31,7 +32,6 @@ Here is the [CHANGELOG](https://github.com/bda-research/node-crawler/blob/master
 
 ```javascript
 var Crawler = require("crawler");
-var url = require('url');
 
 var c = new Crawler({
     maxConnections : 10,
@@ -345,6 +345,9 @@ $ docker run -i -t node-crawler bash
  * Introducing zombie to deal with page with complex ajax
  * Refactoring the code to be more maintainable
  * Make Sizzle tests pass (JSDOM bug? https://github.com/tmpvar/jsdom/issues#issue/81)
+ * Promise support
+ * Commander support
+ * Middleware support
 
 # ChangeLog
 
