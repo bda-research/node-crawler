@@ -78,7 +78,7 @@ c.queue([{
 ```
 
 ## Slow down
-Use `reateLimit` to slow down when you are visiting web sites.
+Use `rateLimit` to slow down when you are visiting web sites.
 
 ```javascript
 var crawler = require("crawler");
