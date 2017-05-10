@@ -1,6 +1,9 @@
 node-webcrawler ChangeLog
 -------------------------
 
+1.0.5
+ * fix bug of 'drain' never called [#210](https://github.com/bda-research/node-crawler/issues/210)
+
 1.0.4
  * fix bug of charset detecting [#203](https://github.com/bda-research/node-crawler/issues/203)
  * keep node version update to date in travis scripts
