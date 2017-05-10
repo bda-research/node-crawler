@@ -1,9 +1,12 @@
 node-webcrawler ChangeLog
 -------------------------
 
+1.0.5
+ * fix defect [#213](https://github.com/bda-research/node-crawler/issues/213)
+
 1.0.4
  * fix bug of charset detecting [#203](https://github.com/bda-research/node-crawler/issues/203)
- * keep node version update to date in travis scripts
+ * keep node version up to date in travis scripts
 
 1.0.3
  * fix bug, skipDuplicate and rotateUA don't work even if set true

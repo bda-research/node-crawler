@@ -7,7 +7,7 @@
 [![Gitter](https://img.shields.io/badge/gitter-join_chat-blue.svg?style=flat-square)](https://gitter.im/node-crawler/discuss?utm_source=badge)
 
 
-Most powerful crawling/scraping package for Node, happy hacking :). Now we are looking for a logo design, which need your help!
+Most powerful, popular and production crawling/scraping package for Node, happy hacking :). Now we are looking for a logo design, which need your help!
 
 Features:
 
