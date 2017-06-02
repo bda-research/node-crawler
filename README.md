@@ -94,6 +94,53 @@ var c = new Crawler({
 c.queue(tasks);//between two tasks, minimum time gap is 1000 (ms)
 ```
 
+## Custom parameters
+
+Sometimes you have to access variables from previous request/response session, what should you do is passing parameters as same as options:
+
+```js
+c.queue({
+    uri:"http://www.google.com",
+    parameter1:"value1",
+    parameter2:"value2",
+    parameter3:"value3"
+})
+```
+
+then access them in callback via `res.options`
+
+```js
+console.log(res.options.parameter1);
+```
+
+Crawler picks options only needed by request, so dont't worry about the redundance.
+
+## Raw body
+
+If you are downloading files like image, pdf, word etc, you have to save the raw response body which means Crawler shouldn't convert it to string. To make it happen, you need to set encoding to null
+
+```js
+let c = new Crawler({
+    encoding:null,
+    jQuery:false,// set false to suppress warning message.
+    callback:function(err, res, done){
+        if(err){
+            console.error(err.stack);
+        }else{
+            fs.createWriteStream(res.options.filename).write(res.body);
+        }
+	    
+        done();
+    }
+});
+
+c.queue({
+    uri:"https://nodejs.org/static/images/logos/nodejs-1920x1200.png",
+    filename:"nodejs-1920x1200.png"
+});
+
+```
+
 ## Options reference
 
 
@@ -130,7 +177,7 @@ Schedule options:
  * `maxConnections`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Size of the worker pool (Default 10).
  * `rateLimit`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Number of milliseconds to delay between each requests (Default 0).
  * `priorityRange`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Range of acceptable priorities starting from 0 (Default 10).
- * `priority`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Priority of this request (Default 5).
+ * `priority`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Priority of this request (Default 5). Low values have higher priority.
 
 Retry options:
 
