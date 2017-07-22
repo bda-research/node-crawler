@@ -154,7 +154,7 @@ Basic request options:
 
  * `uri`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) The url you want to crawl.
  * `timeout` : [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) In milliseconds (Default 15000).
- * [All mikeal's requests options are accepted](https://github.com/mikeal/request#requestoptions-callback).
+ * [All mikeal's request options are accepted](https://github.com/mikeal/request#requestoptions-callback).
 
 Callbacks:
 
