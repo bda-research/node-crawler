@@ -86,7 +86,7 @@ var crawler = require("crawler");
 var c = new Crawler({
     rateLimit: 1000, // `maxConnections` will be forced to 1
     callback: function(err, res, done){
-       	console.log(res.$("title").text());
+        console.log(res.$("title").text());
         done();
     }
 });
@@ -120,7 +120,7 @@ Crawler picks options only needed by request, so dont't worry about the redundan
 If you are downloading files like image, pdf, word etc, you have to save the raw response body which means Crawler shouldn't convert it to string. To make it happen, you need to set encoding to null
 
 ```js
-let c = new Crawler({
+var c = new Crawler({
     encoding:null,
     jQuery:false,// set false to suppress warning message.
     callback:function(err, res, done){
@@ -129,7 +129,7 @@ let c = new Crawler({
         }else{
             fs.createWriteStream(res.options.filename).write(res.body);
         }
-	    
+        
         done();
     }
 });
@@ -139,6 +139,39 @@ c.queue({
     filename:"nodejs-1920x1200.png"
 });
 
+```
+
+## preRequest
+
+If you want to do something either synchronously or asynchronously before each request, you can try the code below. Note that direct requests won't trigger preRequest.
+
+```
+var c = new Crawler({
+    preRequest: function(options, done) {
+        // 'options' here is not the 'options' you pass to 'c.queue', instead, it's the options that is going to be passed to 'request' module 
+        console.log(options);
+	// when done is called, the request will start
+	done();
+    },
+    callback: function(err, res, done) {
+        if(err) {
+	    console.log(err)
+	} else {
+	    console.log(res.statusCode)
+	}
+    }
+});
+
+c.queue({
+    uri: 'http://www.google.com',
+    // this will override the 'preRequest' defined in crawler
+    preRequest: function(options, done) {
+        setTimeout(function() {
+	    console.log(options);
+	    done();
+	}, 1000)
+    }
+});
 ```
 
 ## Options reference
@@ -154,7 +187,7 @@ Basic request options:
 
  * `uri`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) The url you want to crawl.
  * `timeout` : [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) In milliseconds (Default 15000).
- * [All mikeal's requests options are accepted](https://github.com/mikeal/request#requestoptions-callback).
+ * [All mikeal's request options are accepted](https://github.com/mikeal/request#requestoptions-callback).
 
 Callbacks:
 
@@ -202,6 +235,24 @@ Other:
  * `rotateUA`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true, `userAgent` should be an array and rotate it (Default false) 
  * `userAgent`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)|[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), If `rotateUA` is false, but `userAgent` is an array, crawler will use the first one.
  * `referer`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) If truthy sets the HTTP referer header
+
+## Send request directly
+
+In case you want to send a request directly without going through the scheduler in Crawler, try the code below. `direct` takes the same options as `queue`, please refer to [options](#options-reference) for detail. The difference is when calling `direct`, `callback` must be defined explicitly, with two arguments `error` and `response`, which are the same as that of `callback` of method `queue`.
+
+```
+crawler.direct({
+    uri: 'http://www.google.com',
+    skipEventRequest: false, // defualts to true, direct requests won't trigger Evnet:'request'
+    callback: function(error, response) {
+        if(error) {
+            console.log(error)
+        } else {
+            console.log(response.statusCode);
+        }
+    }
+});
+```
 
  
 ## Class:Crawler
@@ -308,6 +359,11 @@ c.queue({
 })
 ```
 
+Normally, all limiter instances in limiter cluster in crawler are instantiated with options specified in crawler constructor. You can change property of any limiter by calling the code below. Currently, we only support changing property 'rateLimit' of limiter. Note that the default limiter can be accessed by `c.setLimiterProperty('default', 'rateLimit', 3000)`. We strongly recommend that you leave limiters unchanged after their instantiation unless you know clearly what you are doing.
+```
+var c = new Crawler({});
+c.setLimiterProperty('limiterName', 'propertyName', value)
+```
 
 ## Work with Cheerio or JSDOM
 
