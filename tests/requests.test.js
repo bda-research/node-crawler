@@ -68,6 +68,40 @@ describe('Request tests', function() {
         });
         c.queue(['http://'+httpbinHost+'/user-agent']);
     });
+    it('should replace the global User-Agent', function(done) {
+        c = new Crawler({
+            headers:{"User-Agent": 'test/1.2'},
+            jQuery: false,
+            callback:function(error, res) {
+                expect(error).to.be.null;
+                try {
+                    var body = JSON.parse(res.body);
+                    expect(body['user-agent']).to.equal('foo/bar');
+                } catch (ex) {
+                    expect(false).to.be.true;
+                }
+                done();
+            }
+        });
+        c.queue({uri:'http://'+httpbinHost+'/user-agent',headers:{"User-Agent":"foo/bar"}});
+    });
+    it('should replace the global userAgent', function(done) {
+        c = new Crawler({
+            userAgent: 'test/1.2',
+            jQuery: false,
+            callback:function(error, res) {
+                expect(error).to.be.null;
+                try {
+                    var body = JSON.parse(res.body);
+                    expect(body['user-agent']).to.equal('foo/bar');
+                } catch (ex) {
+                    expect(false).to.be.true;
+                }
+                done();
+            }
+        });
+        c.queue({uri:'http://'+httpbinHost+'/user-agent',userAgent:"foo/bar"});
+    });
     it('should spoof the referer', function(done) {
         c = new Crawler({
             referer: 'http://spoofed.com',
