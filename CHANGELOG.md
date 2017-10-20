@@ -1,10 +1,10 @@
 node-webcrawler ChangeLog
 -------------------------
 1.1.1
- * added a way to replace the global options.headers keys by queuing options.headers  #241
- * fix bug of using last jar object if current options doesn't contain `jar` option #240
- * fix bug of encoding #233
- * added seenreq options #208
+ * added a way to replace the global options.headers keys by queuing options.headers  [#241](https://github.com/bda-research/node-crawler/issues/241)
+ * fix bug of using last jar object if current options doesn't contain `jar` option [#240](https://github.com/bda-research/node-crawler/issues/240)
+ * fix bug of encoding [#233](https://github.com/bda-research/node-crawler/issues/233)
+ * added seenreq options [#208](https://github.com/bda-research/node-crawler/issues/208)
  * added preRequest, setLimiterProperty, direct request functions
 
 1.0.5
