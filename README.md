@@ -1,3 +1,4 @@
+<img alt="Node Crawler Logo" src="https://raw.githubusercontent.com/rmtngh/node-crawler/master/logo.png" width="300" />
 
 # node-crawler
 [![npm package](https://nodei.co/npm/crawler.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/crawler/)
@@ -14,7 +15,7 @@
 [download-url]: https://npmjs.org/package/crawler
 
 
-Most powerful, popular and production crawling/scraping package for Node, happy hacking :). Now we are looking for a logo design, which need your help!
+Most powerful, popular and production crawling/scraping package for Node, happy hacking :).
 
 Features:
 
