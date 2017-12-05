@@ -1,5 +1,12 @@
 
-# node-crawler
+<p align="center">
+  <a href="https://github.com/bda-research/node-crawler">
+    <img alt="Node.js" src="https://raw.githubusercontent.com/bda-research/node-crawler/master/crawler_primary.png" width="400"/>
+  </a>
+</p>
+
+
+#
 [![npm package](https://nodei.co/npm/crawler.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/crawler/)
 
 [![build status](https://secure.travis-ci.org/bda-research/node-crawler.png)](https://travis-ci.org/bda-research/node-crawler)
@@ -14,7 +21,7 @@
 [download-url]: https://npmjs.org/package/crawler
 
 
-Most powerful, popular and production crawling/scraping package for Node, happy hacking :). Now we are looking for a logo design, which need your help!
+Most powerful, popular and production crawling/scraping package for Node, happy hacking :)
 
 Features:
 
@@ -26,6 +33,9 @@ Features:
  * Compatible with 4.x or newer version
 
 Here is the [CHANGELOG](https://github.com/bda-research/node-crawler/blob/master/CHANGELOG.md)
+
+Thanks to [Authuir](https://github.com/authuir), we have a [Chinese](http://node-crawler.readthedocs.io/zh_CN/latest/) docs. Other languages are welcomed!
+
 
 # Get started
 
