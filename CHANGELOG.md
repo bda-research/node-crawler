@@ -1,5 +1,10 @@
 node-webcrawler ChangeLog
 -------------------------
+1.1.2
+ * Recognize all XML MIME types to inject jQuery [#245](https://github.com/bda-research/node-crawler/pull/245)
+ * Allow options to specify the Agent for Request [#246](https://github.com/bda-research/node-crawler/pull/246)
+ * Added logo
+
 1.1.1
  * added a way to replace the global options.headers keys by queuing options.headers  [#241](https://github.com/bda-research/node-crawler/issues/241)
  * fix bug of using last jar object if current options doesn't contain `jar` option [#240](https://github.com/bda-research/node-crawler/issues/240)
