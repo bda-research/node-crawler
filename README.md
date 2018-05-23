@@ -47,7 +47,7 @@ Thanks to [Authuir](https://github.com/authuir), we have a [Chinese](http://node
 ## Usage
 
 
-```javascript
+```js
 var Crawler = require("crawler");
 
 var c = new Crawler({
@@ -97,7 +97,7 @@ c.queue([{
 ## Slow down
 Use `rateLimit` to slow down when you are visiting web sites.
 
-```javascript
+```js
 var crawler = require("crawler");
 
 var c = new Crawler({
@@ -162,7 +162,7 @@ c.queue({
 
 If you want to do something either synchronously or asynchronously before each request, you can try the code below. Note that direct requests won't trigger preRequest.
 
-```
+```js
 var c = new Crawler({
     preRequest: function(options, done) {
         // 'options' here is not the 'options' you pass to 'c.queue', instead, it's the options that is going to be passed to 'request' module 
@@ -257,7 +257,7 @@ Other:
 
 In case you want to send a request directly without going through the scheduler in Crawler, try the code below. `direct` takes the same options as `queue`, please refer to [options](#options-reference) for detail. The difference is when calling `direct`, `callback` must be defined explicitly, with two arguments `error` and `response`, which are the same as that of `callback` of method `queue`.
 
-```
+```js
 crawler.direct({
     uri: 'http://www.google.com',
     skipEventRequest: false, // defualts to true, direct requests won't trigger Evnet:'request'
@@ -279,7 +279,7 @@ crawler.direct({
 
 Emitted when a task is being added to scheduler.
 
-```javascript
+```js
 crawler.on('schedule',function(options){
     options.proxy = "http://proxy:port";
 });
@@ -298,7 +298,7 @@ Emitted when crawler is ready to send a request.
 
 If you are going to modify options at last stage before requesting, just listen on it.
 
-```javascript
+```js
 crawler.on('request',function(options){
     options.qs.timestamp = new Date().getTime();
 });
@@ -308,7 +308,7 @@ crawler.on('request',function(options){
 
 Emitted when queue is empty.
 
-```javascript
+```js
 crawler.on('drain',function(){
     // For example, release a connection to database.
     db.end();// close connection to MySQL
@@ -331,7 +331,7 @@ Size of queue, read-only
 
 Control rate limit for with limiter. All tasks submit to a limiter will abide the `rateLimit` and `maxConnections` restrictions of the limiter. `rateLimit` is the minimum time gap between two tasks. `maxConnections` is the maximum number of tasks that can be running at the same time. Limiters are independent of each other. One common use case is setting different limiters for different proxies. One thing is worth noticing, when `rateLimit` is set to a non-zero value, `maxConnections` will be forced to 1.
 
-```javascript
+```js
 var crawler = require('crawler');
 
 var c = new Crawler({
@@ -377,7 +377,7 @@ c.queue({
 ```
 
 Normally, all limiter instances in limiter cluster in crawler are instantiated with options specified in crawler constructor. You can change property of any limiter by calling the code below. Currently, we only support changing property 'rateLimit' of limiter. Note that the default limiter can be accessed by `c.setLimiterProperty('default', 'rateLimit', 3000)`. We strongly recommend that you leave limiters unchanged after their instantiation unless you know clearly what you are doing.
-```
+```js
 var c = new Crawler({});
 c.setLimiterProperty('limiterName', 'propertyName', value)
 ```
@@ -388,7 +388,7 @@ c.setLimiterProperty('limiterName', 'propertyName', value)
 Crawler by default use [Cheerio](https://github.com/cheeriojs/cheerio) instead of [JSDOM](https://github.com/tmpvar/jsdom). JSDOM is more robust, if you want to use JSDOM you will have to require it `require('jsdom')` in your own script before passing it to crawler.
 
 ### Working with Cheerio
-```javascript
+```js
 jQuery: true //(default)
 //OR
 jQuery: 'cheerio'
@@ -403,7 +403,7 @@ jQuery: {
 ```
 These parsing options are taken directly from [htmlparser2](https://github.com/fb55/htmlparser2/wiki/Parser-options), therefore any options that can be used in `htmlparser2` are valid in cheerio as well. The default options are:
 
-```javascript
+```js
 {
     normalizeWhitespace: false,
     xmlMode: false,
@@ -419,7 +419,7 @@ For a full list of options and their effects, see [this](https://github.com/fb55
 
 In order to work with JSDOM you will have to install it in your project folder `npm install jsdom`, and pass it to crawler.
 
-```javascript
+```js
 var jsdom = require('jsdom');
 var Crawler = require('crawler');
 
