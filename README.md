@@ -260,7 +260,7 @@ In case you want to send a request directly without going through the scheduler 
 ```js
 crawler.direct({
     uri: 'http://www.google.com',
-    skipEventRequest: false, // defualts to true, direct requests won't trigger Evnet:'request'
+    skipEventRequest: false, // default to true, direct requests won't trigger Event:'request'
     callback: function(error, response) {
         if(error) {
             console.log(error)
