@@ -1,5 +1,14 @@
 node-webcrawler ChangeLog
 -------------------------
+1.1.4
+ * Tolerate incorrect `Content-Type` header [#270](https://github.com/bda-research/node-crawler/pull/270), [#193](https://github.com/bda-research/node-crawler/issues/193)
+ * Added examples [#272](https://github.com/bda-research/node-crawler/pull/272), [267](https://github.com/bda-research/node-crawler/issues/267)
+ * Fixed "skipDuplicates" and "retries" config incompatible bug [#261](https://github.com/bda-research/node-crawler/issues/261)
+ * Fix typo in README [#268](https://github.com/bda-research/node-crawler/pull/268)
+
+1.1.3
+ * Upgraded `request.js` and `lodash`
+
 1.1.2
  * Recognize all XML MIME types to inject jQuery [#245](https://github.com/bda-research/node-crawler/pull/245)
  * Allow options to specify the Agent for Request [#246](https://github.com/bda-research/node-crawler/pull/246)
