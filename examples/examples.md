@@ -1,15 +1,17 @@
 # Node Crawler Examples
 
-Node Crawler is a great open source web scraping tool. However, there are few a common questions regarding how to use it. Let's hash it out: 
+Node Crawler is a great open source web scraping tool. However, there are a few common questions regarding how to use it. Let's hash it out: 
 
 ## Table of Content
-  - How to use a proxy with Crawler?
-  - How to download images and other files? 
-  - How to get full path using jQuery Selector?
+  - [Use a proxy with Crawler](#Use-a-proxy-with-Crawler)
+  - [Download images and other files](#Download-Images-&-Other-Files)
+  - [Get full path using jQuery Selector](#Get-Full-Path-Using-jQuery-Selector)
 
 ### Use Proxy with Crawler 
 Most large scale webscraping tasks requires us to perform countless amounts of access to a specific website. This could be higly risky using only one IP address since the website could permanately or temporarily block our IP address. Instead, we can use a proxy that gives us the freedom to access websites using multiple different IPs. **Below is an example of how to use a proxy with Crawler:** 
 ```javascript
+const Crawler = require("crawler");
+
 // for global
 new Crawler({
     rateLimit:1000,
@@ -17,7 +19,7 @@ new Crawler({
 });
 
 //for just one task
-crawler.queue({
+Crawler.queue({
     uri: "http://www.example.com",
     proxy: "http://proxy.example.com"
 })
@@ -28,10 +30,10 @@ crawler.queue({
 Some of our web scraping tasks involves downloading images or other file types, like grabbing images to train image recognition algorithms. 
 With crawler, a few settings will do the trick; simply set ```encoding``` and ```jQurey``` options to ```null``` and ```false``` respectively when queuing a task.  **Below is an example of downloading images with Crawler:**
 ```javascript
-var Crawler = require("crawler");
-var fs = require("fs");
+const Crawler = require("crawler");
+const fs = require("fs");
 
-var c = new Crawler({
+let crawler = new Crawler({
     maxConnections : 10,
     // This will be called for each crawled page
     callback : function (error, res, done) {
@@ -44,7 +46,7 @@ var c = new Crawler({
     }
 });
 
-c.queue({
+crawler.queue({
    uri: 'http://www.example.com/image.jpg',
    filename: 'myImage.jpg',
    encoding: null,
