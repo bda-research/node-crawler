@@ -3,9 +3,9 @@
 Node Crawler is a great open source web scraping tool. However, there are a few common questions regarding how to use it. Let's hash it out: 
 
 ## Table of Content
-  - [Use a proxy with Crawler](#Use-a-proxy-with-Crawler)
-  - [Download images and other files](#Download-Images-&-Other-Files)
-  - [Get full path using jQuery Selector](#Get-Full-Path-Using-jQuery-Selector)
+  - [Use a proxy with Crawler](#use-proxy-with-crawler)
+  - [Download images and other files](#download-images-and-other-files)
+  - [Get full path using jQuery Selector](#get-full-path-using-jquery-selector)
 
 ### Use Proxy with Crawler 
 Most large scale webscraping tasks requires us to perform countless amounts of access to a specific website. This could be higly risky using only one IP address since the website could permanately or temporarily block our IP address. Instead, we can use a proxy that gives us the freedom to access websites using multiple different IPs. **Below is an example of how to use a proxy with Crawler:** 
@@ -26,7 +26,7 @@ Crawler.queue({
 ```
 
 
-### Download Images & Other Files
+### Download Images and Other Files
 Some of our web scraping tasks involves downloading images or other file types, like grabbing images to train image recognition algorithms. 
 With crawler, a few settings will do the trick; simply set ```encoding``` and ```jQurey``` options to ```null``` and ```false``` respectively when queuing a task.  **Below is an example of downloading images with Crawler:**
 ```javascript
@@ -72,9 +72,6 @@ let href = $('a.transition').attr('href')
 # This gives you 'http://www.google.com/article/174143.html'
 console.log(URL.resolve(requestUrl, href))
 ```
-
-
-
 
 
 
