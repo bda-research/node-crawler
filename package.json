@@ -7,9 +7,9 @@
     "test": "tests"
   },
   "scripts": {
-    "cover": "istanbul cover node_modules/.bin/mocha --report lcovonly -- --reporter spec tests/*",
     "hint": "jshint ./lib/*.js ./tests/*.js",
-    "test": "./node_modules/mocha/bin/mocha --reporter spec --bail --timeout 10000 tests/*.js"
+    "test": "mocha --reporter spec --bail --timeout 10000 tests/*.test.js",
+    "cover": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --reporter spec tests/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
   "devDependencies": {
     "chai": "^2.3.0",
     "jsdom": "^9.6.0",
+    "jshint": "^2.9.5",
     "mocha": "^2.2.5",
     "mocha-testdata": "^1.1.0",
     "nock": "^9.2.6",
