@@ -1,123 +1,111 @@
+/*jshint expr:true */
 'use strict';
 
-var Crawler = require('../lib/crawler');
-var expect = require('chai').expect;
-var sinon = require('sinon');
-var httpbinHost = 'localhost:8000';
-var c;
-var result = [];
-var preRequestResult = [];
+const Crawler = require('../lib/crawler');
+const expect = require('chai').expect;
+const sinon = require('sinon');
+
+// settings for nock to mock http server
+const nock = require('nock');
+nock('http://test.crawler.com').get('/').reply(200, 'ok').persist();
+
+// init variables
+let cb;
+let crawler;
 
 describe('Direct feature tests', function() {
-    describe('Method direct', function() {
-        afterEach(function() {
-            c = {};
-            result = [];
-            preRequestResult = [];
-        });
 
-        it('should not trigger preRequest', function(finishTest) {
-            c = new Crawler({
-                jQuery: false,
-                preRequest: function(options, done) {
-                    preRequestResult.push(options.uri);
-                    done();
+    beforeEach(function() {
+        cb = sinon.spy();
+        crawler = new Crawler({ 
+            jQuery: false,
+            rateLimit: 100,
+            preRequest: function(options, done) {
+                cb('preRequest');
+                done();
+            },
+            callback: function(err, res, done) {
+                if (err) {
+                    cb('error');
+                } else {
+                    cb('callback');
                 }
-            });
-            c.direct({
-                uri: 'http://' + httpbinHost + '/status/200',
-                callback: function(error, res) {
-                    expect(error).to.be.null;
-                    expect(res.statusCode).to.equal(200);
-                    expect(preRequestResult.length).to.equal(0);
-                    finishTest();
-                }
-            });
+                done();
+            }
         });
-
-        it('should be sent directly regardless of current queue of crawler', function(finishTest) {
-            c = new Crawler({
-                jQuery: false,
-                rateLimit: 500,
-                callback: function(error, res, done) {
-                    expect(error).to.be.null;
-                    expect(res.statusCode).to.equal(200);
-                    result.push(res.options.uri);
-                    done();
-                }
-            });
-            c.queue({
-                uri: 'http://' + httpbinHost + '/status/200',
-                callback: function(error, res, done) {
-                    expect(error).to.be.null;
-                    expect(res.statusCode).to.equal(200);
-                    result.push(res.options.uri);
-                    c.direct({
-                        uri: 'http://' + httpbinHost + '/status/200',
-                        callback: function(error, res) {
-                            expect(error).to.be.null;
-                            expect(res.statusCode).to.equal(200);
-                            expect(result.length).to.equal(1);
-                            preRequestResult.push(res.options.uri);
-                        }
-                    });
-                    done();
-                }
-            });
-            c.queue('http://' + httpbinHost + '/status/200');
-            c.queue('http://' + httpbinHost + '/status/200');
-            c.queue({
-                uri: 'http://' + httpbinHost + '/status/200',
-                callback: function(error, res, done) {
-                    expect(error).to.be.null;
-                    expect(res.statusCode).to.equal(200);
-                    expect(result.length).to.equal(3);
-                    expect(preRequestResult.length).to.equal(1);
-                    expect(preRequestResult[0]).to.equal('http://' + httpbinHost + '/status/200');
-                    done();
-                    finishTest();
-                }
-            });
+        crawler.on('request', () => {
+            cb('Event:request');
         });
+    });
 
-        it('should not trigger Event:request by default', function(finishTest) {
-            var events = [];
-            c = new Crawler({
-                jQuery: false
-            });
-            c.on('request', function(options) {
-                events.push('request');
-            });
-            c.direct({
-                uri: 'http://' + httpbinHost + '/status/200',
-                callback: function(error, res) {
-                    expect(error).to.be.null;
-                    expect(res.statusCode).to.equal(200);
-                    expect(events.length).to.equal(0);
-                    finishTest();
-                }
-            }); 
+    it('should not trigger preRequest or callback of crawler instance', function(finishTest) {
+        crawler.direct({
+            uri: 'http://test.crawler.com/',
+            callback: function(error, res) {
+                expect(error).to.be.null;
+                expect(res.statusCode).to.equal(200);
+                expect(res.body).to.equal('ok');
+                expect(cb.called).to.be.false;
+                finishTest();
+            }
         });
+    });
 
-        it('should trigger Event:request if specified in options', function(finishTest) {
-            var events = [];
-            c = new Crawler({
-                jQuery: false
-            });
-            c.on('request', function(options) {
-                events.push('request');
-            });
-            c.direct({
-                uri: 'http://' + httpbinHost + '/status/200',
-                skipEventRequest: false,
-                callback: function(error, res) {
-                    expect(error).to.be.null;
-                    expect(res.statusCode).to.equal(200);
-                    expect(events.length).to.equal(1);
-                    finishTest();
-                }
-            });
+    it('should be sent directly regardless of current queue of crawler', function(finishTest) {
+        crawler.queue({
+            uri: 'http://test.crawler.com/',
+            callback: function(error, res, done) {
+                expect(error).to.be.null;
+                crawler.direct({
+                    uri: 'http://test.crawler.com/',
+                    callback: function() {
+                        expect(cb.getCalls().length).to.equal(2);
+                        cb('direct');
+                    }
+                });
+                done();
+            }
         });
+        crawler.queue('http://test.crawler.com/');
+        crawler.queue('http://test.crawler.com/');
+        crawler.queue({
+            uri: 'http://test.crawler.com/',
+            callback: function(error, res, done) {
+                expect(error).to.be.null;
+                let seq = ['preRequest','Event:request','direct','preRequest','Event:request','callback','preRequest','Event:request','callback','preRequest','Event:request'];
+                expect(cb.getCalls().map(c => c.args[0]).join()).to.equal(seq.join());
+                expect(cb.getCalls().length).to.equal(11);
+                done();
+                finishTest();
+            }
+        });
+    });
 
+    it('should not trigger Event:request by default', function(finishTest) {
+        crawler.direct({
+            uri: 'http://test.crawler.com/',
+            callback: function(error, res) {
+                expect(error).to.be.null;
+                expect(res.statusCode).to.equal(200);
+                expect(res.body).to.equal('ok');
+                expect(cb.called).to.be.false;
+                finishTest();
+            }
+        });
+    });
+
+    it('should trigger Event:request if specified in options', function(finishTest) {
+        crawler.direct({
+            uri: 'http://test.crawler.com/',
+            skipEventRequest: false,
+            callback: function(error, res) {
+                expect(error).to.be.null;
+                expect(res.statusCode).to.equal(200);
+                expect(res.body).to.equal('ok');
+                expect(cb.calledOnce).to.be.true;
+                expect(cb.firstCall.args[0]).to.equal('Event:request');
+                finishTest();
+            }
+        });
     });
 });
