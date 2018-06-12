@@ -7,6 +7,8 @@
     "test": "tests"
   },
   "scripts": {
+    "cover": "istanbul cover node_modules/.bin/mocha --report lcovonly -- --reporter spec tests/*",
+    "hint": "jshint ./lib/*.js ./tests/*.js",
     "test": "./node_modules/mocha/bin/mocha --reporter spec --bail --timeout 10000 tests/*.js"
   },
   "repository": {
