@@ -7,9 +7,17 @@ node_js:
 os:
   - linux
   - osx
+
 before_install:
   - sh ./travis_scripts/before_install.sh
-  
+
+script:
+  - "npm run hint"
+  - "npm run test"
+  - "npm run cover"
+
+after_script: "cat ./coverage/lcov.info | coveralls"
+
 matrix:
   allow_failures:
     - os: osx
