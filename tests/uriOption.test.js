@@ -1,67 +1,53 @@
+/*jshint expr:true */
 'use strict';
 
-var Crawler = require('../lib/crawler');
-var expect = require('chai').expect;
-var sinon = require('sinon');
-var httpbinHost = 'localhost:8000';
-var c, spy;
+const Crawler = require('../lib/crawler');
+const expect = require('chai').expect;
+const sinon = require('sinon');
+
+// settings for nock to mock http server
+const nock = require('nock');
+nock('http://test.crawler.com').get('/').reply(200, 'ok').persist();
 
 describe('Uri Options', function() {
-    afterEach(function() {
-        c = spy = {};
-    });
-    it('should work if uri is a function', function(done) {
-        var statusCode = 200;
-        var uriFunction = function(statusCode) {
-            return 'http://'+httpbinHost+'/status/'+statusCode;
-        };
-        c = new Crawler({
-            maxConnections: 10,
-            jquery: false,
-            callback: function(error, res,next) {
-                expect(typeof res.statusCode).to.equal('number');
-                expect(res.statusCode).to.equal(statusCode);
-		next();
+
+    const crawler = new Crawler({ jQuery: false });
+
+    it('should work if uri is string', function(finishTest) {
+        crawler.queue({
+            uri: 'http://test.crawler.com/',
+            callback: (error, response, done) => {
+                expect(error).to.be.null;
+                done();
+                finishTest();
             }
         });
-	
-	c.on('drain',done);
-        c.queue({
-            uri: uriFunction(statusCode)
-        });
     });
-    it('should work if uri is a function, example from Readme', function(done) {
-        var googleSearch = function(search) {
-            return 'http://www.bing.com/search?q=' + search;
-        };
-        c = new Crawler({
-            maxConnections: 10,
-            callback: function(error, res,next) {
-                expect(typeof res.statusCode).to.equal('number');
-                expect(res.statusCode).to.equal(200);
-		next();
+
+    it('should work if uri is a function', function(finishTest) {
+        function uriFn(onUri) {
+            onUri('http://test.crawler.com/');
+        }
+        crawler.queue({
+            uri: uriFn,
+            callback: (error, response, done) => {
+                expect(error).to.be.null;
+                done();
+                finishTest();
             }
         });
-	
-	c.on('drain',done);
-        c.queue({
-            uri: googleSearch('cheese')
-        });
     });
-    it('should skip if the uri is undefined or an empty string', function(done) {
-        c = new Crawler({
-            callback: function(error, res,next) {
-                expect(typeof res.statusCode).to.equal('number');
-                expect(res.statusCode).to.equal(200);
-		next();
+
+    it('should skip if the uri is undefined or an empty string', function(finishTest) {
+        const push = sinon.spy(crawler, '_pushToQueue');
+        crawler.queue([undefined, null, []]);
+        crawler.queue({
+            uri: 'http://test.crawler.com/',
+            callback: (error, response, done) => {
+                expect(push.calledOnce).to.be.true;
+                done();
+                finishTest();
             }
         });
-        spy = sinon.spy(c, '_pushToQueue');
-	
-	c.on('drain',function() {
-            expect(spy.calledOnce).to.be.true;
-            done();
-        });
-        c.queue([undefined,null,[], 'http://'+httpbinHost]);
     });
 });
