@@ -1,45 +1,45 @@
+/*jshint expr:true */
 'use strict';
 
-var Crawler = require('../lib/crawler');
-var expect = require('chai').expect;
-var _ = require('lodash');
-var jsdom = require('jsdom');
-var httpbinHost = 'localhost:8000';
-var c;
+const Crawler = require('../lib/crawler');
+const expect = require('chai').expect;
+const map = require('lodash/map');
+const jsdom = require('jsdom');
+
+// settings for nock to mock http server
+const nock = require('nock');
+nock('http://test.crawler.com').get('/pagination').reply(200, '<html><head><meta charset="utf-8"><title>Links</title></head><body><a href="/page/1">1</a> <a href="/page/2">2</a></body></html>', { 'Content-Type': 'text/html' }).persist();
+nock('http://test.crawler.com').get('/redirect').reply(302, 'redirect', { 'Location': 'http://test.crawler.com/pagination' }).persist();
 
 describe('Links', function() {
-    beforeEach(function() {
-        c = new Crawler({
-            forceUTF8: true,
-            jquery: jsdom
-        });
-    });
-    it('should resolved links to absolute urls with jsdom', function(done) {
-        c.queue([{
-            uri : 'http://'+httpbinHost+'/links/3/0',
-            callback: function(error, res) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
-            {
 
-                var links = _.map(res.$('a'), function(a) {
+    const crawler = new Crawler({ jquery: jsdom });
+
+    it('should resolved links to absolute urls with jsdom', function(finishTest) {
+        crawler.queue({
+            uri: 'http://test.crawler.com/pagination',
+            callback: (error, response, done) => {
+                expect(error).to.be.null;
+                const links = map(response.$('a'), (a) => {
                     return a.href;
                 });
-                //Both links should be resolve to absolute URLs
-                expect(links[0]).to.equal('http://'+httpbinHost+'/links/3/1');
-                expect(links[1]).to.equal('http://'+httpbinHost+'/links/3/2');
-                expect(error).to.be.null;
+                expect(links[0]).to.equal('http://test.crawler.com/page/1');
+                expect(links[1]).to.equal('http://test.crawler.com/page/2');
                 done();
+                finishTest();
             }
-        }]);
+        });
     });
-    it('should resolved links to absolute urls after redirect with jsdom', function(done) {
-        c.queue([{
-            uri : 'http://'+httpbinHost+'/redirect-to?url=http://example.com/',
-            callback: function(error, res) {
 
-                expect(res.request.uri.href).to.equal('http://example.com/');
+    it('should resolved links to absolute urls after redirect with jsdom', function(finishTest) {
+        crawler.queue({
+            uri: 'http://test.crawler.com/redirect',
+            callback: (error, response, done) => {
                 expect(error).to.be.null;
+                expect(response.request.uri.href).to.equal('http://test.crawler.com/pagination');
                 done();
+                finishTest();
             }
-        }]);
+        });
     });
 });

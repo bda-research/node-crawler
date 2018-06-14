@@ -20,11 +20,11 @@ describe('Direct feature tests', function() {
         crawler = new Crawler({ 
             jQuery: false,
             rateLimit: 100,
-            preRequest: function(options, done) {
+            preRequest: (options, done) => {
                 cb('preRequest');
                 done();
             },
-            callback: function(err, res, done) {
+            callback: (err, res, done) => {
                 if (err) {
                     cb('error');
                 } else {
@@ -41,7 +41,7 @@ describe('Direct feature tests', function() {
     it('should not trigger preRequest or callback of crawler instance', function(finishTest) {
         crawler.direct({
             uri: 'http://test.crawler.com/',
-            callback: function(error, res) {
+            callback: (error, res) => {
                 expect(error).to.be.null;
                 expect(res.statusCode).to.equal(200);
                 expect(res.body).to.equal('ok');
@@ -54,11 +54,11 @@ describe('Direct feature tests', function() {
     it('should be sent directly regardless of current queue of crawler', function(finishTest) {
         crawler.queue({
             uri: 'http://test.crawler.com/',
-            callback: function(error, res, done) {
+            callback: (error, res, done) => {
                 expect(error).to.be.null;
                 crawler.direct({
                     uri: 'http://test.crawler.com/',
-                    callback: function() {
+                    callback: () => {
                         expect(cb.getCalls().length).to.equal(2);
                         cb('direct');
                     }
@@ -70,7 +70,7 @@ describe('Direct feature tests', function() {
         crawler.queue('http://test.crawler.com/');
         crawler.queue({
             uri: 'http://test.crawler.com/',
-            callback: function(error, res, done) {
+            callback: (error, res, done) => {
                 expect(error).to.be.null;
                 let seq = ['preRequest','Event:request','direct','preRequest','Event:request','callback','preRequest','Event:request','callback','preRequest','Event:request'];
                 expect(cb.getCalls().map(c => c.args[0]).join()).to.equal(seq.join());
@@ -84,7 +84,7 @@ describe('Direct feature tests', function() {
     it('should not trigger Event:request by default', function(finishTest) {
         crawler.direct({
             uri: 'http://test.crawler.com/',
-            callback: function(error, res) {
+            callback: (error, res) => {
                 expect(error).to.be.null;
                 expect(res.statusCode).to.equal(200);
                 expect(res.body).to.equal('ok');
@@ -98,7 +98,7 @@ describe('Direct feature tests', function() {
         crawler.direct({
             uri: 'http://test.crawler.com/',
             skipEventRequest: false,
-            callback: function(error, res) {
+            callback: (error, res) => {
                 expect(error).to.be.null;
                 expect(res.statusCode).to.equal(200);
                 expect(res.body).to.equal('ok');

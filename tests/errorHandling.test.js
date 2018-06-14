@@ -1,138 +1,154 @@
+/*jshint expr:true */
 'use strict';
 
-var Crawler = require('../lib/crawler');
-var expect = require('chai').expect;
-var jsdom = require('jsdom');
-var httpbinHost = 'localhost:8000';
+const Crawler = require('../lib/crawler');
+const expect = require('chai').expect;
+const jsdom = require('jsdom');
+
+// settings for nock to mock http server
+const nock = require('nock');
+nock('http://test.crawler.com').get('/delay/1').delay(1000).reply(200, 'ok').persist();
+nock('http://test.crawler.com').get('/status/400').reply(400, 'Bad Request').persist();
+nock('http://test.crawler.com').get('/status/401').reply(401, 'Unauthorized').persist();
+nock('http://test.crawler.com').get('/status/403').reply(403, 'Forbidden').persist();
+nock('http://test.crawler.com').get('/status/404').reply(404, 'Not Found').persist();
+nock('http://test.crawler.com').get('/status/500').reply(500, 'Internal Error').persist();
+nock('http://test.crawler.com').get('/status/204').reply(204, '').persist();
 
 describe('Errors', function() {
+
     describe('timeout', function() {
-        var c = new Crawler({
-            timeout : 1500,
-            retryTimeout : 1000,
-            retries : 2,
-            jquery : false
+        const crawler = new Crawler({
+            timeout: 500,
+            retryTimeout: 1000,
+            retries: 2,
+            jquery: false
         });
-        it('should return a timeout error after ~5sec', function(done) {
 
-            // override default mocha test timeout of 2000ms
+        it('should retry after timeout', function(finishTest) {
             this.timeout(10000);
-
-            c.queue({
-                uri : 'http://'+httpbinHost+'/delay/3',
-                callback : function(error, response) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
-                {
-                    expect(error).not.to.be.null;
-                    expect(error.code == "ETIMEDOUT" || error.code == "ESOCKETTIMEDOUT" ).to.be.true;
-		 //    if(process.version.replace(/^v/,'').split('.')[0] > '4'){
-   //          expect(error.code).to.equal("ESOCKETTIMEDOUT");
-			
-		 //    }else{
-			// expect(error.code).to.equal("ETIMEDOUT");
-		 //    }
-
-                    //expect(response).to.be.undefined;
+            let options = {
+                uri: 'http://test.crawler.com/delay/1',
+                callback: (error, response, done) => {
+                    expect(error).to.exist;
+                    expect(response.options.retries).to.equal(0);
                     done();
+                    finishTest();
                 }
-            });
+            };
+            crawler.queue(options);
+            expect(options.retries).to.equal(2);
         });
-        it('should retry after a first timeout', function(done) {
 
-            // override default mocha test timeout of 2000ms
-            this.timeout(15000);
-
-            c.queue({
-                uri : 'http://'+httpbinHost+'/delay/1',
-                callback : function(error, response) {
-                    expect(error).to.be.null;
-                    expect(response.body).to.be.ok;
+        it('should return a timeout error after ~2sec', function(finishTest) {
+            this.timeout(10000);
+            crawler.queue({
+                uri: 'http://test.crawler.com/delay/1',
+                callback: (error, response, done) => {
+                    expect(error).to.exist;
+                    expect(error.code === 'ETIMEDOUT' || error.code === 'ESOCKETTIMEDOUT').to.be.true;
                     done();
+                    finishTest();
                 }
             });
         });
     });
 
     describe('error status code', function() {
-        var c = new Crawler({
-            jQuery : false
-        });
-        it('should not return an error on status code 400 (Bad Request)', function(done) {
-            c.queue({
-                uri: 'http://' + httpbinHost + '/status/400',
-                callback: function(error, response){
+        const crawler = new Crawler({ jQuery : false });
+        
+        it('should not return an error on status code 400 (Bad Request)', function(finishTest) {
+            crawler.queue({
+                uri: 'http://test.crawler.com/status/400',
+                callback: (error, response, done) => {
                     expect(error).to.be.null;
                     expect(response.statusCode).to.equal(400);
                     done();
+                    finishTest();
                 }
             });
         });
-        it('should not return an error on status code 401 (Unauthorized)', function(done) {
-            c.queue({
-                uri: 'http://' + httpbinHost + '/status/401',
-                callback: function(error, response){
+
+        it('should not return an error on status code 401 (Unauthorized)', function(finishTest) {
+            crawler.queue({
+                uri: 'http://test.crawler.com/status/401',
+                callback: (error, response, done) => {
                     expect(error).to.be.null;
                     expect(response.statusCode).to.equal(401);
                     done();
+                    finishTest();
                 }
             });
         });
-        it('should not return an error on status code 403 (Forbidden)', function(done) {
-            c.queue({
-                uri: 'http://' + httpbinHost + '/status/403',
-                callback: function(error, response){
+
+        it('should not return an error on status code 403 (Forbidden)', function(finishTest) {
+            crawler.queue({
+                uri: 'http://test.crawler.com/status/403',
+                callback: (error, response, done) => {
                     expect(error).to.be.null;
                     expect(response.statusCode).to.equal(403);
                     done();
+                    finishTest();
                 }
             });
         });
-        it('should not return an error on a 404', function(done) {
-            c.queue({
-                uri : 'http://'+httpbinHost+'/status/404',
-                callback : function(error, response) {
+
+        it('should not return an error on a 404', function(finishTest) {
+            crawler.queue({
+                uri : 'http://test.crawler.com/status/404',
+                callback : (error, response, done) => {
                     expect(error).to.be.null;
                     expect(response.statusCode).to.equal(404);
                     done();
+                    finishTest();
                 }
             });
         });
-        it('should not return an error on a 500', function(done) {
-            c.queue({
-                uri : 'http://'+httpbinHost+'/status/500',
-                callback : function(error, response) {
+
+        it('should not return an error on a 500', function(finishTest) {
+            crawler.queue({
+                uri : 'http://test.crawler.com/status/500',
+                callback : (error, response, done) => {
                     expect(error).to.be.null;
                     expect(response.statusCode).to.equal(500);
                     done();
+                    finishTest();
                 }
             });
         });
-        it('should not failed on empty response', function(done) {
-            c.queue({
-                uri : 'http://'+httpbinHost+'/status/204',
-                callback : function(error) {
+
+        it('should not failed on empty response', function(finishTest) {
+            crawler.queue({
+                uri : 'http://test.crawler.com/status/204',
+                callback : (error, response, done) => {
                     expect(error).to.be.null;
                     done();
+                    finishTest();
                 }
             });
         });
-        it('should not failed on a malformed html if jquery is false', function(done) {
-            c.queue({
+
+        it('should not failed on a malformed html if jquery is false', function(finishTest) {
+            crawler.queue({
                 html : '<html><p>hello <div>dude</p></html>',
-                callback : function(error, response) {
+                callback : (error, response, done) => {
                     expect(error).to.be.null;
                     expect(response).not.to.be.null;
                     done();
+                    finishTest();
                 }
             });
         });
-        it('should not return an error on a malformed html if jQuery is jsdom', function(done) {
-            c.queue({
+
+        it('should not return an error on a malformed html if jQuery is jsdom', function(finishTest) {
+            crawler.queue({
                 html : '<html><p>hello <div>dude</p></html>',
                 jQuery : jsdom,
-                callback : function(error, response) {
+                callback : (error, response, done) => {
                     expect(error).to.be.null;
                     expect(response).not.to.be.undefined;
                     done();
+                    finishTest();
                 }
             });
         });
