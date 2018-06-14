@@ -8,7 +8,7 @@
   },
   "scripts": {
     "hint": "jshint ./lib/*.js ./tests/*.js",
-    "test": "mocha --reporter spec --bail --timeout 10000 tests/*.test.js",
+    "test": "mocha --reporter spec --bail --timeout 15000 tests/*.test.js",
     "cover": "istanbul cover mocha --report lcovonly -- --reporter spec tests/*.test.js"
   },
   "repository": {

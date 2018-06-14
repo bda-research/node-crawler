@@ -1,137 +1,132 @@
+/*jshint expr:true */
+
 'use strict';
 
-var Crawler = require('../lib/crawler');
-var expect = require('chai').expect;
-var httpbinHost = 'localhost:8000';
-var c;
+const Crawler = require('../lib/crawler');
+const expect = require('chai').expect;
+const nock = require('nock');
 
 describe('Request tests', function() {
+	let crawler = null;
+	let scope = null;	
+	const origin = 'http://www.whatever.com';
+	const path = '/get';
+	const headerPath = '/header';
+	
+	beforeEach(function() {
+        crawler = new Crawler({
+			retries: 0,
+			json: true,
+			jQuery: false,
+        });
+		
+		scope = nock(origin).get(path).reply(200).persist();
+		nock(origin).get(headerPath).reply(function(){
+			return [200, this.req.headers, { 'Content-Type': 'application/json' }];
+		});
+    });
+	
     afterEach(function() {
-        c = {};
+		scope.persist(false);
+        crawler = null;
     });
-    it('should crawl one request', function(done) {
-        c = new Crawler({
-            jquery: false,
-            callback: function(error, res) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
-            {
-                expect(error).to.be.null;
-                expect(res.statusCode).to.equal(200);
-                done();
-            }
-        });
-        c.queue(['http://'+httpbinHost+'/status/200']);
+	
+    it('should crawl one request', function(end) {
+        crawler.queue({uri: `${origin}${path}`, callback: (error, res, done) => {
+            expect(error).to.be.null;
+            expect(res.statusCode).to.eql(200);
+            done();
+			end();
+        }});
     });
+	
     it('should crawl two request request and execute the onDrain() callback', function(done) {
-        c = new Crawler({
-            jquery: false,
-            callback: function(error, res,next) {
-                expect(error).to.be.null;
-                expect(res.body.length).to.be.above(1000);
-		next();
-            }
-        });
+        const callback = function(error, res,next) {
+            expect(error).to.be.null;
+            expect(res.statusCode).to.eql(200);
+			next();
+        };
+		
+		crawler.on('drain',done);
+		
+        crawler.queue({
+			uri: `${origin}${path}`,
+			callback: callback
+		});
+
+		crawler.queue({
+			uri: `${origin}${path}`,
+			callback: callback
+		});
+    });
 	
-	c.on('drain',done);
-        c.queue(['http://'+httpbinHost+'/html', 'http://'+httpbinHost]);
+    it('should contain gzip header', function(end) {
+        crawler.queue({uri: `${origin}${headerPath}`, callback:function(error, res, done) {
+            expect(error).to.be.null;
+			expect(res.body['accept-encoding']).to.match(/gzip/);
+            done();
+			end();
+        }});
     });
-    it('should crawl a gzip response', function(done) {
-        c = new Crawler({
-            jquery: false,
-            callback:function(error, res) {
+	
+    it('should use the provided user-agent', function(end) {
+		const ua = 'test/1.2';
+		crawler.queue({
+			uri: `${origin}${headerPath}`, 
+			userAgent: ua,
+			callback:function(error, res, done) {
+				expect(error).to.be.null;
+				expect(res.body['user-agent']).to.eql(ua);
+				done();
+				end();
+			}
+		});
+    });
+	
+    it('should replace the global User-Agent', function(end) {
+        crawler = new Crawler({
+            headers:{'User-Agent': 'test/1.2'},
+            jQuery: false,
+			json: true,
+            callback:function(error, res, done) {
                 expect(error).to.be.null;
-                try {
-                    var body = JSON.parse(res.body);
-                    expect(body.gzipped).to.be.true;
-                    expect(body.headers['Accept-Encoding']).to.match(/gzip/);
-                } catch (ex) {
-                    expect(false).to.be.true;
-                }
+				expect(res.body['user-agent']).to.equal('foo/bar');
                 done();
+				end();
             }
         });
-        c.queue('http://'+httpbinHost+'/gzip');
+		
+        crawler.queue({uri: `${origin}${headerPath}`,headers:{'User-Agent': 'foo/bar'}});
     });
-    it('should use the provided user-agent', function(done) {
-        c = new Crawler({
+	
+    it('should replace the global userAgent', function(end) {
+        crawler = new Crawler({
             userAgent: 'test/1.2',
             jQuery: false,
-            callback:function(error, res) {
-                expect(error).to.be.null;
-                try {
-                    var body = JSON.parse(res.body);
-                    expect(body['user-agent']).to.equal('test/1.2');
-                } catch (ex) {
-                    expect(false).to.be.true;
-                }
+			json: true,
+            callback:function(error, res, done) {
+				expect(error).to.be.null;
+				expect(res.body['user-agent']).to.equal('foo/bar');
                 done();
+				end();
             }
         });
-        c.queue(['http://'+httpbinHost+'/user-agent']);
+		
+        crawler.queue({uri: `${origin}${headerPath}`, userAgent: 'foo/bar'});
     });
-    it('should replace the global User-Agent', function(done) {
-        c = new Crawler({
-            headers:{"User-Agent": 'test/1.2'},
-            jQuery: false,
-            callback:function(error, res) {
-                expect(error).to.be.null;
-                try {
-                    var body = JSON.parse(res.body);
-                    expect(body['user-agent']).to.equal('foo/bar');
-                } catch (ex) {
-                    expect(false).to.be.true;
-                }
-                done();
-            }
-        });
-        c.queue({uri:'http://'+httpbinHost+'/user-agent',headers:{"User-Agent":"foo/bar"}});
-    });
-    it('should replace the global userAgent', function(done) {
-        c = new Crawler({
-            userAgent: 'test/1.2',
-            jQuery: false,
-            callback:function(error, res) {
-                expect(error).to.be.null;
-                try {
-                    var body = JSON.parse(res.body);
-                    expect(body['user-agent']).to.equal('foo/bar');
-                } catch (ex) {
-                    expect(false).to.be.true;
-                }
-                done();
-            }
-        });
-        c.queue({uri:'http://'+httpbinHost+'/user-agent',userAgent:"foo/bar"});
-    });
-    it('should spoof the referer', function(done) {
-        c = new Crawler({
-            referer: 'http://spoofed.com',
-            jQuery: false,
-            callback:function(error, res) {
-                expect(error).to.be.null;
-                try {
-                    var body = JSON.parse(res.body);
-                    expect(body.headers.Referer).to.equal('http://spoofed.com');
-                } catch (ex) {
-                    expect(false).to.be.true;
-                }
-                done();
-            }
-        });
-        c.queue(['http://'+httpbinHost+'/headers']);
-    });
-    
-    it('response body should be a buffer if encoding is null', function(done) {
-        c = new Crawler({
-            referer: 'http://spoofed.com',
-            jQuery: false,
-	    encoding: null,
-            callback:function(error, res) {
-                expect(error).to.be.null;
-		expect(res.body).to.be.instanceof(Buffer);
-                done();
-            }
-        });
 	
-        c.queue(['http://'+httpbinHost+'//stream-bytes/512']);
+    it('should spoof the referer', function(end) {
+		const referer = 'http://spoofed.com';
+		
+        crawler.queue({
+			uri: `${origin}${headerPath}`,
+			referer: referer,
+			callback:function(error, res, done) {
+                expect(error).to.be.null;
+                expect(res.body.referer).to.equal(referer);
+                done();
+				end();
+            } 
+		});
     });
 });
