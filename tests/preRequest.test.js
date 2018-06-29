@@ -7,13 +7,18 @@ const sinon = require('sinon');
 
 // settings for nock to mock http server
 const nock = require('nock');
-nock('http://test.crawler.com').get('/').reply(200, 'ok').persist();
 
 // init variables
 let cb;
 let crawler;
 
 describe('preRequest feature tests', function() {
+
+    before(function() {
+        nock.cleanAll();
+        nock('http://test.crawler.com').get('/').reply(200, 'ok').persist();
+    });
+
     beforeEach(function() {
         cb = sinon.spy();
     });
