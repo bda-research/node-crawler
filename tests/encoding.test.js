@@ -7,6 +7,10 @@ const expect = require('chai').expect;
 const nock = require('nock');
 
 describe('Encoding', function() {
+	before(function() {
+        nock.cleanAll();
+    });
+
 	const origin = 'http://czyborra.com';
 	const encodingFileName = 'iso8859.html';
 	const charsetName = 'ISO-8859-1';

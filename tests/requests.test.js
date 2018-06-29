@@ -7,6 +7,10 @@ const expect = require('chai').expect;
 const nock = require('nock');
 
 describe('Request tests', function() {
+	before(function() {
+        nock.cleanAll();
+    });
+	
 	let crawler = null;
 	let scope = null;	
 	const origin = 'http://www.whatever.com';

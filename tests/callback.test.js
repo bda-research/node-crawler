@@ -5,6 +5,10 @@ const Crawler = require('../lib/crawler');
 const nock = require('nock');
 
 describe('Callback test', function() {
+	before(function() {
+        nock.cleanAll();
+    });
+	
 	let crawler = null;
 	const url = 'http://www.whatever.com';
 
@@ -60,7 +64,7 @@ describe('Callback test', function() {
 				'Content-Type': 'text/html'
 			});
 
-		crawler._doEncoding = function(){throw new Error("Error for testing.");};
+		crawler._doEncoding = function(){throw new Error('Error for testing.');};
 		crawler.on('drain', done);
 		crawler.queue(`${url}/get`);
 	});
