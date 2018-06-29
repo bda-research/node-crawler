@@ -7,19 +7,27 @@ const expect = require('chai').expect;
 
 // settings for nock to mock http server
 const nock = require('nock');
-nock('http://test.crawler.com/').get('/setCookie').reply(function() {
-    let response = [
-        200,
-        'ok',
-        { 'Set-Cookie': `ping=pong; Domain=.crawler.com; Expires=${new Date(Date.now()+86400000).toUTCString()}; Path=/` }
-    ];
-    return response;
-}).persist();
-nock('http://test.crawler.com/').get('/getCookie').reply(200, function() {
-    return this.req.headers.cookie;
-}).persist();
 
 describe('Jar Options', function() {
+
+    before(function() {
+        nock.cleanAll();
+        nock('http://test.crawler.com/').get('/setCookie').reply(function() {
+            let response = [
+                200,
+                'ok',
+                { 'Set-Cookie': `ping=pong; Domain=.crawler.com; Expires=${new Date(Date.now()+86400000).toUTCString()}; Path=/` }
+            ];
+            return response;
+        }).persist();
+        nock('http://test.crawler.com/').get('/getCookie').reply(200, function() {
+            return this.req.headers.cookie;
+        }).persist();
+    });
+
+    after(function() {
+        delete require.cache[nock];
+    });
 
     let jar = request.jar();
     jar.setCookie(request.cookie('foo=bar'), 'http://test.crawler.com');

@@ -7,15 +7,19 @@ const jsdom = require('jsdom');
 
 // settings for nock to mock http server
 const nock = require('nock');
-nock('http://test.crawler.com').get('/delay/1').delay(1000).reply(200, 'ok').persist();
-nock('http://test.crawler.com').get('/status/400').reply(400, 'Bad Request').persist();
-nock('http://test.crawler.com').get('/status/401').reply(401, 'Unauthorized').persist();
-nock('http://test.crawler.com').get('/status/403').reply(403, 'Forbidden').persist();
-nock('http://test.crawler.com').get('/status/404').reply(404, 'Not Found').persist();
-nock('http://test.crawler.com').get('/status/500').reply(500, 'Internal Error').persist();
-nock('http://test.crawler.com').get('/status/204').reply(204, '').persist();
 
 describe('Errors', function() {
+
+    before(function() {
+        nock.cleanAll();
+        nock('http://test.crawler.com').get('/delay/1').delay(1000).reply(200, 'ok').persist();
+        nock('http://test.crawler.com').get('/status/400').reply(400, 'Bad Request').persist();
+        nock('http://test.crawler.com').get('/status/401').reply(401, 'Unauthorized').persist();
+        nock('http://test.crawler.com').get('/status/403').reply(403, 'Forbidden').persist();
+        nock('http://test.crawler.com').get('/status/404').reply(404, 'Not Found').persist();
+        nock('http://test.crawler.com').get('/status/500').reply(500, 'Internal Error').persist();
+        nock('http://test.crawler.com').get('/status/204').reply(204, '').persist();
+    });
 
     describe('timeout', function() {
         const crawler = new Crawler({

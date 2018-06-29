@@ -7,9 +7,13 @@ const sinon = require('sinon');
 
 // settings for nock to mock http server
 const nock = require('nock');
-nock('http://test.crawler.com').get('/').reply(200, 'ok').persist();
 
 describe('Uri Options', function() {
+
+    before(function() {
+        nock.cleanAll();
+        nock('http://test.crawler.com').get('/').reply(200, 'ok').persist();
+    });
 
     const crawler = new Crawler({ jQuery: false });
 

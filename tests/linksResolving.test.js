@@ -8,10 +8,14 @@ const jsdom = require('jsdom');
 
 // settings for nock to mock http server
 const nock = require('nock');
-nock('http://test.crawler.com').get('/pagination').reply(200, '<html><head><meta charset="utf-8"><title>Links</title></head><body><a href="/page/1">1</a> <a href="/page/2">2</a></body></html>', { 'Content-Type': 'text/html' }).persist();
-nock('http://test.crawler.com').get('/redirect').reply(302, 'redirect', { 'Location': 'http://test.crawler.com/pagination' }).persist();
 
 describe('Links', function() {
+
+    before(function() {
+        nock.cleanAll();
+        nock('http://test.crawler.com').get('/pagination').reply(200, '<html><head><meta charset="utf-8"><title>Links</title></head><body><a href="/page/1">1</a> <a href="/page/2">2</a></body></html>', { 'Content-Type': 'text/html' }).persist();
+        nock('http://test.crawler.com').get('/redirect').reply(302, 'redirect', { 'Location': 'http://test.crawler.com/pagination' }).persist();        
+    });
 
     const crawler = new Crawler({ jquery: jsdom });
 
