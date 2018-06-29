@@ -15,7 +15,7 @@ var tsArrs = [];
 
 describe('Limiter tests', function () {
 	this.timeout(10000);
-	before(function() {
+	before(function () {
 		nock.cleanAll();
 	});
 	beforeEach(function () {
@@ -25,12 +25,12 @@ describe('Limiter tests', function () {
 			jquery: false,
 			rateLimit: 500,
 			callback: function (err, result, done) {
-				expect(err).to.be.null;
+				expect(err).to.be.equal(null);
 				expect(result.statusCode).to.equal(200);
 				done();
 			},
 		});
-		c.on('request', options => tsArrs.push(Date.now()));
+		c.on('request', () => tsArrs.push(Date.now()));
 	});
 	afterEach(function () {
 		c = {};

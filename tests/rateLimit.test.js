@@ -14,7 +14,7 @@ var tsArrs = [];
 
 describe('rateLimit tests', function () {
 
-	before(function() {
+	before(function () {
 		nock.cleanAll();
 	});
 
@@ -29,12 +29,12 @@ describe('rateLimit tests', function () {
 			jquery: false,
 			rateLimit: 300,
 			callback: function (err, result, done) {
-				expect(err).to.be.null;
+				expect(err).to.be.equal(null);
 				expect(result.statusCode).to.equal(200);
 				done();
 			},
 		});
-		c.on('request', options => tsArrs.push(Date.now()));
+		c.on('request', () => tsArrs.push(Date.now()));
 	});
 	// Clear
 	afterEach(function () {
@@ -52,7 +52,7 @@ describe('rateLimit tests', function () {
 			c.queue({
 				uri: 'http://nockHost/status/200',
 				callback: function (err, result, done) {
-					expect(err).to.be.null;
+					expect(err).to.be.equal(null);
 					expect(result.statusCode).to.equal(200);
 					done();
 
