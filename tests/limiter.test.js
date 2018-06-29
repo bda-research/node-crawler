@@ -15,6 +15,9 @@ var tsArrs = [];
 
 describe('Limiter tests', function () {
 	this.timeout(10000);
+	before(function() {
+		nock.cleanAll();
+	});
 	beforeEach(function () {
 		nock('http://nockHost').get(uri => uri.indexOf('status') >= 0).times(5).reply(200, 'Yes');
 

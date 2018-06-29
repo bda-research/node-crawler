@@ -14,6 +14,10 @@ var tsArrs = [];
 
 describe('rateLimit tests', function () {
 
+	before(function() {
+		nock.cleanAll();
+	});
+
 	/**
 	 *
 	 * Suppose response will not return before next rateLimit cycle.
@@ -53,7 +57,7 @@ describe('rateLimit tests', function () {
 					done();
 
 					expect(tsArrs.length).to.equal(2);
-					expect(tsArrs[1] - tsArrs[0]).to.be.least(500);
+					expect(tsArrs[1] - tsArrs[0]).to.be.least(450);
 
 					testDone();
 				}

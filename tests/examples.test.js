@@ -7,6 +7,9 @@ var nock = require('nock');
 var c, spy;
 
 describe('Simple test', function () {
+	before(function() {
+		nock.cleanAll();
+	});
 	beforeEach(function () {
 		nock('http://nockhost').get(uri => uri.indexOf('status') >= 0).times(20).reply(200, 'Yes');
 		c = new Crawler({ maxConnections: 10, jquery: false });

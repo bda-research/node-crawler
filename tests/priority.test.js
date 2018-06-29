@@ -5,7 +5,7 @@
  * 	following tasks expect to abide the priority
  *
  */
-"use strict";
+'use strict';
 
 var Crawler = require('../lib/crawler');
 var expect = require('chai').expect;
@@ -16,7 +16,7 @@ var cnt = 0;
 
 describe('Priority test', function () {
 	before(function () {
-
+		nock.cleanAll();
 		nock('http://nockHost').get(uri => uri.indexOf('links') >= 0).times(4).reply(200, 'Yes');
 
 		c = new Crawler({
