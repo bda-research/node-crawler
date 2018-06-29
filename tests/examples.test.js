@@ -1,3 +1,4 @@
+/*jshint expr:true */
 'use strict';
 var Crawler = require('../lib/crawler');
 var expect = require('chai').expect;
