@@ -1,9 +1,10 @@
+/*jshint expr:true */
 'use strict';
 
 var Crawler = require('../lib/crawler');
 var expect = require('chai').expect;
 var nock = require('nock');
-var sinon = require('sinon');
+// var sinon = require('sinon');
 var httpTarget = 'http://target.com';
 var c;
 var scope;
@@ -39,7 +40,7 @@ describe('Cache features tests', function() {
                 jquery: false,
                 skipDuplicates: true,
                 retries: 0,
-                callback: function (error, result) {
+                callback: function (error) {
                     expect(error).to.be.defined;
                     expect(koScope.isDone()).to.be.true;
                     done();
@@ -57,7 +58,7 @@ describe('Cache features tests', function() {
                 skipDuplicates: true,
                 retries: 1,
                 retryTimeout: 10,
-                callback: function (error, result) {
+                callback: function (error) {
                     expect(error).to.be.defined;
                     expect(koScope.isDone()).to.be.true;
                     expect(okScope.isDone()).to.be.true;
