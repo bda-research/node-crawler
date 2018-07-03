@@ -9,7 +9,7 @@
   "scripts": {
     "hint": "jshint ./lib/*.js ./tests/*.js",
     "test": "mocha --timeout=15000 tests/*.test.js",
-    "cover": "istanbul cover mocha --report lcovonly -- --timeout=15000 --reporter spec tests/*.test.js"
+    "cover": "istanbul cover _mocha --report lcovonly -- --timeout=15000 --reporter spec tests/*.test.js"
   },
   "repository": {
     "type": "git",

@@ -8,9 +8,6 @@ os:
   - linux
   - osx
 
-before_install:
-  - sh ./travis_scripts/before_install.sh
-
 script:
   - "npm run hint"
   - "npm run test"
