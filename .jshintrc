@@ -19,7 +19,7 @@
 "nonbsp"        : true,     // true: Prohibit "non-breaking whitespace" characters.
 "nonew"         : false,    // true: Prohibit use of constructors for side-effects (without assignment)
 "plusplus"      : false,    // true: Prohibit use of `++` and `--`
-"quotmark"      : false,    // Quotation mark consistency:
+"quotmark"      : "single",    // Quotation mark consistency:
 //   false    : do nothing (default)
 //   true     : ensure whatever is used is consistent
 //   "single" : require single quotes
@@ -39,7 +39,7 @@
 
 // Relaxing
 "asi"           : true,     // true: Tolerate Automatic Semicolon Insertion (no semicolons)
-"boss"          : false,     // true: Tolerate assignments where comparisons would be expected
+"boss"          : true,     // true: Tolerate assignments where comparisons would be expected
 "debug"         : false,     // true: Allow debugger statements e.g. browser breakpoints.
 "eqnull"        : false,     // true: Tolerate use of `== null`
 "esversion"     : 6,         // {int} Specify the ECMAScript version to which the code must adhere.

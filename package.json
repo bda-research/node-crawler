@@ -1,13 +1,15 @@
 {
   "name": "crawler",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "description": "Crawler is a web spider written with Nodejs. It gives you the full power of jQuery on the server to parse a big number of pages as they are downloaded, asynchronously",
   "main": "./lib/crawler.js",
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha --reporter spec --bail --timeout 10000 tests/*.js"
+    "hint": "jshint ./lib/*.js ./tests/*.js",
+    "test": "mocha --timeout=15000 tests/*.test.js",
+    "cover": "istanbul cover _mocha --report lcovonly -- --timeout=15000 --reporter spec tests/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -28,11 +30,14 @@
   },
   "devDependencies": {
     "chai": "^2.3.0",
+    "coveralls": "^3.0.2",
+    "istanbul": "^0.4.5",
     "jsdom": "^9.6.0",
-    "mocha": "^2.2.5",
-    "mocha-testdata": "^1.1.0",
+    "jshint": "^2.9.5",
+    "mocha": "^5.2.0",
+    "mocha-testdata": "^1.2.0",
     "nock": "^9.2.6",
-    "sinon": "^1.14.1",
+    "sinon": "^6.0.0",
     "whacko": "^0.19.1"
   },
   "keywords": [
