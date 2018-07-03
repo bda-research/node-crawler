@@ -16,7 +16,7 @@ describe('Jquery testing', function() {
             .it('should work on inline html', function(done, jquery) {
                 c = new Crawler();
                 c.queue([{
-                   html: '<p><i>great!</i></p>',
+                    html: '<p><i>great!</i></p>',
                     jquery: jquery,
                     callback: function(error, res) //noinspection BadExpressionStatementJS,BadExpressionStatementJS
                     {
