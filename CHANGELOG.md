@@ -1,5 +1,12 @@
 node-webcrawler ChangeLog
 -------------------------
+
+1.2.0
+ * [#278](https://github.com/bda-research/node-crawler/pull/278) Added filestream require to download section (@swosko)
+ * Use `nock` to mock testing instead of httpbin
+ * Replace jshint by eslint
+ * Fix code to pass eslint rules
+
 1.1.4
  * Tolerate incorrect `Content-Type` header [#270](https://github.com/bda-research/node-crawler/pull/270), [#193](https://github.com/bda-research/node-crawler/issues/193)
  * Added examples [#272](https://github.com/bda-research/node-crawler/pull/272), [267](https://github.com/bda-research/node-crawler/issues/267)
