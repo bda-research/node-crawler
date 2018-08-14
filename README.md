@@ -433,16 +433,12 @@ var c = new Crawler({
 
 # How to test
 
-## Install and run Httpbin
-
-crawler use a local httpbin for testing purpose. You can install httpbin as a library from PyPI and run it as a WSGI app. For example, using Gunicorn:
+Crawler uses `nock` to mock http request, thus testing no longer relying on http server.
 
 ```bash
-$ pip install httpbin
-# launch httpbin as a daemon with 6 worker on localhost
-$ gunicorn httpbin:app -b 127.0.0.1:8000 -w 6 --daemon
-# Finally
-$ npm install && npm test
+$ npm install
+$ npm test
+$ npm run cover # code coverage
 ```
 
 ## Alternative: Docker
@@ -454,7 +450,7 @@ After [installing Docker](http://docs.docker.com/), you can run:
 $ docker build -t node-crawler .
 
 # Runs tests
-$ docker run node-crawler sh -c "gunicorn httpbin:app -b 127.0.0.1:8000 -w 6 --daemon && cd /usr/local/lib/node_modules/crawler && npm install && npm test"
+$ docker run node-crawler sh -c "npm install && npm test"
 
 # You can also ssh into the container for easier debugging
 $ docker run -i -t node-crawler bash

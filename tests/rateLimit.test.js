@@ -79,7 +79,7 @@ describe('rateLimit tests', function () {
 		before(function () {
 			nock('http://nockHost').get(uri => uri.indexOf('status') >= 0).times(10).reply(200, 'Yes');
 
-		})
+		});
 
 		it('request speed should abide rateLimit', function (done) {
 			for (var i = 0; i < 5; i++) {
@@ -97,7 +97,7 @@ describe('rateLimit tests', function () {
 				}
 
 				done();
-			})
+			});
 		});
 
 		it('should be able to modify rateLimit', function (done) {
@@ -118,7 +118,7 @@ describe('rateLimit tests', function () {
 
 				done();
 			});
-		})
+		});
 
 	});
 });

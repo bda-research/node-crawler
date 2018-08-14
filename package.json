@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "hint": "jshint ./lib/*.js ./tests/*.js",
+    "hint": "eslint ./lib/*.js ./tests/*.js",
     "test": "mocha --timeout=15000 tests/*.test.js",
     "cover": "istanbul cover _mocha --report lcovonly -- --timeout=15000 --reporter spec tests/*.test.js"
   },
@@ -31,9 +31,9 @@
   "devDependencies": {
     "chai": "^2.3.0",
     "coveralls": "^3.0.2",
+    "eslint": "^5.3.0",
     "istanbul": "^0.4.5",
     "jsdom": "^9.6.0",
-    "jshint": "^2.9.5",
     "mocha": "^5.2.0",
     "mocha-testdata": "^1.2.0",
     "nock": "^9.2.6",
