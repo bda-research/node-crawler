@@ -37,15 +37,39 @@ Here is the [CHANGELOG](https://github.com/bda-research/node-crawler/blob/master
 
 Thanks to [Authuir](https://github.com/authuir), we have a [Chinese](http://node-crawler.readthedocs.io/zh_CN/latest/) docs. Other languages are welcomed!
 
+- [Get started](#get-started)
+  * [Install](#install)
+  * [Basic usage](#basic-usage)
+  * [Slow down](#slow-down)
+  * [Custom parameters](#custom-parameters)
+  * [Raw body](#raw-body)
+  * [preRequest](#prerequest)
+- [Advanced](#advanced)
+  * [Send request directly](#send-request-directly)
+  * [Work with bottleneck](#work-with-bottleneck)
+  * [Class:Crawler](#classcrawler)
+    + [Event: 'schedule'](#event-schedule)
+    + [Event: 'limiterChange'](#event-limiterchange)
+    + [Event: 'request'](#event-request)
+    + [Event: 'drain'](#event-drain)
+    + [crawler.queue(uri|options)](#crawlerqueueurioptions)
+    + [crawler.queueSize](#crawlerqueuesize)
+  * [Options reference](#options-reference)
+  * [Work with Cheerio or JSDOM](#work-with-cheerio-or-jsdom)
+    + [Working with Cheerio](#working-with-cheerio)
+    + [Work with JSDOM](#work-with-jsdom)
+- [How to test](#how-to-test)
+  * [Alternative: Docker](#alternative-docker)
+- [Rough todolist](#rough-todolist)
 
 # Get started
 
-## How to install
+## Install
 
 
     $ npm install crawler
 
-## Usage
+## Basic usage
 
 
 ```js
@@ -193,69 +217,7 @@ c.queue({
     }
 });
 ```
-
-## Options reference
-
-
-You can pass these options to the Crawler() constructor if you want them to be global or as
-items in the queue() calls if you want them to be specific to that item (overwriting global options)
-
-This options list is a strict superset of [mikeal's request options](https://github.com/mikeal/request#requestoptions-callback) and will be directly passed to
-the request() method.
-
-Basic request options:
-
- * `uri`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) The url you want to crawl.
- * `timeout` : [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) In milliseconds (Default 15000).
- * [All mikeal's request options are accepted](https://github.com/mikeal/request#requestoptions-callback).
-
-Callbacks:
-
- * `callback(error, res, done)`: Function that will be called after a request was completed
-     * `error`: [Error](https://nodejs.org/api/errors.html)
-     * `res`: [http.IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage) A response of standard IncomingMessage includes `$` and `options`
-         * `res.statusCode`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) HTTP status code. E.G.`200`
-         * `res.body`: [Buffer](https://nodejs.org/api/buffer.html) | [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) HTTP response content which could be a html page, plain text or xml document e.g.
-         * `res.headers`: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) HTTP response headers
-         * `res.request`: [Request](https://github.com/request/request)  An instance of Mikeal's `Request` instead of [http.ClientRequest](https://nodejs.org/api/http.html#http_class_http_clientrequest)
-             * `res.request.uri`: [urlObject](https://nodejs.org/api/url.html#url_url_strings_and_url_objects) HTTP request entity of parsed url
-             * `res.request.method`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) HTTP request method. E.G. `GET`
-             * `res.request.headers`: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) HTTP request headers
-         * `res.options`: [Options](#options-reference) of this task
-         * `$`: [jQuery Selector](https://api.jquery.com/category/selectors/) A selector for  html or xml document.
-     * `done`: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function) It must be called when you've done your work in callback.
-
-Schedule options:
-
- * `maxConnections`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Size of the worker pool (Default 10).
- * `rateLimit`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Number of milliseconds to delay between each requests (Default 0).
- * `priorityRange`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Range of acceptable priorities starting from 0 (Default 10).
- * `priority`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Priority of this request (Default 5). Low values have higher priority.
-
-Retry options:
-
- * `retries`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Number of retries if the request fails (Default 3),
- * `retryTimeout`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Number of milliseconds to wait before retrying (Default 10000),
-
-Server-side DOM options:
-
- * `jQuery`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type)|[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)|[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) Use `cheerio` with default configurations to inject document if true or "cheerio". Or use customized `cheerio` if an object with [Parser options](https://github.com/fb55/htmlparser2/wiki/Parser-options). Disable injecting jQuery selector if false. If you have memory leak issue in your project, use "whacko", an alternative parser,to avoid that. (Default true)
-
-Charset encoding:
-
- * `forceUTF8`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true crawler will get charset from HTTP headers or meta tag in html and convert it to UTF8 if necessary. Never worry about encoding anymore! (Default true),
- * `incomingEncoding`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) With forceUTF8: true to set encoding manually (Default null) so that crawler will not have to detect charset by itself. For example, `incomingEncoding : 'windows-1255'`. See [all supported encodings](https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings)
-
-Cache:
-
- * `skipDuplicates`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true skips URIs that were already crawled, without even calling callback() (Default false). __This is not recommended__, it's better to handle outside `Crawler` use [seenreq](https://github.com/mike442144/seenreq)
-
-Other:
-
- * `rotateUA`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true, `userAgent` should be an array and rotate it (Default false) 
- * `userAgent`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)|[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), If `rotateUA` is false, but `userAgent` is an array, crawler will use the first one.
- * `referer`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) If truthy sets the HTTP referer header
-
+# Advanced
 ## Send request directly
 
 In case you want to send a request directly without going through the scheduler in Crawler, try the code below. `direct` takes the same options as `queue`, please refer to [options](#options-reference) for detail. The difference is when calling `direct`, `callback` must be defined explicitly, with two arguments `error` and `response`, which are the same as that of `callback` of method `queue`.
@@ -272,6 +234,61 @@ crawler.direct({
         }
     }
 });
+```
+
+## Work with bottleneck
+
+Control rate limit for with limiter. All tasks submit to a limiter will abide the `rateLimit` and `maxConnections` restrictions of the limiter. `rateLimit` is the minimum time gap between two tasks. `maxConnections` is the maximum number of tasks that can be running at the same time. Limiters are independent of each other. One common use case is setting different limiters for different proxies. One thing is worth noticing, when `rateLimit` is set to a non-zero value, `maxConnections` will be forced to 1.
+
+```js
+var crawler = require('crawler');
+
+var c = new Crawler({
+    rateLimit: 2000,
+    maxConnections: 1,
+    callback: function(error, res, done) {
+        if(error) {
+            console.log(error)
+        } else {
+            var $ = res.$;
+            console.log($('title').text())
+        }
+        done();
+    }
+})
+
+// if you want to crawl some website with 2000ms gap between requests
+c.queue('http://www.somewebsite.com/page/1')
+c.queue('http://www.somewebsite.com/page/2')
+c.queue('http://www.somewebsite.com/page/3')
+
+// if you want to crawl some website using proxy with 2000ms gap between requests for each proxy
+c.queue({
+    uri:'http://www.somewebsite.com/page/1',
+    limiter:'proxy_1',
+    proxy:'proxy_1'
+})
+c.queue({
+    uri:'http://www.somewebsite.com/page/2',
+    limiter:'proxy_2',
+    proxy:'proxy_2'
+})
+c.queue({
+    uri:'http://www.somewebsite.com/page/3',
+    limiter:'proxy_3',
+    proxy:'proxy_3'
+})
+c.queue({
+    uri:'http://www.somewebsite.com/page/4',
+    limiter:'proxy_1',
+    proxy:'proxy_1'
+})
+```
+
+Normally, all limiter instances in limiter cluster in crawler are instantiated with options specified in crawler constructor. You can change property of any limiter by calling the code below. Currently, we only support changing property 'rateLimit' of limiter. Note that the default limiter can be accessed by `c.setLimiterProperty('default', 'rateLimit', 3000)`. We strongly recommend that you leave limiters unchanged after their instantiation unless you know clearly what you are doing.
+```js
+var c = new Crawler({});
+c.setLimiterProperty('limiterName', 'propertyName', value)
 ```
 
  
@@ -330,60 +347,69 @@ Enqueue a task and wait for it to be executed.
 Size of queue, read-only
 
 
-## Work with bottleneck
+## Options reference
 
-Control rate limit for with limiter. All tasks submit to a limiter will abide the `rateLimit` and `maxConnections` restrictions of the limiter. `rateLimit` is the minimum time gap between two tasks. `maxConnections` is the maximum number of tasks that can be running at the same time. Limiters are independent of each other. One common use case is setting different limiters for different proxies. One thing is worth noticing, when `rateLimit` is set to a non-zero value, `maxConnections` will be forced to 1.
 
-```js
-var crawler = require('crawler');
+You can pass these options to the Crawler() constructor if you want them to be global or as
+items in the queue() calls if you want them to be specific to that item (overwriting global options)
 
-var c = new Crawler({
-    rateLimit: 2000,
-    maxConnections: 1,
-    callback: function(error, res, done) {
-        if(error) {
-            console.log(error)
-        } else {
-            var $ = res.$;
-            console.log($('title').text())
-        }
-        done();
-    }
-})
+This options list is a strict superset of [mikeal's request options](https://github.com/mikeal/request#requestoptions-callback) and will be directly passed to
+the request() method.
 
-// if you want to crawl some website with 2000ms gap between requests
-c.queue('http://www.somewebsite.com/page/1')
-c.queue('http://www.somewebsite.com/page/2')
-c.queue('http://www.somewebsite.com/page/3')
+### Basic request options:
 
-// if you want to crawl some website using proxy with 2000ms gap between requests for each proxy
-c.queue({
-    uri:'http://www.somewebsite.com/page/1',
-    limiter:'proxy_1',
-    proxy:'proxy_1'
-})
-c.queue({
-    uri:'http://www.somewebsite.com/page/2',
-    limiter:'proxy_2',
-    proxy:'proxy_2'
-})
-c.queue({
-    uri:'http://www.somewebsite.com/page/3',
-    limiter:'proxy_3',
-    proxy:'proxy_3'
-})
-c.queue({
-    uri:'http://www.somewebsite.com/page/4',
-    limiter:'proxy_1',
-    proxy:'proxy_1'
-})
-```
+ * `uri`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) The url you want to crawl.
+ * `timeout` : [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) In milliseconds (Default 15000).
+ * [All mikeal's request options are accepted](https://github.com/mikeal/request#requestoptions-callback).
 
-Normally, all limiter instances in limiter cluster in crawler are instantiated with options specified in crawler constructor. You can change property of any limiter by calling the code below. Currently, we only support changing property 'rateLimit' of limiter. Note that the default limiter can be accessed by `c.setLimiterProperty('default', 'rateLimit', 3000)`. We strongly recommend that you leave limiters unchanged after their instantiation unless you know clearly what you are doing.
-```js
-var c = new Crawler({});
-c.setLimiterProperty('limiterName', 'propertyName', value)
-```
+### Callbacks:
+
+ * `callback(error, res, done)`: Function that will be called after a request was completed
+     * `error`: [Error](https://nodejs.org/api/errors.html)
+     * `res`: [http.IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage) A response of standard IncomingMessage includes `$` and `options`
+         * `res.statusCode`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) HTTP status code. E.G.`200`
+         * `res.body`: [Buffer](https://nodejs.org/api/buffer.html) | [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) HTTP response content which could be a html page, plain text or xml document e.g.
+         * `res.headers`: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) HTTP response headers
+         * `res.request`: [Request](https://github.com/request/request)  An instance of Mikeal's `Request` instead of [http.ClientRequest](https://nodejs.org/api/http.html#http_class_http_clientrequest)
+             * `res.request.uri`: [urlObject](https://nodejs.org/api/url.html#url_url_strings_and_url_objects) HTTP request entity of parsed url
+             * `res.request.method`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) HTTP request method. E.G. `GET`
+             * `res.request.headers`: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) HTTP request headers
+         * `res.options`: [Options](#options-reference) of this task
+         * `$`: [jQuery Selector](https://api.jquery.com/category/selectors/) A selector for  html or xml document.
+     * `done`: [Function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function) It must be called when you've done your work in callback.
+
+### Schedule options:
+
+ * `maxConnections`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Size of the worker pool (Default 10).
+ * `rateLimit`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Number of milliseconds to delay between each requests (Default 0).
+ * `priorityRange`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Range of acceptable priorities starting from 0 (Default 10).
+ * `priority`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Priority of this request (Default 5). Low values have higher priority.
+
+### Retry options:
+
+ * `retries`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Number of retries if the request fails (Default 3),
+ * `retryTimeout`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) Number of milliseconds to wait before retrying (Default 10000),
+
+### Server-side DOM options:
+
+ * `jQuery`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type)|[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)|[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) Use `cheerio` with default configurations to inject document if true or "cheerio". Or use customized `cheerio` if an object with [Parser options](https://github.com/fb55/htmlparser2/wiki/Parser-options). Disable injecting jQuery selector if false. If you have memory leak issue in your project, use "whacko", an alternative parser,to avoid that. (Default true)
+
+### Charset encoding:
+
+ * `forceUTF8`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true crawler will get charset from HTTP headers or meta tag in html and convert it to UTF8 if necessary. Never worry about encoding anymore! (Default true),
+ * `incomingEncoding`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) With forceUTF8: true to set encoding manually (Default null) so that crawler will not have to detect charset by itself. For example, `incomingEncoding : 'windows-1255'`. See [all supported encodings](https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings)
+
+### Cache:
+
+ * `skipDuplicates`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true skips URIs that were already crawled, without even calling callback() (Default false). __This is not recommended__, it's better to handle outside `Crawler` use [seenreq](https://github.com/mike442144/seenreq)
+
+### Other:
+
+ * `rotateUA`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true, `userAgent` should be an array and rotate it (Default false) 
+ * `userAgent`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)|[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), If `rotateUA` is false, but `userAgent` is an array, crawler will use the first one.
+ * `referer`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) If truthy sets the HTTP referer header
+
+
 
 ## Work with Cheerio or JSDOM
 
