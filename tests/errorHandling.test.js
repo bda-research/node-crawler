@@ -58,6 +58,29 @@ describe('Errors', function() {
 		});
 	});
 
+	describe('error connecting', function() {
+		const crawler = new Crawler({
+			timeout: 2500,
+			retryTimeout: 1000,
+			retries: 3,
+			jquery: false
+		});
+
+		it('should not retry when connection is refused', function(finishTest) {
+			crawler.queue({
+				uri: 'http://127.0.0.1:9999',
+				callback: (error, response, done) => {
+					expect(error).to.exist;
+					expect(error.code).to.equal('ECONNREFUSED');
+					expect(response.options.retries).to.equal(3);
+					done();
+					finishTest();
+				}
+			});
+		});
+
+	});
+
 	describe('error status code', function() {
 		const crawler = new Crawler({ jQuery : false });
         
@@ -121,7 +144,7 @@ describe('Errors', function() {
 			});
 		});
 
-		it('should not failed on empty response', function(finishTest) {
+		it('should not fail on empty response', function(finishTest) {
 			crawler.queue({
 				uri : 'http://test.crawler.com/status/204',
 				callback : (error, response, done) => {
@@ -132,7 +155,7 @@ describe('Errors', function() {
 			});
 		});
 
-		it('should not failed on a malformed html if jquery is false', function(finishTest) {
+		it('should not fail on a malformed html if jquery is false', function(finishTest) {
 			crawler.queue({
 				html : '<html><p>hello <div>dude</p></html>',
 				callback : (error, response, done) => {
