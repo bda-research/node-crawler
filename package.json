@@ -9,7 +9,7 @@
   "scripts": {
     "hint": "eslint ./lib/*.js ./tests/*.js",
     "test": "mocha --timeout=15000 tests/*.test.js",
-    "cover": "istanbul cover _mocha --report lcovonly -- --timeout=15000 --reporter spec tests/*.test.js"
+    "cover": "nyc --reporter=lcovonly --reporter=text --reporter=text-summary mocha --timeout=15000 --reporter spec tests/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -32,11 +32,11 @@
     "chai": "^2.3.0",
     "coveralls": "^3.0.2",
     "eslint": "^5.3.0",
-    "istanbul": "^0.4.5",
     "jsdom": "^9.6.0",
     "mocha": "^5.2.0",
     "mocha-testdata": "^1.2.0",
     "nock": "^9.2.6",
+    "nyc": "^13.1.0",
     "sinon": "^6.0.0",
     "whacko": "^0.19.1"
   },
