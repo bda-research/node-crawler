@@ -132,7 +132,7 @@ c.queue([{
 Use `rateLimit` to slow down when you are visiting web sites.
 
 ```js
-var crawler = require("crawler");
+var Crawler = require("crawler");
 
 var c = new Crawler({
     rateLimit: 1000, // `maxConnections` will be forced to 1
