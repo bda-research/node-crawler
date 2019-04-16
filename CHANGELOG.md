@@ -1,6 +1,13 @@
 node-webcrawler ChangeLog
 -------------------------
 
+1.2.1
+ * [#310](https://github.com/bda-research/node-crawler/issues/310) Upgrade dependencies' version(@mike442144)
+ * [#303](https://github.com/bda-research/node-crawler/issues/303) Update seenreq to v3(@mike442144)
+ * [#304](https://github.com/bda-research/node-crawler/pull/304) Replacement of istanbul with nyc (@kossidts)
+ * [#300](https://github.com/bda-research/node-crawler/pull/300) Add formData arg to requestArgs (@humandevmode)
+ * [#280](https://github.com/bda-research/node-crawler/pull/280) 20180611 updatetestwithnock (@Dong-Gao)
+
 1.2.0
  * [#278](https://github.com/bda-research/node-crawler/pull/278) Added filestream require to download section (@swosko)
  * Use `nock` to mock testing instead of httpbin

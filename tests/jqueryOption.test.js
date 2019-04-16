@@ -80,7 +80,7 @@ describe('Jquery testing', function() {
 				jQuery: false,
 				callback:function(error, res) {
 					expect(error).to.be.null;
-					expect(res.$).to.be.empty;
+					expect(res.$).to.be.undefined;
 					done();
 				}
 			});

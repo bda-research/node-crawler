@@ -41,7 +41,7 @@ describe('Cache features tests', function() {
 				skipDuplicates: true,
 				retries: 0,
 				callback: function (error) {
-					expect(error).to.be.defined;
+					expect(error).to.exist;
 					expect(koScope.isDone()).to.be.true;
 					done();
 				},
@@ -51,17 +51,17 @@ describe('Cache features tests', function() {
 		});
 
 		it('should retry and notify the callback when an error occurs and "retries" is enabled', function (done) {
-			var koScope = scope.get('/').replyWithError('too bad');
-			var okScope = scope.get('/').reply(200);
+			var koScope = scope.get('/').replyWithError('too bad').persist();
+
 			c = new Crawler({
 				jquery: false,
 				skipDuplicates: true,
 				retries: 1,
 				retryTimeout: 10,
 				callback: function (error) {
-					expect(error).to.be.defined;
+					expect(error).to.exist;
 					expect(koScope.isDone()).to.be.true;
-					expect(okScope.isDone()).to.be.true;
+					scope.persist(false);
 					done();
 				},
 			});
