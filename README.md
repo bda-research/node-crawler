@@ -171,6 +171,7 @@ Crawler picks options only needed by request, so don't worry about the redundanc
 If you are downloading files like image, pdf, word etc, you have to save the raw response body which means Crawler shouldn't convert it to string. To make it happen, you need to set encoding to null
 
 ```js
+var Crawler = require("crawler");
 var fs = require('fs');
 
 var c = new Crawler({
