@@ -427,7 +427,7 @@ const Agent = require('socks5-https-client/lib/Agent');
 var c = new Crawler({
     // rateLimit: 2000,
     maxConnections: 20,
-    agentClass: true, //adding socks5 https agent
+    agentClass: Agent, //adding socks5 https agent
     method: 'GET',
     strictSSL: true,
     agentOptions: {
