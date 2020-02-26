@@ -421,6 +421,31 @@ the request() method.
  * `options.removeRefererHeader`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true preserves the set referer during redirects
  * `options.headers`: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) Raw key-value of http headers
 
+### Https socks5 
+```js
+const Agent = require('socks5-https-client/lib/Agent');
+//...
+var c = new Crawler({
+    // rateLimit: 2000,
+    maxConnections: 20,
+    agentClass: Agent, //adding socks5 https agent
+    method: 'GET',
+    strictSSL: true,
+    agentOptions: {
+        socksHost: 'localhost',
+        socksPort: 9050
+    },
+    // debug: true,
+    callback: function (error, res, done) {
+        if (error) {
+            console.log(error);
+        } else {
+            //
+        }
+        done();
+    }
+}); 
+```
 
 
 ## Work with Cheerio or JSDOM
