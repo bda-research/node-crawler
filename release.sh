@@ -19,7 +19,7 @@ fi
 # Generate changelog from pull requests
 github-changes -o bda-research -r node-crawler \
   --auth --verbose \
-  --file CHANGELOG.md \
+  --file /tmp/CHANGELOG.md \
   --only-pulls --use-commit-body \
   --date-format '(YYYY/MM/DD)' \
   || exit 1
@@ -31,7 +31,7 @@ sed -i -e "s/^### upcoming/### v$version/" CHANGELOG.md
 
 # This may fail if no changelog updates
 # TODO: would this ever actually happen?  handle it better?
-git add CHANGELOG.md; git commit -m 'Update changelog'
+# git add CHANGELOG.md; git commit -m 'Update changelog'
 
 # Publish the new version to npm
 # npm publish || exit 1
