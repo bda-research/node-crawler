@@ -1,6 +1,13 @@
 node-crawler ChangeLog
 -------------------------
 
+1.2.2
+- [#353](https://github.com/bda-research/node-crawler/pull/353) Release automate (@mike442144)
+- [#338](https://github.com/bda-research/node-crawler/pull/338) #comment Adding support for Https socks5. Agent is imported directly … (@djpavlovic)
+- [#336](https://github.com/bda-research/node-crawler/pull/336) Update README.md (@DanielHabenicht)
+- [#329](https://github.com/bda-research/node-crawler/pull/329) add support for removeRefererHeader request option to preserve referer during redirects (@petskratt)
+- [#314](https://github.com/bda-research/node-crawler/pull/314) docs: fix typo (@Jason-Cooke)
+
 1.2.1
  * [#310](https://github.com/bda-research/node-crawler/issues/310) Upgrade dependencies' version(@mike442144)
  * [#303](https://github.com/bda-research/node-crawler/issues/303) Update seenreq to v3(@mike442144)
