@@ -1,4 +1,4 @@
-node-webcrawler ChangeLog
+node-crawler ChangeLog
 -------------------------
 
 1.2.1
