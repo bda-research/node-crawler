@@ -8,7 +8,7 @@ Node Crawler is a great open source web scraping tool. However, there are a few 
   - [Get full path using jQuery Selector](#get-full-path-using-jquery-selector)
 
 ### Use Proxy with Crawler 
-Most large scale webscraping tasks requires us to perform countless amounts of access to a specific website. This could be higly risky using only one IP address since the website could permanately or temporarily block our IP address. Instead, we can use a proxy that gives us the freedom to access websites using multiple different IPs. **Below is an example of how to use a proxy with Crawler:** 
+Most large scale webscraping tasks requires us to perform countless amounts of access to a specific website. This could be very risky using only one IP address since the website could permanently or temporarily block our IP address. Instead, we can use a proxy that gives us the freedom to access websites using multiple different IPs. **Below is an example of how to use a proxy with Crawler:** 
 ```javascript
 const Crawler = require("crawler");
 
@@ -28,7 +28,7 @@ Crawler.queue({
 
 ### Download Images and Other Files
 Some of our web scraping tasks involves downloading images or other file types, like grabbing images to train image recognition algorithms. 
-With crawler, a few settings will do the trick; simply set ```encoding``` and ```jQurey``` options to ```null``` and ```false``` respectively when queuing a task.  **Below is an example of downloading images with Crawler:**
+With crawler, a few settings will do the trick; simply set ```encoding``` and ```jQuery``` options to ```null``` and ```false``` respectively when queuing a task.  **Below is an example of downloading images with Crawler:**
 ```javascript
 const Crawler = require("crawler");
 const fs = require("fs");
