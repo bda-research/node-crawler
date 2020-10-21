@@ -1,6 +1,6 @@
 {
   "name": "crawler",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Crawler is a web spider written with Nodejs. It gives you the full power of jQuery on the server to parse a big number of pages as they are downloaded, asynchronously",
   "main": "./lib/crawler.js",
   "directories": {
@@ -9,6 +9,7 @@
   "scripts": {
     "hint": "eslint ./lib/*.js ./tests/*.js",
     "test": "mocha --timeout=15000 tests/*.test.js",
+    "http2test": "mocha --timeout=15000 tests/http2*.test.js",
     "cover": "nyc --reporter=lcovonly --reporter=text --reporter=text-summary mocha --timeout=15000 --reporter spec tests/*.test.js"
   },
   "repository": {
