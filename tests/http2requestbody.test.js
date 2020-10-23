@@ -179,7 +179,7 @@ describe('request body', function () {
         testOptions.headers = Object.assign(testOptions.headers, c.generateHttp2RequestLine(testOptions));
 
         
-        const requestBody = c.generateHttp2RequestBody(testOptions);
+        const requestBody = testOptions.headers[':method'] === 'GET' ? null : c.generateHttp2RequestBody(testOptions);
         expect(requestBody).to.equal(null);
         done();
     });
