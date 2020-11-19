@@ -3,24 +3,20 @@
 
 const Crawler = require('../lib/crawler');
 const expect = require('chai').expect;
-const sinon = require('sinon');
-let c, spy;
 
 describe('Errors', function () {
 	
-    afterEach(function () {
-        c = {};
-        spy = {};
-    });
+	afterEach(function () {
+	});
 
-    describe('timeout', function () {
-        const crawler = new Crawler({
-            timeout: 3000,
-            retryTimeout: 1000,
-            retries: 2,
-            jquery: false,
-            http2: true
-        });
+	describe('timeout', function () {
+		const crawler = new Crawler({
+			timeout: 3000,
+			retryTimeout: 1000,
+			retries: 2,
+			jquery: false,
+			http2: true
+		});
 
 		it('should retry after timeout', function(finishTest) {
 			let options = {
@@ -34,7 +30,7 @@ describe('Errors', function () {
 			};
 			crawler.queue(options);
 			expect(options.retries).to.equal(2);
-        });
+		});
 
 		it('should return a timeout error after ~9sec', function(finishTest) {
 			crawler.queue({
@@ -47,17 +43,17 @@ describe('Errors', function () {
 				}
 			});
 		});
-    })
+	});
 
-    describe('error status code', function () {
-        const crawler = new Crawler({
-            retryTimeout: 1000,
-            retries: 2,
-            jquery: false,
-            http2: true
-        });         
+	describe('error status code', function () {
+		const crawler = new Crawler({
+			retryTimeout: 1000,
+			retries: 2,
+			jquery: false,
+			http2: true
+		});         
 
-        it('should not return an error on status code 400 (Bad Request)', function(finishTest) {
+		it('should not return an error on status code 400 (Bad Request)', function(finishTest) {
 			crawler.queue({
 				uri: 'http://nghttp2.org/httpbin/status/400',
 				callback: (error, response, done) => {
@@ -115,19 +111,19 @@ describe('Errors', function () {
 					finishTest();
 				}
 			});
-        });
+		});
         
-        it('should not failed on empty response', function(finishTest) {
+		it('should not failed on empty response', function(finishTest) {
 			crawler.queue({
 				uri : 'http://nghttp2.org/httpbin/status/200',
 				callback : (error, response, done) => {
-                    expect(error).to.be.null;
+					expect(error).to.be.null;
 					done();
 					finishTest();
 				}
 			});
-        });
-    })
+		});
+	});
 
 
 });
