@@ -1,6 +1,11 @@
 node-crawler ChangeLog
 -------------------------
 
+1.3.0
+- [#367](https://github.com/bda-research/node-crawler/pull/367) add http2 functionality (@BeijingProtoHuman)
+- [#364](https://github.com/bda-research/node-crawler/pull/364) Fix some typos (@pzmarzly)
+- [#363](https://github.com/bda-research/node-crawler/pull/363) Remove stale vendored jQuery version (@pzmarzly)
+
 1.2.2
 - [#353](https://github.com/bda-research/node-crawler/pull/353) Release automate (@mike442144)
 - [#338](https://github.com/bda-research/node-crawler/pull/338) #comment Adding support for Https socks5. Agent is imported directly … (@djpavlovic)
