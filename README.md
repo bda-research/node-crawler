@@ -246,6 +246,29 @@ crawler.direct({
 });
 ```
 
+## Work with Http2 
+
+Node-crawler now supports http request. Proxy functionality for http2 request does not be included now. It will be added in the future.
+
+```js
+crawler.queue({
+    //unit test work with httpbin http2 server. It could be used for test
+    uri: 'https://nghttp2.org/httpbin/status/200',
+    method: 'GET',
+    http2: true, //set http2 to be true will make a http2 request
+    callback: (error, response, done) => {
+        if(error) {
+            console.error(error);
+            return done();
+        }
+
+        console.log(`inside callback`);
+        console.log(response.body);
+        return done();
+    }
+})
+```
+
 ## Work with bottleneck
 
 Control rate limit for with limiter. All tasks submit to a limiter will abide the `rateLimit` and `maxConnections` restrictions of the limiter. `rateLimit` is the minimum time gap between two tasks. `maxConnections` is the maximum number of tasks that can be running at the same time. Limiters are independent of each other. One common use case is setting different limiters for different proxies. One thing is worth noticing, when `rateLimit` is set to a non-zero value, `maxConnections` will be forced to 1.
@@ -420,6 +443,10 @@ the request() method.
  * `options.referer`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) If truthy sets the HTTP referer header
  * `options.removeRefererHeader`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true preserves the set referer during redirects
  * `options.headers`: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) Raw key-value of http headers
+
+### Http2 
+
+ * `options.http2`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true, request will be sent in http2 protocol (Default false) 
 
 ### Https socks5 
 ```js
