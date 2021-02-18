@@ -82,16 +82,16 @@ $ npm install crawler
 ## Basic usage
 
 ```js
-var Crawler = require('crawler');
+const Crawler = require('crawler');
 
-var c = new Crawler({
+const c = new Crawler({
     maxConnections: 10,
     // This will be called for each crawled page
     callback: function (error, res, done) {
         if (error) {
             console.log(error);
         } else {
-            var $ = res.$;
+            const $ = res.$;
             // $ is Cheerio by default
             //a lean implementation of core jQuery designed specifically for the server
             console.log($('title').text());
@@ -132,9 +132,9 @@ c.queue([{
 Use `rateLimit` to slow down when you are visiting web sites.
 
 ```js
-var Crawler = require('crawler');
+const Crawler = require('crawler');
 
-var c = new Crawler({
+const c = new Crawler({
     rateLimit: 1000, // `maxConnections` will be forced to 1
     callback: function (err, res, done) {
         console.log(res.$('title').text());
@@ -171,10 +171,10 @@ Crawler picks options only needed by request, so don't worry about the redundanc
 If you are downloading files like image, pdf, word etc, you have to save the raw response body which means Crawler shouldn't convert it to string. To make it happen, you need to set encoding to null
 
 ```js
-var Crawler = require('crawler');
-var fs = require('fs');
+const Crawler = require('crawler');
+const fs = require('fs');
 
-var c = new Crawler({
+const c = new Crawler({
     encoding: null,
     jQuery: false,// set false to suppress warning message.
     callback: function(err, res, done) {
@@ -200,12 +200,12 @@ c.queue({
 If you want to do something either synchronously or asynchronously before each request, you can try the code below. Note that direct requests won't trigger preRequest.
 
 ```js
-var c = new Crawler({
+const c = new Crawler({
     preRequest: function (options, done) {
         // 'options' here is not the 'options' you pass to 'c.queue', instead, it's the options that is going to be passed to 'request' module
         console.log(options);
-	// when done is called, the request will start
-	done();
+    	// when done is called, the request will start
+    	done();
     },
     callback: function (err, res, done) {
         if (err) {
@@ -219,8 +219,8 @@ var c = new Crawler({
 c.queue({
     uri: 'http://www.google.com',
     // this will override the 'preRequest' defined in crawler
-    preRequest: function (options, done) {
-        setTimeout(function() {
+    preRequest: (options, done) => {
+        setTimeout(() => {
     	    console.log(options);
     	    done();
     	}, 1000);
@@ -274,16 +274,16 @@ crawler.queue({
 Control rate limit for with limiter. All tasks submit to a limiter will abide the `rateLimit` and `maxConnections` restrictions of the limiter. `rateLimit` is the minimum time gap between two tasks. `maxConnections` is the maximum number of tasks that can be running at the same time. Limiters are independent of each other. One common use case is setting different limiters for different proxies. One thing is worth noticing, when `rateLimit` is set to a non-zero value, `maxConnections` will be forced to 1.
 
 ```js
-var crawler = require('crawler');
+const crawler = require('crawler');
 
-var c = new Crawler({
+const c = new Crawler({
     rateLimit: 2000,
     maxConnections: 1,
     callback: function (error, res, done) {
         if (error) {
             console.log(error);
         } else {
-            var $ = res.$;
+            const $ = res.$;
             console.log($('title').text());
         }
         done();
@@ -320,7 +320,7 @@ c.queue({
 
 Normally, all limiter instances in limiter cluster in crawler are instantiated with options specified in crawler constructor. You can change property of any limiter by calling the code below. Currently, we only support changing property 'rateLimit' of limiter. Note that the default limiter can be accessed by `c.setLimiterProperty('default', 'rateLimit', 3000)`. We strongly recommend that you leave limiters unchanged after their instantiation unless you know clearly what you are doing.
 ```js
-var c = new Crawler({});
+const c = new Crawler({});
 c.setLimiterProperty('limiterName', 'propertyName', value);
 ```
 
@@ -452,7 +452,7 @@ the request() method.
 ```js
 const Agent = require('socks5-https-client/lib/Agent');
 //...
-var c = new Crawler({
+const c = new Crawler({
     // rateLimit: 2000,
     maxConnections: 20,
     agentClass: Agent, //adding socks5 https agent
@@ -511,10 +511,10 @@ For a full list of options and their effects, see [this](https://github.com/fb55
 In order to work with JSDOM you will have to install it in your project folder `npm install jsdom`, and pass it to crawler.
 
 ```js
-var jsdom = require('jsdom');
-var Crawler = require('crawler');
+const jsdom = require('jsdom');
+const Crawler = require('crawler');
 
-var c = new Crawler({
+const c = new Crawler({
     jQuery: jsdom
 });
 ```
