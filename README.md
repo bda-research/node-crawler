@@ -202,7 +202,7 @@ If you want to do something either synchronously or asynchronously before each r
 ```js
 var c = new Crawler({
     preRequest: function (options, done) {
-        // 'options' here is not the 'options' you pass to 'c.queue', instead, it's the options that is going to be passed to 'request' module 
+        // 'options' here is not the 'options' you pass to 'c.queue', instead, it's the options that is going to be passed to 'request' module
         console.log(options);
 	// when done is called, the request will start
 	done();
@@ -246,7 +246,7 @@ crawler.direct({
 });
 ```
 
-## Work with Http2 
+## Work with Http2
 
 Node-crawler now supports http request. Proxy functionality for http2 request does not be included now. It will be added in the future.
 
@@ -324,7 +324,7 @@ var c = new Crawler({});
 c.setLimiterProperty('limiterName', 'propertyName', value);
 ```
 
- 
+
 ## Class:Crawler
 
 ### Event: 'schedule'
@@ -438,17 +438,17 @@ the request() method.
 
 ### Http headers
 
- * `options.rotateUA`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true, `userAgent` should be an array and rotate it (Default false) 
+ * `options.rotateUA`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true, `userAgent` should be an array and rotate it (Default false)
  * `options.userAgent`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)|[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), If `rotateUA` is false, but `userAgent` is an array, crawler will use the first one.
  * `options.referer`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) If truthy sets the HTTP referer header
  * `options.removeRefererHeader`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true preserves the set referer during redirects
  * `options.headers`: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) Raw key-value of http headers
 
-### Http2 
+### Http2
 
- * `options.http2`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true, request will be sent in http2 protocol (Default false) 
+ * `options.http2`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true, request will be sent in http2 protocol (Default false)
 
-### Https socks5 
+### Https socks5
 ```js
 const Agent = require('socks5-https-client/lib/Agent');
 //...
@@ -469,7 +469,7 @@ var c = new Crawler({
         }
         done();
     }
-}); 
+});
 ```
 
 
