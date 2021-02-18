@@ -26,12 +26,12 @@ Most powerful, popular and production crawling/scraping package for Node, happy 
 
 Features:
 
- * server-side DOM & automatic jQuery insertion with Cheerio (default) or JSDOM
- * Configurable pool size and retries
- * Control rate limit
- * Priority queue of requests
- * forceUTF8 mode to let crawler deal for you with charset detection and conversion
- * Compatible with 4.x or newer version
+ * Server-side DOM & automatic jQuery insertion with Cheerio (default) or JSDOM,
+ * Configurable pool size and retries,
+ * Control rate limit,
+ * Priority queue of requests,
+ * `forceUTF8` mode to let crawler deal for you with charset detection and conversion,
+ * Compatible with 4.x or newer version.
 
 Here is the [CHANGELOG](https://github.com/bda-research/node-crawler/blob/master/CHANGELOG.md)
 
