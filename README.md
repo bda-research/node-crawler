@@ -87,7 +87,7 @@ const Crawler = require('crawler');
 const c = new Crawler({
     maxConnections: 10,
     // This will be called for each crawled page
-    callback: function (error, res, done) {
+    callback: (error, res, done) => {
         if (error) {
             console.log(error);
         } else {
@@ -112,7 +112,7 @@ c.queue([{
     jQuery: false,
 
     // The global callback won't be called
-    callback: function (error, res, done) {
+    callback: (error, res, done) => {
         if (error) {
             console.log(error);
         } else {
@@ -136,7 +136,7 @@ const Crawler = require('crawler');
 
 const c = new Crawler({
     rateLimit: 1000, // `maxConnections` will be forced to 1
-    callback: function (err, res, done) {
+    callback: (err, res, done) => {
         console.log(res.$('title').text());
         done();
     }
@@ -177,7 +177,7 @@ const fs = require('fs');
 const c = new Crawler({
     encoding: null,
     jQuery: false,// set false to suppress warning message.
-    callback: function(err, res, done) {
+    callback: (err, res, done) => {
         if (err) {
             console.error(err.stack);
         } else {
@@ -201,13 +201,13 @@ If you want to do something either synchronously or asynchronously before each r
 
 ```js
 const c = new Crawler({
-    preRequest: function (options, done) {
+    preRequest: (options, done) => {
         // 'options' here is not the 'options' you pass to 'c.queue', instead, it's the options that is going to be passed to 'request' module
         console.log(options);
     	// when done is called, the request will start
     	done();
     },
-    callback: function (err, res, done) {
+    callback: (err, res, done) => {
         if (err) {
     	    console.log(err);
     	} else {
@@ -236,7 +236,7 @@ In case you want to send a request directly without going through the scheduler 
 crawler.direct({
     uri: 'http://www.google.com',
     skipEventRequest: false, // default to true, direct requests won't trigger Event:'request'
-    callback: function (error, response) {
+    callback: (error, response) => {
         if (error) {
             console.log(error)
         } else {
@@ -279,7 +279,7 @@ const crawler = require('crawler');
 const c = new Crawler({
     rateLimit: 2000,
     maxConnections: 1,
-    callback: function (error, res, done) {
+    callback: (error, res, done) => {
         if (error) {
             console.log(error);
         } else {
@@ -333,7 +333,7 @@ c.setLimiterProperty('limiterName', 'propertyName', value);
 Emitted when a task is being added to scheduler.
 
 ```js
-crawler.on('schedule', function (options) {
+crawler.on('schedule', (options) => {
     options.proxy = 'http://proxy:port';
 });
 ```
@@ -352,7 +352,7 @@ Emitted when crawler is ready to send a request.
 If you are going to modify options at last stage before requesting, just listen on it.
 
 ```js
-crawler.on('request', function (options) {
+crawler.on('request', (options) => {
     options.qs.timestamp = new Date().getTime();
 });
 ```
@@ -362,7 +362,7 @@ crawler.on('request', function (options) {
 Emitted when queue is empty.
 
 ```js
-crawler.on('drain', function () {
+crawler.on('drain', () => {
     // For example, release a connection to database.
     db.end();// close connection to MySQL
 });
@@ -463,7 +463,7 @@ const c = new Crawler({
         socksPort: 9050
     },
     // debug: true,
-    callback: function (error, res, done) {
+    callback: (error, res, done) => {
         if (error) {
             console.log(error);
         }
