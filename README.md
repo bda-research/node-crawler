@@ -26,12 +26,12 @@ Most powerful, popular and production crawling/scraping package for Node, happy 
 
 Features:
 
- * server-side DOM & automatic jQuery insertion with Cheerio (default) or JSDOM
- * Configurable pool size and retries
- * Control rate limit
- * Priority queue of requests
- * forceUTF8 mode to let crawler deal for you with charset detection and conversion
- * Compatible with 4.x or newer version
+ * Server-side DOM & automatic jQuery insertion with Cheerio (default) or JSDOM,
+ * Configurable pool size and retries,
+ * Control rate limit,
+ * Priority queue of requests,
+ * `forceUTF8` mode to let crawler deal for you with charset detection and conversion,
+ * Compatible with 4.x or newer version.
 
 Here is the [CHANGELOG](https://github.com/bda-research/node-crawler/blob/master/CHANGELOG.md)
 
@@ -82,19 +82,19 @@ $ npm install crawler
 ## Basic usage
 
 ```js
-var Crawler = require("crawler");
+const Crawler = require('crawler');
 
-var c = new Crawler({
-    maxConnections : 10,
+const c = new Crawler({
+    maxConnections: 10,
     // This will be called for each crawled page
-    callback : function (error, res, done) {
-        if(error){
+    callback: (error, res, done) => {
+        if (error) {
             console.log(error);
-        }else{
-            var $ = res.$;
+        } else {
+            const $ = res.$;
             // $ is Cheerio by default
             //a lean implementation of core jQuery designed specifically for the server
-            console.log($("title").text());
+            console.log($('title').text());
         }
         done();
     }
@@ -112,10 +112,10 @@ c.queue([{
     jQuery: false,
 
     // The global callback won't be called
-    callback: function (error, res, done) {
-        if(error){
+    callback: (error, res, done) => {
+        if (error) {
             console.log(error);
-        }else{
+        } else {
             console.log('Grabbed', res.body.length, 'bytes');
         }
         done();
@@ -132,12 +132,12 @@ c.queue([{
 Use `rateLimit` to slow down when you are visiting web sites.
 
 ```js
-var Crawler = require("crawler");
+const Crawler = require('crawler');
 
-var c = new Crawler({
+const c = new Crawler({
     rateLimit: 1000, // `maxConnections` will be forced to 1
-    callback: function(err, res, done){
-        console.log(res.$("title").text());
+    callback: (err, res, done) => {
+        console.log(res.$('title').text());
         done();
     }
 });
@@ -151,10 +151,10 @@ Sometimes you have to access variables from previous request/response session, w
 
 ```js
 c.queue({
-    uri:"http://www.google.com",
-    parameter1:"value1",
-    parameter2:"value2",
-    parameter3:"value3"
+    uri: 'http://www.google.com',
+    parameter1: 'value1',
+    parameter2: 'value2',
+    parameter3: 'value3'
 })
 ```
 
@@ -171,26 +171,26 @@ Crawler picks options only needed by request, so don't worry about the redundanc
 If you are downloading files like image, pdf, word etc, you have to save the raw response body which means Crawler shouldn't convert it to string. To make it happen, you need to set encoding to null
 
 ```js
-var Crawler = require("crawler");
-var fs = require('fs');
+const Crawler = require('crawler');
+const fs = require('fs');
 
-var c = new Crawler({
-    encoding:null,
-    jQuery:false,// set false to suppress warning message.
-    callback:function(err, res, done){
-        if(err){
+const c = new Crawler({
+    encoding: null,
+    jQuery: false,// set false to suppress warning message.
+    callback: (err, res, done) => {
+        if (err) {
             console.error(err.stack);
-        }else{
+        } else {
             fs.createWriteStream(res.options.filename).write(res.body);
         }
-        
+
         done();
     }
 });
 
 c.queue({
-    uri:"https://nodejs.org/static/images/logos/nodejs-1920x1200.png",
-    filename:"nodejs-1920x1200.png"
+    uri: 'https://nodejs.org/static/images/logos/nodejs-1920x1200.png',
+    filename: 'nodejs-1920x1200.png'
 });
 
 ```
@@ -200,30 +200,30 @@ c.queue({
 If you want to do something either synchronously or asynchronously before each request, you can try the code below. Note that direct requests won't trigger preRequest.
 
 ```js
-var c = new Crawler({
-    preRequest: function(options, done) {
-        // 'options' here is not the 'options' you pass to 'c.queue', instead, it's the options that is going to be passed to 'request' module 
+const c = new Crawler({
+    preRequest: (options, done) => {
+        // 'options' here is not the 'options' you pass to 'c.queue', instead, it's the options that is going to be passed to 'request' module
         console.log(options);
-	// when done is called, the request will start
-	done();
+    	// when done is called, the request will start
+    	done();
     },
-    callback: function(err, res, done) {
-        if(err) {
-	    console.log(err)
-	} else {
-	    console.log(res.statusCode)
-	}
+    callback: (err, res, done) => {
+        if (err) {
+    	    console.log(err);
+    	} else {
+    	    console.log(res.statusCode);
+    	}
     }
 });
 
 c.queue({
     uri: 'http://www.google.com',
     // this will override the 'preRequest' defined in crawler
-    preRequest: function(options, done) {
-        setTimeout(function() {
-	    console.log(options);
-	    done();
-	}, 1000)
+    preRequest: (options, done) => {
+        setTimeout(() => {
+    	    console.log(options);
+    	    done();
+    	}, 1000);
     }
 });
 ```
@@ -236,8 +236,8 @@ In case you want to send a request directly without going through the scheduler 
 crawler.direct({
     uri: 'http://www.google.com',
     skipEventRequest: false, // default to true, direct requests won't trigger Event:'request'
-    callback: function(error, response) {
-        if(error) {
+    callback: (error, response) => {
+        if (error) {
             console.log(error)
         } else {
             console.log(response.statusCode);
@@ -246,7 +246,7 @@ crawler.direct({
 });
 ```
 
-## Work with Http2 
+## Work with Http2
 
 Node-crawler now supports http request. Proxy functionality for http2 request does not be included now. It will be added in the future.
 
@@ -257,7 +257,7 @@ crawler.queue({
     method: 'GET',
     http2: true, //set http2 to be true will make a http2 request
     callback: (error, response, done) => {
-        if(error) {
+        if (error) {
             console.error(error);
             return done();
         }
@@ -274,57 +274,57 @@ crawler.queue({
 Control rate limit for with limiter. All tasks submit to a limiter will abide the `rateLimit` and `maxConnections` restrictions of the limiter. `rateLimit` is the minimum time gap between two tasks. `maxConnections` is the maximum number of tasks that can be running at the same time. Limiters are independent of each other. One common use case is setting different limiters for different proxies. One thing is worth noticing, when `rateLimit` is set to a non-zero value, `maxConnections` will be forced to 1.
 
 ```js
-var crawler = require('crawler');
+const crawler = require('crawler');
 
-var c = new Crawler({
+const c = new Crawler({
     rateLimit: 2000,
     maxConnections: 1,
-    callback: function(error, res, done) {
-        if(error) {
-            console.log(error)
+    callback: (error, res, done) => {
+        if (error) {
+            console.log(error);
         } else {
-            var $ = res.$;
-            console.log($('title').text())
+            const $ = res.$;
+            console.log($('title').text());
         }
         done();
     }
-})
+});
 
 // if you want to crawl some website with 2000ms gap between requests
-c.queue('http://www.somewebsite.com/page/1')
-c.queue('http://www.somewebsite.com/page/2')
-c.queue('http://www.somewebsite.com/page/3')
+c.queue('http://www.somewebsite.com/page/1');
+c.queue('http://www.somewebsite.com/page/2');
+c.queue('http://www.somewebsite.com/page/3');
 
 // if you want to crawl some website using proxy with 2000ms gap between requests for each proxy
 c.queue({
     uri:'http://www.somewebsite.com/page/1',
     limiter:'proxy_1',
     proxy:'proxy_1'
-})
+});
 c.queue({
     uri:'http://www.somewebsite.com/page/2',
     limiter:'proxy_2',
     proxy:'proxy_2'
-})
+});
 c.queue({
     uri:'http://www.somewebsite.com/page/3',
     limiter:'proxy_3',
     proxy:'proxy_3'
-})
+});
 c.queue({
     uri:'http://www.somewebsite.com/page/4',
     limiter:'proxy_1',
     proxy:'proxy_1'
-})
+});
 ```
 
 Normally, all limiter instances in limiter cluster in crawler are instantiated with options specified in crawler constructor. You can change property of any limiter by calling the code below. Currently, we only support changing property 'rateLimit' of limiter. Note that the default limiter can be accessed by `c.setLimiterProperty('default', 'rateLimit', 3000)`. We strongly recommend that you leave limiters unchanged after their instantiation unless you know clearly what you are doing.
 ```js
-var c = new Crawler({});
-c.setLimiterProperty('limiterName', 'propertyName', value)
+const c = new Crawler({});
+c.setLimiterProperty('limiterName', 'propertyName', value);
 ```
 
- 
+
 ## Class:Crawler
 
 ### Event: 'schedule'
@@ -333,8 +333,8 @@ c.setLimiterProperty('limiterName', 'propertyName', value)
 Emitted when a task is being added to scheduler.
 
 ```js
-crawler.on('schedule',function(options){
-    options.proxy = "http://proxy:port";
+crawler.on('schedule', (options) => {
+    options.proxy = 'http://proxy:port';
 });
 ```
 
@@ -352,7 +352,7 @@ Emitted when crawler is ready to send a request.
 If you are going to modify options at last stage before requesting, just listen on it.
 
 ```js
-crawler.on('request',function(options){
+crawler.on('request', (options) => {
     options.qs.timestamp = new Date().getTime();
 });
 ```
@@ -362,7 +362,7 @@ crawler.on('request',function(options){
 Emitted when queue is empty.
 
 ```js
-crawler.on('drain',function(){
+crawler.on('drain', () => {
     // For example, release a connection to database.
     db.end();// close connection to MySQL
 });
@@ -392,7 +392,7 @@ the request() method.
 ### Basic request options
 
  * `options.uri`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) The url you want to crawl.
- * `options.timeout` : [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) In milliseconds (Default 15000).
+ * `options.timeout`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) In milliseconds (Default 15000).
  * [All mikeal's request options are accepted](https://github.com/mikeal/request#requestoptions-callback).
 
 ### Callbacks
@@ -425,12 +425,12 @@ the request() method.
 
 ### Server-side DOM options
 
- * `options.jQuery`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type)|[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)|[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) Use `cheerio` with default configurations to inject document if true or "cheerio". Or use customized `cheerio` if an object with [Parser options](https://github.com/fb55/htmlparser2/wiki/Parser-options). Disable injecting jQuery selector if false. If you have memory leak issue in your project, use "whacko", an alternative parser,to avoid that. (Default true)
+ * `options.jQuery`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type)|[String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)|[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) Use `cheerio` with default configurations to inject document if true or 'cheerio'. Or use customized `cheerio` if an object with [Parser options](https://github.com/fb55/htmlparser2/wiki/Parser-options). Disable injecting jQuery selector if false. If you have memory leak issue in your project, use 'whacko', an alternative parser,to avoid that. (Default true)
 
 ### Charset encoding
 
  * `options.forceUTF8`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true crawler will get charset from HTTP headers or meta tag in html and convert it to UTF8 if necessary. Never worry about encoding anymore! (Default true),
- * `options.incomingEncoding`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) With forceUTF8: true to set encoding manually (Default null) so that crawler will not have to detect charset by itself. For example, `incomingEncoding : 'windows-1255'`. See [all supported encodings](https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings)
+ * `options.incomingEncoding`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) With forceUTF8: true to set encoding manually (Default null) so that crawler will not have to detect charset by itself. For example, `incomingEncoding: 'windows-1255'`. See [all supported encodings](https://github.com/ashtuchkin/iconv-lite/wiki/Supported-Encodings)
 
 ### Cache
 
@@ -438,21 +438,21 @@ the request() method.
 
 ### Http headers
 
- * `options.rotateUA`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true, `userAgent` should be an array and rotate it (Default false) 
+ * `options.rotateUA`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true, `userAgent` should be an array and rotate it (Default false)
  * `options.userAgent`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type)|[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array), If `rotateUA` is false, but `userAgent` is an array, crawler will use the first one.
  * `options.referer`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) If truthy sets the HTTP referer header
  * `options.removeRefererHeader`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true preserves the set referer during redirects
  * `options.headers`: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) Raw key-value of http headers
 
-### Http2 
+### Http2
 
- * `options.http2`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true, request will be sent in http2 protocol (Default false) 
+ * `options.http2`: [Boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type) If true, request will be sent in http2 protocol (Default false)
 
-### Https socks5 
+### Https socks5
 ```js
 const Agent = require('socks5-https-client/lib/Agent');
 //...
-var c = new Crawler({
+const c = new Crawler({
     // rateLimit: 2000,
     maxConnections: 20,
     agentClass: Agent, //adding socks5 https agent
@@ -463,15 +463,13 @@ var c = new Crawler({
         socksPort: 9050
     },
     // debug: true,
-    callback: function (error, res, done) {
+    callback: (error, res, done) => {
         if (error) {
             console.log(error);
-        } else {
-            //
         }
         done();
     }
-}); 
+});
 ```
 
 
@@ -513,10 +511,10 @@ For a full list of options and their effects, see [this](https://github.com/fb55
 In order to work with JSDOM you will have to install it in your project folder `npm install jsdom`, and pass it to crawler.
 
 ```js
-var jsdom = require('jsdom');
-var Crawler = require('crawler');
+const jsdom = require('jsdom');
+const Crawler = require('crawler');
 
-var c = new Crawler({
+const c = new Crawler({
     jQuery: jsdom
 });
 ```
