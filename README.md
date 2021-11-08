@@ -8,14 +8,15 @@
 
 #
 [![npm package](https://nodei.co/npm/crawler.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/crawler/)
+
 [![CircleCI](https://circleci.com/gh/bda-research/node-crawler/tree/master.svg?style=svg)](https://circleci.com/gh/bda-research/node-crawler/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/bda-research/node-crawler/badge.svg?branch=master)](https://coveralls.io/github/bda-research/node-crawler?branch=master)
 [![NPM download][download-image]][download-url]
-[![NPM quality][quality-image]][quality-url]
+[![Package Quality][quality-image]][quality-url]
 [![Gitter](https://img.shields.io/badge/gitter-join_chat-blue.svg?style=flat-square)](https://gitter.im/node-crawler/discuss?utm_source=badge)
 
-[quality-image]: http://npm.packagequality.com/shield/crawler.svg?style=flat-square
-[quality-url]: http://packagequality.com/#?package=crawler
+[quality-image]: https://packagequality.com/shield/crawler.svg
+[quality-url]: https://packagequality.com/#?package=crawler
 [download-image]: https://img.shields.io/npm/dm/crawler.svg?style=flat-square
 [download-url]: https://npmjs.org/package/crawler
 
