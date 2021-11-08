@@ -8,10 +8,8 @@
 
 #
 [![npm package](https://nodei.co/npm/crawler.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/crawler/)
-
-[![build status](https://travis-ci.org/bda-research/node-crawler.svg?branch=master)](https://travis-ci.org/bda-research/node-crawler)
+[![CircleCI](https://circleci.com/gh/bda-research/node-crawler/tree/master.svg?style=svg)](https://circleci.com/gh/bda-research/node-crawler/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/bda-research/node-crawler/badge.svg?branch=master)](https://coveralls.io/github/bda-research/node-crawler?branch=master)
-[![Dependency Status](https://david-dm.org/bda-research/node-crawler/status.svg)](https://david-dm.org/bda-research/node-crawler)
 [![NPM download][download-image]][download-url]
 [![NPM quality][quality-image]][quality-url]
 [![Gitter](https://img.shields.io/badge/gitter-join_chat-blue.svg?style=flat-square)](https://gitter.im/node-crawler/discuss?utm_source=badge)
