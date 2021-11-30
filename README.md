@@ -163,7 +163,7 @@ then access them in callback via `res.options`
 console.log(res.options.parameter1);
 ```
 
-Crawler picks options only needed by request, so don't worry about the redundance.
+Crawler picks options only needed by request, so don't worry about the redundancy.
 
 ## Raw body
 
