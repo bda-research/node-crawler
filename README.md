@@ -273,7 +273,7 @@ crawler.queue({
 Control rate limit for with limiter. All tasks submit to a limiter will abide the `rateLimit` and `maxConnections` restrictions of the limiter. `rateLimit` is the minimum time gap between two tasks. `maxConnections` is the maximum number of tasks that can be running at the same time. Limiters are independent of each other. One common use case is setting different limiters for different proxies. One thing is worth noticing, when `rateLimit` is set to a non-zero value, `maxConnections` will be forced to 1.
 
 ```js
-const crawler = require('crawler');
+const Crawler = require('crawler');
 
 const c = new Crawler({
     rateLimit: 2000,
