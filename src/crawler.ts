@@ -10,7 +10,7 @@ import logger from "./logger.js";
 import Bottleneck from "bottleneck";
 import seenreq from "seenreq";
 
-import type { crawlerOptions } from "./types/index.d.ts";
+import type { crawlerOptions } from "./types/crawler.js";
 
 const normalizeContentType = (contentType: string) => {
     //@todo

@@ -1,0 +1,11 @@
+{
+    "src/": {
+        "types/": {
+            "files": ["index.d.ts", "rateLimiter.d.ts"]
+        },
+        "rateLimiter/": {
+            "files": ["index.ts", "cluster.ts"]
+        },
+        "files": ["index.ts", "logger.ts"]
+    }
+}
