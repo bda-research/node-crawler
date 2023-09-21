@@ -17,6 +17,7 @@
         "cheerio": "1.0.0-rc.12",
         "dayjs": "^1.11.9",
         "got": "^13.0.0",
+        "hpagent": "^1.2.0",
         "winston": "^3.10.0"
     },
     "devDependencies": {

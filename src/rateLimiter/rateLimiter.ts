@@ -1,3 +1,5 @@
+
+
 class PriorityQueue<T> {
     private slots: T[][] = [];
     private total: number | null = null;
@@ -57,13 +59,18 @@ class RateLimiter {
     constructor(
         maxConcurrent: number,
         rateLimit: number,
-        priorityRange: number,
+        priorityRange: number = 1,
         defaultPriority: number,
         cluster: any
     ) {
-        if (isNaN(maxConcurrent) || isNaN(rateLimit)) {
-            throw new Error("maxConcurrent and rateLimit must be numbers");
-        }
+        // if (isNaN(maxConcurrent) || isNaN(rateLimit)) {
+        //     throw new Error("maxConcurrent and rateLimit must be numbers");
+        // }
+        // bug
+        if(typeof maxConcurrent !== "number" || isNaN(maxConcurrent) || typeof rateLimit !== "number" || isNaN(rateLimit)) {
+
+
+        
 
         priorityRange = priorityRange || 1;
         if (isNaN(priorityRange)) {
@@ -148,4 +155,4 @@ class RateLimiter {
     }
 }
 
-export default Bottleneck;
+export default RateLimiter;
