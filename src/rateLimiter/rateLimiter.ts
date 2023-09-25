@@ -87,14 +87,14 @@ class RateLimiter {
         return false;
     }
 
-    dequeue(): { next: (done: () => void, limiter: null) => void; limiter: null } {
+    dequeue(): { next?: (done: () => void, limiter: null) => void; limiter: null } | undefined {
         if (this.size()) {
             return {
                 next: this._waitingTasks.dequeue(),
                 limiter: null,
             };
         }
-        return this._cluster.dequeue();
+        return this._cluster?.dequeue();
     }
 }
 

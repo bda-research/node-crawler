@@ -35,48 +35,37 @@ class Cluster {
         return this._limiters[id];
     }
 
-    delete(id: string = ""): boolean {
+    deleteLimiter(id: string = ""): boolean {
         return delete this._limiters[id];
     }
 
-    getLimiterIdList(): string[] {
-        return Object.keys(this._limiters);
+    private getWaitingTaskCount(): number {
+        return Object.values(this._limiters).reduce((waitingSize, limiter) => waitingSize + limiter.size(), 0);
     }
 
-    private getWaitingTasks(): number {
-        let waitingTasks = 0;
-        const idList = this.getLimiterIdList();
-        idList.forEach(id => {
-            waitingTasks += this._limiters[id].size();
-        });
-        return waitingTasks;
+    private getUnfinishedTaskCount(): number {
+        return Object.values(this._limiters).reduce(
+            (unfinishedSize, limiter) => unfinishedSize + limiter.runningTasksNumber + limiter.size(),
+            0
+        );
     }
 
-    private getUnfinishedTasks(): number {
-        let unfinishedTasks = 0;
-        const idList = this.getLimiterIdList();
-        idList.forEach(id => {
-            unfinishedTasks += this._limiters[id].size() + this._limiters[id].runningTasksNumber;
-        });
-        return unfinishedTasks;
-    }
-
-    dequeue(name: string): { next: (done: () => void, limiter: string | null) => void; limiter: string } | undefined {
-        const idList = this.getLimiterIdList();
-        idList.forEach(id => {
+    dequeue(): { next: (done: () => void, limiter: string | null) => void; limiter: string } | undefined {
+        Object.keys(this._limiters).forEach(id => {
             if (this._limiters[id].size()) {
                 return {
                     next: this._limiters[id].dequeue(),
                     limiter: id,
                 };
             }
-        })
+            else delete this._limiters[id];
+        });
+        return void 0;
     }
 
     get status(): string {
         const status: string[] = [];
-        const idList = this.getLimiterIdList();
-        idList.forEach(id => {
+        Object.keys(this._limiters).forEach(id => {
             status.push(
                 [
                     "Id: " + id,
@@ -89,14 +78,15 @@ class Cluster {
     }
 
     startAutoCleanup(): void {
+        clearInterval(this._interval as NodeJS.Timeout);
         const base = (this._interval = setInterval(() => {
             const time = Date.now();
-            for (const id in this._limiters) {
+            Object.keys(this._limiters).forEach(id => {
                 const limiter = this._limiters[id];
                 if (limiter.nextRequestTime + 1000 * 60 * 5 < time) {
-                    this.delete(id);
+                    this.deleteLimiter(id);
                 }
-            }
+            });
         }, 1000 * 30));
         if (typeof base.unref === "function") {
             base.unref();
@@ -104,7 +94,7 @@ class Cluster {
     }
 
     get empty(): boolean {
-        return this.getUnfinishedTasks() === 0;
+        return this.getUnfinishedTaskCount() === 0;
     }
 }
 export default Cluster;
