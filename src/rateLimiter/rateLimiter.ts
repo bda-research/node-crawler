@@ -1,60 +1,16 @@
+import {multiPriorityQueue} from "../lib/index.js";
 
-
-class PriorityQueue<T> {
-    private slots: T[][] = [];
-    private total: number | null = null;
-
-    constructor(size: number) {
-        size = Math.max(+size | 0, 1);
-        for (let i = 0; i < size; i += 1) {
-            this.slots.push([]);
-        }
-    }
-
-    size(): number {
-        if (this.total === null) {
-            this.total = 0;
-            for (const slot of this.slots) {
-                this.total += slot.length;
-            }
-        }
-        return this.total;
-    }
-
-    enqueue(obj: T, priority: number): void {
-        priority = (priority && +priority | 0) || 0;
-        this.total = null;
-        if (priority) {
-            const priorityOrig = priority;
-            if (priority < 0 || priority >= this.slots.length) {
-                priority = this.slots.length - 1;
-                console.error(`invalid priority: ${priorityOrig} must be between 0 and ${priority}`);
-            }
-        }
-        this.slots[priority].push(obj);
-    }
-
-    dequeue(callback: (obj: T | null) => void): void {
-        let obj: T | null = null;
-        for (const slot of this.slots) {
-            if (slot.length) {
-                obj = slot.shift() || null;
-                break;
-            }
-        }
-        callback(obj);
-    }
-}
 
 class RateLimiter {
-    private name: string | undefined;
-    private rateLimit: number;
-    private maxConcurrent: number;
-    private _waitingClients: PriorityQueue<(done: () => void, limiter: null) => void>;
+    private _waitingClients: multiPriorityQueue<(done: () => void, limiter: null) => void>;
     private _priorityRange: number;
     private _defaultPriority: number;
     private _nextRequest: number;
     private _tasksRunning: number;
+
+    public name: string | undefined;
+    public rateLimit: number;
+    public maxConcurrent: number;
 
     constructor(
         maxConcurrent: number,
@@ -87,7 +43,7 @@ class RateLimiter {
         this.name = undefined;
         this.rateLimit = parseInt(rateLimit.toString(), 10);
         this.maxConcurrent = this.rateLimit ? 1 : parseInt(maxConcurrent.toString(), 10);
-        this._waitingClients = new PriorityQueue<(done: () => void, limiter: null) => void>(priorityRange);
+        this._waitingClients = new multiPriorityQueue<(done: () => void, limiter: null) => void>(priorityRange);
         this._priorityRange = priorityRange;
         this._defaultPriority = defaultPriority;
         this._nextRequest = Date.now();
