@@ -39,11 +39,11 @@ class Cluster {
         return delete this._limiters[id];
     }
 
-    private getWaitingTaskCount(): number {
+    getWaitingTaskCount(): number {
         return Object.values(this._limiters).reduce((waitingSize, limiter) => waitingSize + limiter.size(), 0);
     }
 
-    private getUnfinishedTaskCount(): number {
+    getUnfinishedTaskCount(): number {
         return Object.values(this._limiters).reduce(
             (unfinishedSize, limiter) => unfinishedSize + limiter.runningTasksNumber + limiter.size(),
             0
@@ -77,7 +77,7 @@ class Cluster {
         return status.join(";");
     }
 
-    startAutoCleanup(): void {
+    startCleanup(): void {
         clearInterval(this._interval as NodeJS.Timeout);
         const base = (this._interval = setInterval(() => {
             const time = Date.now();
