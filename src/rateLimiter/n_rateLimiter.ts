@@ -10,16 +10,15 @@ export interface RateLimiterOptions {
 }
 
 class RateLimiter {
-    private _Id?: string;
     private _maxConcurrency: number;
     private _waitingTasks: multiPriorityQueue<(done: () => void, limiter: null) => void>;
     private _priorityCount: number;
     private _defaultPriority: number;
+    private _nextRequestTime: number;
+    private _runningTasksNumber: number;
     private _cluster?: Cluster;
 
-    public nextRequestTime: number;
     public rateLimit: number;
-    public runningTasksNumber: number;
 
     constructor({ maxConcurrency, rateLimit, priorityCount = 1, defaultPriority = 0, cluster }: RateLimiterOptions) {
         if (!Number.isInteger(maxConcurrency) || !Number.isInteger(rateLimit) || !Number.isInteger(priorityCount)) {
@@ -32,19 +31,13 @@ class RateLimiter {
             : Math.floor(this._priorityCount / 2);
         this._defaultPriority >= priorityCount ? priorityCount - 1 : defaultPriority;
         this._waitingTasks = new multiPriorityQueue<(done: () => void, limiter: null) => void>(priorityCount);
-        this.nextRequestTime = Date.now();
+        this._nextRequestTime = Date.now();
+        this._runningTasksNumber = 0;
         this._cluster = cluster;
 
         this.rateLimit = rateLimit;
-        this.runningTasksNumber = 0;
-    }
-    size(): number {
-        return this._waitingTasks.size();
     }
 
-    setId(id: string) {
-        this._Id = id;
-    }
     setRateLimit(rateLimit: number): void {
         if (!Number.isInteger(rateLimit)) {
             throw new Error("rateLimit must be positive integers");
@@ -61,15 +54,15 @@ class RateLimiter {
     }
 
     private _tryToRun(): void {
-        if (this.runningTasksNumber < this._maxConcurrency && this.hasWaitingClients()) {
-            ++this.runningTasksNumber;
-            const wait = Math.max(this.nextRequestTime - Date.now(), 0);
-            this.nextRequestTime = Date.now() + wait + this.rateLimit;
+        if (this._runningTasksNumber < this._maxConcurrency && this.hasWaitingClients()) {
+            ++this._runningTasksNumber;
+            const wait = Math.max(this._nextRequestTime - Date.now(), 0);
+            this._nextRequestTime = Date.now() + wait + this.rateLimit;
             const task = this.dequeue();
             const next = task.next;
             setTimeout(() => {
                 const done = () => {
-                    --this.runningTasksNumber;
+                    --this._runningTasksNumber;
                     this._tryToRun();
                 };
                 next(done, null);
@@ -78,7 +71,7 @@ class RateLimiter {
     }
 
     hasWaitingClients(): boolean {
-        if (this.size()) {
+        if (this._waitingTasks.size()) {
             return true;
         }
         if (this._cluster && this._cluster._waitingTasks()) {
@@ -88,7 +81,7 @@ class RateLimiter {
     }
 
     dequeue(): { next: (done: () => void, limiter: null) => void; limiter: null } {
-        if (this.size()) {
+        if (this._waitingTasks.size()) {
             return {
                 next: this._waitingTasks.dequeue(),
                 limiter: null,

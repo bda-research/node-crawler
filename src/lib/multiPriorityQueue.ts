@@ -12,7 +12,7 @@ class multiPriorityQueue<T> {
         this._size = 0;
     }
 
-    get size(): number {
+    size(): number {
         if (this._size) return this._size;
         let totalSize = 0;
         for (const queue of this._elements) {

@@ -1,134 +1,110 @@
+import RateLimiter, { RateLimiterOptions } from "./rateLimiter.js";
+
+export interface ClusterOptions extends RateLimiterOptions {
+    homogeneous?: boolean;
+}
+
 class Cluster {
-    private maxConcurrent: number;
-    private rateLimit: number;
-    private priorityRange: number;
-    private defaultPriority: number;
-    private homogeneous: boolean;
-    private limiters: Record<string, Bottleneck> = {};
-    private Bottleneck: any;
-  
-    constructor(maxConcurrent: number, rateLimit: number, priorityRange: number, defaultPriority: number, homogeneous: boolean) {
-      this.maxConcurrent = maxConcurrent;
-      this.rateLimit = rateLimit;
-      this.priorityRange = priorityRange;
-      this.defaultPriority = defaultPriority;
-      this.homogeneous = homogeneous ? true : false;
-      this.Bottleneck = require("./Bottleneck").default;
+    private _limiters: Record<string, RateLimiter>;
+    private _maxConcurrency: number;
+    private _rateLimit: number;
+    private _priorityCount: number;
+    private _defaultPriority: number;
+    private _homogeneous: boolean;
+    private _interval: NodeJS.Timeout | null = null;
+    constructor({ maxConcurrency, rateLimit, priorityCount, defaultPriority, homogeneous }: ClusterOptions) {
+        this._maxConcurrency = maxConcurrency;
+        this._rateLimit = rateLimit;
+        this._priorityCount = priorityCount;
+        this._defaultPriority = defaultPriority;
+        this._homogeneous = homogeneous || false;
+        this._limiters = {};
     }
-  
-    key(key: string = ""): Bottleneck {
-      if (!this.limiters[key]) {
-        this.limiters[key] = new this.Bottleneck(
-          this.maxConcurrent,
-          this.rateLimit,
-          this.priorityRange,
-          this.defaultPriority,
-          this.homogeneous ? this : null
-        );
-        this.limiters[key].setName(key);
-      }
-      return this.limiters[key];
-    }
-  
-    deleteKey(key: string = ""): boolean {
-      return delete this.limiters[key];
-    }
-  
-    all(cb: (limiter: Bottleneck) => any[]): any[] {
-      const results: any[] = [];
-      for (const k in this.limiters) {
-        if (Object.prototype.hasOwnProperty.call(this.limiters, k)) {
-          const v = this.limiters[k];
-          results.push(cb(v));
+
+    getLimiter(id: string = ""): RateLimiter {
+        if (!this._limiters[id]) {
+            this._limiters[id] = new RateLimiter({
+                "maxConcurrency": this._maxConcurrency,
+                "rateLimit": this._rateLimit,
+                "priorityCount": this._priorityCount,
+                "defaultPriority": this._defaultPriority,
+                "cluster": this,
+            });
+            this._limiters[id].setId(id);
         }
-      }
-      return results;
+        return this._limiters[id];
     }
-  
-    keys(): string[] {
-      return Object.keys(this.limiters);
+
+    delete(id: string = ""): boolean {
+        return delete this._limiters[id];
     }
-  
-    private _waitingClients(): number {
-      let count = 0;
-      const keys = this.keys();
-      keys.forEach((key) => {
-        count += this.limiters[key]._waitingClients.size();
-      });
-      return count;
+
+    getLimiterIdList(): string[] {
+        return Object.keys(this._limiters);
     }
-  
-    private _unfinishedClients(): number {
-      let count = 0;
-      const keys = this.keys();
-      keys.forEach((key) => {
-        count += this.limiters[key]._waitingClients.size();
-        count += this.limiters[key]._tasksRunning;
-      });
-      return count;
+
+    private getWaitingTasks(): number {
+        let waitingTasks = 0;
+        const idList = this.getLimiterIdList();
+        idList.forEach(id => {
+            waitingTasks += this._limiters[id].size();
+        });
+        return waitingTasks;
     }
-  
+
+    private getUnfinishedTasks(): number {
+        let unfinishedTasks = 0;
+        const idList = this.getLimiterIdList();
+        idList.forEach(id => {
+            unfinishedTasks += this._limiters[id].size() + this._limiters[id].runningTasksNumber;
+        });
+        return unfinishedTasks;
+    }
+
     dequeue(name: string): { next: (done: () => void, limiter: string | null) => void; limiter: string } | undefined {
-      const keys = this.keys();
-      for (let i = 0; i < keys.length; ++i) {
-        if (this.limiters[keys[i]]._waitingClients.size()) {
-          return {
-            next: this.limiters[keys[i]]._waitingClients.dequeue(),
-            limiter: name,
-          };
-        }
-      }
+        const idList = this.getLimiterIdList();
+        idList.forEach(id => {
+            if (this._limiters[id].size()) {
+                return {
+                    next: this._limiters[id].dequeue(),
+                    limiter: id,
+                };
+            }
+        })
     }
-  
-    private _status(): string {
-      const status: string[] = [];
-      const keys = this.keys();
-      keys.forEach((key) => {
-        status.push([
-          'key: ' + key,
-          'running: ' + this.limiters[key]._tasksRunning,
-          'waiting: ' + this.limiters[key]._waitingClients.size(),
-        ].join());
-      });
-      return status.join(';');
-    }
-  
-    startAutoCleanup(): void {
-      this.stopAutoCleanup();
-      const base = (this.interval = setInterval(() => {
-        const time = Date.now();
-        for (const k in this.limiters) {
-          const v = this.limiters[k];
-          if (v._nextRequest + 1000 * 60 * 5 < time) {
-            this.deleteKey(k);
-          }
-        }
-      }, 1000 * 30));
-      if (typeof base.unref === "function") {
-        base.unref();
-      }
-    }
-  
-    stopAutoCleanup(): void {
-      clearInterval(this.interval);
-    }
-  
-    get waitingClients(): number {
-      return this._waitingClients();
-    }
-  
-    get unfinishedClients(): number {
-      return this._unfinishedClients();
-    }
-  
+
     get status(): string {
-      return this._status();
+        const status: string[] = [];
+        const idList = this.getLimiterIdList();
+        idList.forEach(id => {
+            status.push(
+                [
+                    "Id: " + id,
+                    "running: " + this._limiters[id].runningTasksNumber,
+                    "waiting: " + this._limiters[id].size(),
+                ].join()
+            );
+        });
+        return status.join(";");
     }
-  
+
+    startAutoCleanup(): void {
+        const base = (this._interval = setInterval(() => {
+            const time = Date.now();
+            for (const id in this._limiters) {
+                const limiter = this._limiters[id];
+                if (limiter.nextRequestTime + 1000 * 60 * 5 < time) {
+                    this.delete(id);
+                }
+            }
+        }, 1000 * 30));
+        if (typeof base.unref === "function") {
+            base.unref();
+        }
+    }
+
     get empty(): boolean {
-      return this._unfinishedClients() > 0 ? false : true;
+        return this.getUnfinishedTasks() === 0;
     }
-  }
-  
-  export default Cluster;
-  
+}
+export default Cluster;

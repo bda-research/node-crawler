@@ -1,3 +1,3 @@
 import multiPriorityQueue from "./multiPriorityQueue.js";
-
-export { multiPriorityQueue };
+import { getType, isNumber } from "./utils.js";
+export { multiPriorityQueue, getType, isNumber };
