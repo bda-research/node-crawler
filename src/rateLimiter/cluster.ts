@@ -5,72 +5,87 @@ export interface ClusterOptions extends RateLimiterOptions {
 }
 
 class Cluster {
-    private _limiters: Record<string, RateLimiter>;
-    private _maxConcurrency: number;
-    private _rateLimit: number;
-    private _priorityCount: number;
-    private _defaultPriority: number;
+    private _rateLimiters: Record<string, RateLimiter>;
     private _homogeneous: boolean;
     private _interval: NodeJS.Timeout | null = null;
+
+    public globalMaxConcurrency: number;
+    public globalRateLimit: number;
+    public globalPriorityCount: number;
+    public globalDefaultPriority: number;
+
     constructor({ maxConcurrency, rateLimit, priorityCount, defaultPriority, homogeneous }: ClusterOptions) {
-        this._maxConcurrency = maxConcurrency;
-        this._rateLimit = rateLimit;
-        this._priorityCount = priorityCount;
-        this._defaultPriority = defaultPriority;
+        this.globalMaxConcurrency = maxConcurrency;
+        this.globalRateLimit = rateLimit;
+        this.globalPriorityCount = priorityCount;
+        this.globalDefaultPriority = defaultPriority;
+
         this._homogeneous = homogeneous || false;
-        this._limiters = {};
+        this._rateLimiters = {};
     }
 
-    getLimiter(id: string = ""): RateLimiter {
-        if (!this._limiters[id]) {
-            this._limiters[id] = new RateLimiter({
-                "maxConcurrency": this._maxConcurrency,
-                "rateLimit": this._rateLimit,
-                "priorityCount": this._priorityCount,
-                "defaultPriority": this._defaultPriority,
+    createRateLimiter(id: string = ""): RateLimiter | undefined {
+        if (!this._rateLimiters[id]) {
+            this._rateLimiters[id] = new RateLimiter({
+                "maxConcurrency": this.globalMaxConcurrency,
+                "rateLimit": this.globalRateLimit,
+                "priorityCount": this.globalPriorityCount,
+                "defaultPriority": this.globalDefaultPriority,
                 "cluster": this,
             });
-            this._limiters[id].setId(id);
+            this._rateLimiters[id].setId(id);
+            return this._rateLimiters[id];
+        } else {
+            console.error("RateLimiter with id: " + id + " already exists");
+            return void 0;
         }
-        return this._limiters[id];
+    }
+    hasRateLimiter(id: string = ""): boolean {
+        return !!this._rateLimiters[id];
     }
 
-    deleteLimiter(id: string = ""): boolean {
-        return delete this._limiters[id];
+    deleteRateLimiter(id: string = ""): boolean {
+        return delete this._rateLimiters[id];
     }
 
-    getWaitingTaskCount(): number {
-        return Object.values(this._limiters).reduce((waitingSize, limiter) => waitingSize + limiter.size(), 0);
-    }
-
-    getUnfinishedTaskCount(): number {
-        return Object.values(this._limiters).reduce(
-            (unfinishedSize, limiter) => unfinishedSize + limiter.runningTasksNumber + limiter.size(),
+    get waitingSize(): number {
+        return Object.values(this._rateLimiters).reduce(
+            (waitingCount, rateLimiter) => waitingCount + rateLimiter.waitingSize,
             0
         );
     }
 
-    dequeue(): { next: (done: () => void, limiter: string | null) => void; limiter: string } | undefined {
-        Object.keys(this._limiters).forEach(id => {
-            if (this._limiters[id].size()) {
+    get unfinishedSize(): number {
+        return Object.values(this._rateLimiters).reduce(
+            (unfinishedCount, rateLimiter) => unfinishedCount + rateLimiter.runningSize + rateLimiter.waitingSize,
+            0
+        );
+    }
+
+    hasWaitingTasks(): boolean {
+        return Object.values(this._rateLimiters).some(rateLimiter => rateLimiter.hasWaitingTasks());
+    }
+
+    dequeue(): { next: (done: () => void, rateLimiter: string | null) => void; rateLimiterId: string } | undefined {
+        Object.keys(this._rateLimiters).forEach(id => {
+            if (this._rateLimiters[id].waitingSize) {
                 return {
-                    next: this._limiters[id].dequeue(),
-                    limiter: id,
+                    next: this._rateLimiters[id].dequeue(),
+                    rateLimiterId: id,
                 };
-            }
-            else delete this._limiters[id];
+            } else delete this._rateLimiters[id];
         });
         return void 0;
     }
 
     get status(): string {
         const status: string[] = [];
-        Object.keys(this._limiters).forEach(id => {
+        Object.keys(this._rateLimiters).forEach(id => {
             status.push(
                 [
                     "Id: " + id,
-                    "running: " + this._limiters[id].runningTasksNumber,
-                    "waiting: " + this._limiters[id].size(),
+                    "running: " + this._rateLimiters[id].runningTasksNumber,
+                    "waiting: " + this._rateLimiters[id].size(),
                 ].join()
             );
         });
@@ -81,9 +96,9 @@ class Cluster {
         clearInterval(this._interval as NodeJS.Timeout);
         const base = (this._interval = setInterval(() => {
             const time = Date.now();
-            Object.keys(this._limiters).forEach(id => {
-                const limiter = this._limiters[id];
-                if (limiter.nextRequestTime + 1000 * 60 * 5 < time) {
+            Object.keys(this._rateLimiters).forEach(id => {
+                const rateLimiter = this._rateLimiters[id];
+                if (rateLimiter.nextRequestTime + 1000 * 60 * 5 < time) {
                     this.deleteLimiter(id);
                 }
             });
@@ -94,7 +109,7 @@ class Cluster {
     }
 
     get empty(): boolean {
-        return this.getUnfinishedTaskCount() === 0;
+        return this.getUnfinishedCount() === 0;
     }
 }
 export default Cluster;
