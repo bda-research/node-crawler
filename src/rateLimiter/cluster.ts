@@ -1,4 +1,4 @@
-import RateLimiter, { RateLimiterOptions } from "./rateLimiter.js";
+import RateLimiter, { RateLimiterOptions, Task, TaskWrapper } from "./rateLimiter.js";
 
 export interface ClusterOptions extends RateLimiterOptions {
     homogeneous?: boolean;
@@ -66,7 +66,7 @@ class Cluster {
         return Object.values(this._rateLimiters).some(rateLimiter => rateLimiter.hasWaitingTasks());
     }
 
-    dequeue(): { next: (done: () => void, rateLimiter: string | null) => void; rateLimiterId: string } | undefined {
+    dequeue(): TaskWrapper | undefined {
         Object.keys(this._rateLimiters).forEach(id => {
             if (this._rateLimiters[id].waitingSize) {
                 return {
@@ -84,8 +84,8 @@ class Cluster {
             status.push(
                 [
                     "Id: " + id,
-                    "running: " + this._rateLimiters[id].runningTasksNumber,
-                    "waiting: " + this._rateLimiters[id].size(),
+                    "running: " + this._rateLimiters[id].runningSize,
+                    "waiting: " + this._rateLimiters[id].waitingSize,
                 ].join()
             );
         });
@@ -99,7 +99,7 @@ class Cluster {
             Object.keys(this._rateLimiters).forEach(id => {
                 const rateLimiter = this._rateLimiters[id];
                 if (rateLimiter.nextRequestTime + 1000 * 60 * 5 < time) {
-                    this.deleteLimiter(id);
+                    this.deleteRateLimiter(id);
                 }
             });
         }, 1000 * 30));
@@ -109,7 +109,7 @@ class Cluster {
     }
 
     get empty(): boolean {
-        return this.getUnfinishedCount() === 0;
+        return this.unfinishedSize === 0;
     }
 }
 export default Cluster;

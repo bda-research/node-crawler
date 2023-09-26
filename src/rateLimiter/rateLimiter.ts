@@ -40,18 +40,19 @@ class RateLimiter {
         this.defaultPriority >= priorityCount ? priorityCount - 1 : defaultPriority;
         this.nextRequestTime = Date.now();
 
-        this._waitingTasks = new multiPriorityQueue<>(priorityCount);
+        this._waitingTasks = new multiPriorityQueue<Task>(priorityCount);
         this._cluster = cluster;
 
         this.rateLimit = rateLimit;
         this.runningSize = 0;
     }
+    
     get waitingSize(): number {
         return this._waitingTasks.size();
     }
 
     hasWaitingTasks(): boolean {
-        return this.waitingSize?this._cluster && this._cluster.hasWaitingTasks()
+        return this.waitingSize > 0 || (this._cluster !== void 0 && this._cluster.hasWaitingTasks());
     }
 
     setId(id: string) {
