@@ -9,13 +9,13 @@ class Cluster {
     private _homogeneous: boolean;
     private _interval: NodeJS.Timeout | null = null;
 
-    public globalMaxConcurrency: number;
+    public globalMaxConnections: number;
     public globalRateLimit: number;
     public globalPriorityCount: number;
     public globalDefaultPriority: number;
 
-    constructor({ maxConcurrency, rateLimit, priorityCount, defaultPriority, homogeneous }: ClusterOptions) {
-        this.globalMaxConcurrency = maxConcurrency;
+    constructor({ maxConnections, rateLimit, priorityCount, defaultPriority, homogeneous }: ClusterOptions) {
+        this.globalMaxConnections = maxConnections;
         this.globalRateLimit = rateLimit;
         this.globalPriorityCount = priorityCount;
         this.globalDefaultPriority = defaultPriority;
@@ -27,7 +27,7 @@ class Cluster {
     createRateLimiter(id: string = ""): RateLimiter | undefined {
         if (!this._rateLimiters[id]) {
             this._rateLimiters[id] = new RateLimiter({
-                "maxConcurrency": this.globalMaxConcurrency,
+                "maxConnections": this.globalMaxConnections,
                 "rateLimit": this.globalRateLimit,
                 "priorityCount": this.globalPriorityCount,
                 "defaultPriority": this.globalDefaultPriority,

@@ -6,10 +6,8 @@ import * as http2 from "http2";
 import path from "path";
 import util from "util";
 import logger from "./logger.js";
-
-import Bottleneck from "bottleneck";
-import seenreq from "seenreq";
-
+import { RateLimiter, Cluster } from "./rateLimiter/index.js";
+import { getType } from "./lib/utils.js";
 import type { crawlerOptions } from "./types/crawler.js";
 
 const normalizeContentType = (contentType: string) => {
@@ -17,13 +15,13 @@ const normalizeContentType = (contentType: string) => {
 };
 const crawler = (options: crawlerOptions) => {};
 // 导入依赖库
-const getType = (obj: any): string => Object.prototype.toString.call(obj).slice(8, -1);
-
 
 // 定义 Crawler 类
 class Crawler {
-    private options: crawlerOptions;
-    private globalOnlyOptions: string[];
+    private _limiters: Cluster;
+
+    public options: crawlerOptions;
+    public globalOnlyOptions: string[];
     // private limiters: Bottleneck.Cluster;
     // private http2Connections: Record<string, any>;
     // //private log: (level: string, message: string) => void;
@@ -39,7 +37,7 @@ class Crawler {
             maxConnections: 10,
             method: "GET",
             priority: 5,
-            priorityRange: 10,
+            priorityCount: 10,
             rateLimit: 0,
             referer: false,
             retries: 3,
@@ -54,38 +52,43 @@ class Crawler {
 
         this.globalOnlyOptions = ["skipDuplicates", "rotateUA"];
 
-        // this.limiters = new Bottleneck.Cluster(
-        //     this.options.maxConnections,
-        //     this.options.rateLimit,
-        //     this.options.priorityRange,
-        //     this.options.priority,
-        //     this.options.homogeneous
-        // );
+        this._limiters = new Cluster({
+            maxConnections: this.options.maxConnections,
+            rateLimit: this.options.rateLimit,
+            priorityCount: this.options.priorityCount,
+            defaultPriority: this.options.priority,
+            homogeneous: this.options.homogeneous,
+        });
 
-        // this.http2Connections = {};
+        this.on("_release", () => {
+            this.log("debug", `Queue size: ${this.queueSize}`);
 
-        const level = this.options.debug ? "debug" : "info";
-
-        // this.seen = new seenreq(this.options.seenreq);
-        // this.seen
-        //     .initialize()
-        //     .then(() => this.log("debug", "seenreq is initialized."))
-        //     .catch(e => this.log("error", e));
-
-        // this.on("_release", () => {
-        //     this.log("debug", `Queue size: ${this.queueSize}`);
-
-        //     if (this.limiters.empty) {
-        //         if (Object.keys(this.http2Connections).length > 0) {
-        //             this._clearHttp2Session();
-        //         }
-        //         this.emit("drain");
-        //     }
-        // });
+            if (this.limiters.empty) {
+                if (Object.keys(this.http2Connections).length > 0) {
+                    this._clearHttp2Session();
+                }
+                this.emit("drain");
+            }
+        });
     }
-    public run = (options: crawlerOptions): void => {
-        isPlainObject(options);
+    private _isValidOptions = (options: unknown): boolean => {
+        const type = getType(options);
+        if (type === "string") {
+            try {
+                options = JSON.parse(options as string);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        } else if (type === "object") {
+            const prototype = Object.getPrototypeOf(options);
+            return prototype === Object.prototype || prototype === null;
+        }
+        return false;
     };
+    // public run = (options: crawlerOptions): void => {
+    //     if()
+    // };
     // 添加 emit 方法
     private emit(event: string): void {
         // 实现事件触发逻辑

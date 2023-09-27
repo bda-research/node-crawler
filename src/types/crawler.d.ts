@@ -10,7 +10,7 @@ interface crawlerOptions {
     maxConnections: number;
     method: string;
     priority: number;
-    priorityRange: number;
+    priorityCount: number;
     rateLimit: number;
     referer: boolean;
     retries: number;

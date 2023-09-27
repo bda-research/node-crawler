@@ -11,7 +11,7 @@ export interface TaskWrapper {
 }
 
 export interface RateLimiterOptions {
-    maxConcurrency: number;
+    maxConnections: number;
     rateLimit: number;
     priorityCount: number;
     defaultPriority: number;
@@ -23,18 +23,18 @@ class RateLimiter {
     private _cluster?: Cluster;
 
     public id?: string;
-    public maxConcurrency: number;
+    public maxConnections: number;
     public nextRequestTime: number;
     public rateLimit: number;
     public runningSize: number;
     public priorityCount: number;
     public defaultPriority: number;
 
-    constructor({ maxConcurrency, rateLimit, priorityCount = 1, defaultPriority = 0, cluster }: RateLimiterOptions) {
-        if (!Number.isInteger(maxConcurrency) || !Number.isInteger(rateLimit) || !Number.isInteger(priorityCount)) {
-            throw new Error("maxConcurrency, rateLimit and priorityCount must be positive integers");
+    constructor({ maxConnections, rateLimit, priorityCount = 1, defaultPriority = 0, cluster }: RateLimiterOptions) {
+        if (!Number.isInteger(maxConnections) || !Number.isInteger(rateLimit) || !Number.isInteger(priorityCount)) {
+            throw new Error("maxConnections, rateLimit and priorityCount must be positive integers");
         }
-        this.maxConcurrency = maxConcurrency;
+        this.maxConnections = maxConnections;
         this.priorityCount = priorityCount;
         this.defaultPriority = Number.isInteger(defaultPriority) ? defaultPriority : Math.floor(this.priorityCount / 2);
         this.defaultPriority >= priorityCount ? priorityCount - 1 : defaultPriority;
@@ -75,7 +75,7 @@ class RateLimiter {
     }
 
     private _schedule_old(): void {
-        if (this.runningSize < this.maxConcurrency && this.hasWaitingTasks()) {
+        if (this.runningSize < this.maxConnections && this.hasWaitingTasks()) {
             ++this.runningSize;
             const delay = Math.max(this.nextRequestTime - Date.now(), 0);
             this.nextRequestTime = Date.now() + delay + this.rateLimit;
