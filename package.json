@@ -17,11 +17,11 @@
         "cheerio": "1.0.0-rc.12",
         "dayjs": "^1.11.9",
         "got": "^13.0.0",
-        "hpagent": "^1.2.0",
         "winston": "^3.10.0"
     },
     "devDependencies": {
         "@types/got": "^9.6.12",
-        "@types/node": "^20.6.2"
+        "@types/node": "^20.6.2",
+        "ts-node": "^10.9.1"
     }
 }
