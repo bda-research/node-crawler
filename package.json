@@ -32,7 +32,7 @@
     "chai": "^4.2.0",
     "coveralls": "^3.0.2",
     "eslint": "^5.0.0",
-    "jsdom": "^9.6.0",
+    "jsdom": "^21.1.0",
     "mocha": "^6.1.0",
     "nock": "^13.0.5",
     "mocha-testdata": "^1.2.0",
