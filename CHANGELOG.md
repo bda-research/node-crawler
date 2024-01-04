@@ -1,6 +1,17 @@
 node-crawler ChangeLog
 -------------------------
 
+1.5.0
+- fix bug of `:path` and `:authority` header in http/2 (@mike442144)
+- add `ciphers` to both http/1.1 and http/2 (@mike442144)
+
+1.4.0
+- [#437](https://github.com/bda-research/node-crawler/pull/437) Update README.md (@kxxxo)
+- [#420](https://github.com/bda-research/node-crawler/pull/420) Fast stack buffer sync spider crawl example (@j-mendez)
+- [#395](https://github.com/bda-research/node-crawler/pull/395) Fixed typo in README.md (@psh0502)
+- [#386](https://github.com/bda-research/node-crawler/pull/386) Circleci project setup (@mike442144)
+- [#374](https://github.com/bda-research/node-crawler/pull/374) Unify formatting in README.md (@rauno56)
+
 1.3.0
 - [#367](https://github.com/bda-research/node-crawler/pull/367) add http2 functionality (@BeijingProtoHuman)
 - [#364](https://github.com/bda-research/node-crawler/pull/364) Fix some typos (@pzmarzly)
