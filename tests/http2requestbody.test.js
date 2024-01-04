@@ -10,12 +10,62 @@ describe('request body', function () {
 		console.log('before all test start');
 	});
 
+	beforeEach(function(){
+		c = new Crawler();
+	});
+
 	afterEach(function () {
 		c = {};
 	});
 
+	it('it should write correct :path in header', function(done){
+		const testOptions = {
+			uri: 'https://www.lowes.com/store/api/search?maxResults=4&responseGroup=large&searchTerm=1557',
+			method: 'GET',
+			http2: true,
+			headers: {}
+		};
+
+		const generatedHeaders = c.generateHttp2RequestLine(testOptions);
+
+		const urlObj = new URL(testOptions.uri);
+		expect(generatedHeaders[':path']).to.equal(urlObj.pathname+urlObj.search);
+		
+		done();
+	});
+
+	it('it should set default method to GET', function(done){
+		const testOptions = {
+			uri: 'https://www.lowes.com/store/api/search?maxResults=4&responseGroup=large&searchTerm=1557',
+			http2: true,
+			headers:{}
+		};
+
+		const generatedHeaders = c.generateHttp2RequestLine(testOptions);
+		expect(generatedHeaders[':method']).to.equal('GET');
+
+		done();
+	});
+
+	it('it must not include `host` in header when `:authority` is present', function(done){
+		const testOptions = {
+			uri: 'https://www.lowes.com/store/api/search?maxResults=4&responseGroup=large&searchTerm=1557',
+			method: 'GET',
+			http2: true,
+			headers: {
+				host: 'www.lowes.com:80',
+				'user-agent':'crawler.js'
+			}
+		};
+
+		const generatedHeaders = c.generateHttp2RequestLine(testOptions);
+		expect(generatedHeaders.host).to.be.an('undefined');
+		
+		done();
+	});
+
 	it('form is string without content-type setting', function (done) {
-		c = new Crawler({});
+		//c = new Crawler({});
 
 		const testOptions = {
 			uri: 'https://www.whatEver.com',
@@ -39,7 +89,7 @@ describe('request body', function () {
 	});
 
 	it('form is an object with no content-type in header', function (done) {
-		c = new Crawler({});
+		//c = new Crawler({});
 
 		const testOptions = {
 			uri: 'https://www.whatEver.com',
@@ -63,7 +113,7 @@ describe('request body', function () {
 	});
 
 	it('form is object with application/x-www-form-urlencoded content-type in header', function (done) {
-		c = new Crawler({});
+		//c = new Crawler({});
 
 		const testOptions = {
 			uri: 'https://www.whatEver.com',
@@ -88,7 +138,7 @@ describe('request body', function () {
 	});
 
 	it('json is true with no content-type in header', function (done) {
-		c = new Crawler({});
+		//c = new Crawler({});
 
 		const testOptions = {
 			uri: 'https://www.whatEver.com',
@@ -113,7 +163,7 @@ describe('request body', function () {
 	});
 
 	it('default json setting(false) without content-type in header', function (done) {
-		c = new Crawler({});
+		//c = new Crawler({});
 
 		const testOptions = {
 			uri: 'https://www.whatEver.com',
@@ -136,7 +186,7 @@ describe('request body', function () {
 	});
 
 	it('wild card content type with defulat json setting', function (done) {
-		c = new Crawler({});
+		//c = new Crawler({});
 		const testOptions = {
 			uri: 'https://www.whatEver.com',
 			method: 'POST',
@@ -160,7 +210,7 @@ describe('request body', function () {
 	});
 
 	it('GET method has no request body', function (done) {
-		c = new Crawler({});
+		//c = new Crawler({});
 		const testOptions = {
 			uri: 'https://www.whatEver.com',
 			method: 'GET',
