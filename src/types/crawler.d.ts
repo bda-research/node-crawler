@@ -19,10 +19,19 @@ interface crawlerOptions {
     skipDuplicates: boolean;
     rotateUA: boolean;
     homogeneous: boolean;
+    proxies: string[];
+    proxy: string;
     http2: boolean;
     debug?: boolean;
     logger?: any;
     seenreq?: any;
 }
+interface requestOptions extends crawlerOptions {
+    uri: string;
+    userAgent: string;
+    headers: Record<string, string | boolean>;
+    encoding: string | null;
+    json: boolean;
+}
 
-export { crawlerOptions };
+export { crawlerOptions, requestOptions };

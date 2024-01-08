@@ -8,7 +8,7 @@ import util from "util";
 import logger from "./logger.js";
 import { RateLimiter, Cluster } from "./rateLimiter/index.js";
 import { getType } from "./lib/utils.js";
-import type { crawlerOptions } from "./types/crawler.js";
+import type { crawlerOptions, requestOptions } from "./types/crawler.js";
 
 const normalizeContentType = (contentType: string) => {
     //@todo
@@ -60,16 +60,16 @@ class Crawler {
             homogeneous: this.options.homogeneous,
         });
 
-        this.on("_release", () => {
-            this.log("debug", `Queue size: ${this.queueSize}`);
+        // this.on("_release", () => {
+        //     this.log("debug", `Queue size: ${this.queueSize}`);
 
-            if (this.limiters.empty) {
-                if (Object.keys(this.http2Connections).length > 0) {
-                    this._clearHttp2Session();
-                }
-                this.emit("drain");
-            }
-        });
+        //     if (this.limiters.empty) {
+        //         if (Object.keys(this.http2Connections).length > 0) {
+        //             this._clearHttp2Session();
+        //         }
+        //         this.emit("drain");
+        //     }
+        // });
     }
     private _isValidOptions = (options: unknown): boolean => {
         const type = getType(options);
@@ -86,13 +86,43 @@ class Crawler {
         }
         return false;
     };
-    // public run = (options: crawlerOptions): void => {
-    //     if()
-    // };
-    // 添加 emit 方法
-    private emit(event: string): void {
-        // 实现事件触发逻辑
-    }
+
+    private _execute = async (options: Partial<requestOptions>): Promise<void> => {
+        if (!this._isValidOptions(options)) {
+            logger.warn("Invalid options: ", JSON.stringify(options));
+        }
+        options.retries = options.retries || this.options.retries || 0;
+        // delete all globalonly options
+        // this.globalOnlyOptions.forEach(globalOnlyOption => {
+        //     delete options[globalOnlyOption];
+        // });
+        logger.debug(`${options.method} ${options.uri}`);
+        if (!options.headers) {
+            options.headers = {};
+        }
+        if (options.forceUTF8) {
+            options.headers["Accept-Charset"] = "utf-8";
+            options.encoding = null;
+        }
+        if (options.json) {
+            options.encoding = null;
+        }
+        if (options.userAgent) {
+            if (this.options.rotateUA && Array.isArray(options.userAgent)) {
+                // If "rotateUA" is true, rotate User-Agent
+                options.headers["User-Agent"] = options.userAgent[0];
+                options.userAgent.push(options.userAgent.shift());
+            } else {
+                options.headers["User-Agent"] = options.userAgent;
+            }
+        }
+        if (options.referer) {
+            options.headers["Referer"] = options.referer;
+        }
+        if (options.proxies && options.proxies.length) {
+            options.proxy = options.proxies[0];
+        }
+    };
 
     // 添加 queueSize 属性
     private get queueSize(): number {
