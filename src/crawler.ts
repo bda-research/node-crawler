@@ -1,13 +1,7 @@
-import cheerio from "cheerio";
-import dayjs from "dayjs";
-import fs from "fs";
+import { EventEmitter } from "events";
 import got from "got";
-import * as http2 from "http2";
-import path from "path";
-import util from "util";
-import logger from "./logger.js";
 import { RateLimiter, Cluster } from "./rateLimiter/index.js";
-import { getType } from "./lib/utils.js";
+import { getType, isValidUrl, setDefaults, flattenDeep } from "./lib/utils.js";
 import type { crawlerOptions, requestOptions } from "./types/crawler.js";
 
 const normalizeContentType = (contentType: string) => {
@@ -17,7 +11,7 @@ const crawler = (options: crawlerOptions) => {};
 // 导入依赖库
 
 // 定义 Crawler 类
-class Crawler {
+class Crawler extends EventEmitter{
     private _limiters: Cluster;
 
     public options: crawlerOptions;
@@ -28,6 +22,7 @@ class Crawler {
     // private seen: seenreq;
 
     constructor(options: crawlerOptions) {
+        super();
         const defaultOptions: crawlerOptions = {
             autoWindowClose: true,
             forceUTF8: true,
@@ -49,7 +44,8 @@ class Crawler {
             http2: false,
         };
         this.options = { ...defaultOptions, ...options };
-
+        // Don't make these options persist to individual queries
+        // self.globalOnlyOptions = ['maxConnections', 'rateLimit', 'priorityRange', 'homogeneous', 'skipDuplicates', 'rotateUA'];
         this.globalOnlyOptions = ["skipDuplicates", "rotateUA"];
 
         this._limiters = new Cluster({
@@ -71,32 +67,70 @@ class Crawler {
         //     }
         // });
     }
-    private _isValidOptions = (options: unknown): boolean => {
+    private _getValidOptions = (options: unknown): Object => {
         const type = getType(options);
         if (type === "string") {
             try {
+                if (isValidUrl(options as string)) return { uri: options };
                 options = JSON.parse(options as string);
-                return true;
+                return options as Object;
             } catch (e) {
-                return false;
+                throw new TypeError(`Invalid options: ${JSON.stringify(options)}`);
             }
         } else if (type === "object") {
             const prototype = Object.getPrototypeOf(options);
-            return prototype === Object.prototype || prototype === null;
+            if (prototype === Object.prototype || prototype === null) return options as Object;
         }
-        return false;
+        throw new TypeError(`Invalid options: ${JSON.stringify(options)}`);
     };
 
+    public send = async (options: requestOptions): Promise<void> => {
+        options = this._getValidOptions(options) as requestOptions;
+        setDefaults(options, this.options);
+        return this._execute(options);
+    };
+    /**
+     * Old interface version. It is recommended to use `Crawler.send()` instead.
+     *
+     * @see Crawler.send
+     */
+    public direct = async (options: requestOptions): Promise<void> => {
+        return this.send(options);
+    };
+
+    public add = async (options: requestOptions | requestOptions[]): Promise<void> => {
+        let optionsArray = Array.isArray(options) ? options : [options];
+        optionsArray = flattenDeep(optionsArray);
+        optionsArray.forEach(options => {
+            try {
+                options = this._getValidOptions(options) as requestOptions;
+                setDefaults(options, this.options);
+                options.headers = {...this.options.headers, ...options.headers};
+            } catch (err) {
+                console.warn(err);
+            }
+        });
+    };
+
+    private _schedule = async (options: requestOptions): Promise<void> => {
+        this.emit("schedule", options);
+        const limiter = this._limiters.createRateLimiter(options.rateLimit);
+        limiter.submit(options.priority, async () => {
+            try {
+                await this._execute(options);
+            } catch (err) {
+                console.warn(err);
+            }
+        });
+    }
+
     private _execute = async (options: Partial<requestOptions>): Promise<void> => {
-        if (!this._isValidOptions(options)) {
-            logger.warn("Invalid options: ", JSON.stringify(options));
-        }
         options.retries = options.retries || this.options.retries || 0;
         // delete all globalonly options
         // this.globalOnlyOptions.forEach(globalOnlyOption => {
         //     delete options[globalOnlyOption];
         // });
-        logger.debug(`${options.method} ${options.uri}`);
+        // logger.debug(`${options.method} ${options.uri}`);
         if (!options.headers) {
             options.headers = {};
         }
@@ -124,19 +158,10 @@ class Crawler {
         }
     };
 
-    // 添加 queueSize 属性
     private get queueSize(): number {
-        // 计算队列大小的逻辑
-        return 0; // 这里需要根据实际情况返回队列大小
+        return 0;
     }
 
-    // 添加 _clearHttp2Session 方法
-    private _clearHttp2Session(): void {
-        // 清除 HTTP/2 会话的逻辑
-    }
-
-    // 添加其他需要的方法和属性
 }
 
-// 导出 Crawler 类
 export default Crawler;

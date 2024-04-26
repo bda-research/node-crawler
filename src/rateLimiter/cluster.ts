@@ -1,8 +1,8 @@
 import RateLimiter, { RateLimiterOptions, Task, TaskWrapper } from "./rateLimiter.js";
 
-export interface ClusterOptions extends RateLimiterOptions {
+export type ClusterOptions = RateLimiterOptions & {
     homogeneous?: boolean;
-}
+};
 
 class Cluster {
     private _rateLimiters: Record<string, RateLimiter>;

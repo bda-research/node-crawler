@@ -1,7 +1,8 @@
 declare global {
     var mainModule: string;
 }
-interface crawlerOptions {
+type crawlerOptions = {
+    headers: Record<string, unknown>;
     autoWindowClose: boolean;
     forceUTF8: boolean;
     gzip: boolean;
@@ -26,12 +27,12 @@ interface crawlerOptions {
     logger?: any;
     seenreq?: any;
 }
-interface requestOptions extends crawlerOptions {
+type requestOptions = crawlerOptions & {
     uri: string;
     userAgent: string;
-    headers: Record<string, string | boolean>;
+    headers: Record<string, unknown>;
     encoding: string | null;
     json: boolean;
-}
+};
 
 export { crawlerOptions, requestOptions };

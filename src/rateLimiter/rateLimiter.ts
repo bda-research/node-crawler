@@ -1,16 +1,16 @@
 import { multiPriorityQueue } from "../lib/index.js";
 import Cluster from "./cluster.js";
 
-export interface Task{ 
+export type Task = { 
     (done: () => void, limiter: RateLimiter | null) : void 
 };
 
-export interface TaskWrapper {
+export type TaskWrapper = {
     next: Task;
     rateLimiterId: string | null;
 }
 
-export interface RateLimiterOptions {
+export type RateLimiterOptions = {
     maxConnections: number;
     rateLimit: number;
     priorityCount: number;

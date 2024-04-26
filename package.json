@@ -14,10 +14,7 @@
     "author": "",
     "license": "MIT",
     "dependencies": {
-        "cheerio": "1.0.0-rc.12",
-        "dayjs": "^1.11.10",
-        "got": "^13.0.0",
-        "winston": "^3.11.0"
+        "got": "^13.0.0"
     },
     "devDependencies": {
         "@types/got": "^9.6.12",
