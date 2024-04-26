@@ -5,7 +5,7 @@ export type ClusterOptions = RateLimiterOptions & {
 };
 
 class Cluster {
-    private _rateLimiters: Record<string, RateLimiter>;
+    private _rateLimiters: Record<number, RateLimiter>;
     private _homogeneous: boolean;
     private _interval: NodeJS.Timeout | null = null;
 
@@ -23,8 +23,10 @@ class Cluster {
         this._homogeneous = homogeneous || false;
         this._rateLimiters = {};
     }
-
-    createRateLimiter(id: string = ""): RateLimiter | undefined {
+    /**
+     * Alternative to Old Cluster.prototype.key
+     */
+    getRateLimiter(id: number = 0): RateLimiter {
         if (!this._rateLimiters[id]) {
             this._rateLimiters[id] = new RateLimiter({
                 "maxConnections": this.globalMaxConnections,
@@ -36,15 +38,14 @@ class Cluster {
             this._rateLimiters[id].setId(id);
             return this._rateLimiters[id];
         } else {
-            console.error("RateLimiter with id: " + id + " already exists");
-            return void 0;
+            return this._rateLimiters[id];
         }
     }
-    hasRateLimiter(id: string = ""): boolean {
+    hasRateLimiter(id: number = 0): boolean {
         return !!this._rateLimiters[id];
     }
 
-    deleteRateLimiter(id: string = ""): boolean {
+    deleteRateLimiter(id: number = 0): boolean {
         return delete this._rateLimiters[id];
     }
 
@@ -67,14 +68,27 @@ class Cluster {
     }
 
     dequeue(): TaskWrapper | undefined {
-        Object.keys(this._rateLimiters).forEach(id => {
+        // for (const id in this._rateLimiters) {
+        //     if (this._rateLimiters[id].waitingSize) {
+        //         return {
+        //             next: this._rateLimiters[id].dequeue(),
+        //             rateLimiterId: id,
+        //         };
+        //     } else {
+        //         delete this._rateLimiters[id];
+        //     }
+        // }
+        Object.keys(this._rateLimiters).forEach(key => {
+            const id = Number(key);
             if (this._rateLimiters[id].waitingSize) {
                 return {
-                    next: this._rateLimiters[id].dequeue(),
-                    rateLimiterId: id,
+                    "next": this._rateLimiters[id].dequeue(),
+                    "rateLimiterId": parseInt(id, 10),
                 };
-            } else delete this._rateLimiters[id];
-        });
+            } else {
+                this.deleteRateLimiter(parseInt(id, 10));
+            }
+        }
         return void 0;
     }
 

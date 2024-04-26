@@ -1,6 +1,7 @@
 declare global {
     var mainModule: string;
 }
+
 type crawlerOptions = {
     headers: Record<string, unknown>;
     autoWindowClose: boolean;
@@ -26,8 +27,11 @@ type crawlerOptions = {
     debug?: boolean;
     logger?: any;
     seenreq?: any;
-}
+};
 type requestOptions = crawlerOptions & {
+    preRequest: (options: requestOptions, done: (error: Error | null, options: requestOptions) => void) => void;
+    release: () => void;
+    callback?: (error: Error, response: unknown, done: unknown) => void;
     uri: string;
     userAgent: string;
     headers: Record<string, unknown>;

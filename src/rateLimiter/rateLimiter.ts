@@ -7,7 +7,7 @@ export type Task = {
 
 export type TaskWrapper = {
     next: Task;
-    rateLimiterId: string | null;
+    rateLimiterId: number | null;
 }
 
 export type RateLimiterOptions = {
@@ -22,7 +22,7 @@ class RateLimiter {
     private _waitingTasks: multiPriorityQueue<Task>;
     private _cluster?: Cluster;
 
-    public id?: string;
+    public id?: number;
     public maxConnections: number;
     public nextRequestTime: number;
     public rateLimit: number;
@@ -55,7 +55,7 @@ class RateLimiter {
         return this.waitingSize > 0 || (this._cluster !== void 0 && this._cluster.hasWaitingTasks());
     }
 
-    setId(id: string) {
+    setId(id: number) {
         this.id = id;
     }
 

@@ -14,11 +14,12 @@
     "author": "",
     "license": "MIT",
     "dependencies": {
-        "got": "^13.0.0"
+        "got": "^13.0.0",
+        "seenreq": "^3.0.0"
     },
     "devDependencies": {
         "@types/got": "^9.6.12",
         "@types/node": "^20.10.6",
-        "ts-node": "^10.9.2"
+        "tsx": "^4.7.3"
     }
 }

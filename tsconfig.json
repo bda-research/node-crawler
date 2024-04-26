@@ -110,12 +110,8 @@
     },
     "include": [
         "src/**/*"
-    ],
+, "test.ts"    ],
     "exclude": [
         "src/seenreq"
-    ],
-    "ts-node": {
-        "esm": true,
-        "transpileOnly": true
-    }
+    ]
 }
