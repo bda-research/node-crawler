@@ -11,6 +11,9 @@ dependencies:
   got:
     specifier: ^13.0.0
     version: 13.0.0
+  hpagent:
+    specifier: ^1.2.0
+    version: 1.2.0
   iconv-lite:
     specifier: ^0.6.3
     version: 0.6.3
@@ -472,6 +475,11 @@ packages:
       lowercase-keys: 3.0.0
       p-cancelable: 3.0.0
       responselike: 3.0.0
+    dev: false
+
+  /hpagent@1.2.0:
+    resolution: {integrity: sha512-A91dYTeIB6NoXG+PxTQpCCDDnfHsW9kc06Lvpu1TEe9gnd6ZFeiBoRO9JvzEv6xK7EX97/dUE8g/vBMTqTS3CA==}
+    engines: {node: '>=14'}
     dev: false
 
   /htmlparser2@8.0.2:

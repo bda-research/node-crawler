@@ -1,6 +1,7 @@
 import { EventEmitter } from "events";
 import { Cluster } from "./rateLimiter/index.js";
 import { getType, isValidUrl, isFunction, setDefaults, flattenDeep } from "./lib/utils.js";
+import { alignOptions } from "./options.js";
 import type { crawlerOptions, requestOptions } from "./types/crawler.js";
 import { promisify } from "util";
 import got from "got";
@@ -15,6 +16,7 @@ if (process.env.NODE_ENV !== "debug") {
     console.error = () => { };
     console.debug = () => { };
 }
+
 class Crawler extends EventEmitter {
     private _limiters: Cluster;
     private _rotatingUAIndex = 0;
@@ -25,7 +27,6 @@ class Crawler extends EventEmitter {
 
     constructor(options: crawlerOptions) {
         super();
-        // @todo change uri to url
         const defaultOptions: crawlerOptions = {
             forceUTF8: true,
             gzip: true,
@@ -155,8 +156,7 @@ class Crawler extends EventEmitter {
         }
 
         try {
-            // @todo got options 对齐
-            const response = await got(reqOptions.uri, reqOptions);
+            const response = await got(reqOptions.uri, alignOptions(reqOptions));
             this._handler(null, reqOptions, response);
         } catch (error) {
             console.log("error:", error);
@@ -167,7 +167,8 @@ class Crawler extends EventEmitter {
     private _handler = (error: any | null, options: requestOptions, response?: any): void => {
         if (error) {
             console.log(
-                `Error: ${error} when fetching ${options.uri} ${options.retries ? `(${options.retries} retries left)` : ""}`
+                `Error: ${error} when fetching ${options.uri} ${options.retries ? `(${options.retries} retries left)` : ""
+                }`
             );
             if (options.retries) {
                 setTimeout(() => {
@@ -202,7 +203,7 @@ class Crawler extends EventEmitter {
             if (options.callback && typeof options.callback === "function") {
                 return options.callback(error, { options }, options.release);
             }
-            return response
+            return response;
         }
 
         response.options = options;

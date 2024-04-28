@@ -51,6 +51,8 @@ type requestOptions = crawlerOptions & {
     release: () => void;
     callback?: (error: any, response: unknown, done: unknown) => void;
     uri: string | function;
+    url: string | function;
+    body?: string | Record<string, unknown>;
     userAgent: string;
     headers: Record<string, unknown>;
     encoding: string | null;
