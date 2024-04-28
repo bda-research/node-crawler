@@ -13,7 +13,7 @@ export type TaskWrapper = {
 export type RateLimiterOptions = {
     maxConnections: number;
     rateLimit: number;
-    priorityCount: number;
+    priorityLevels: number;
     defaultPriority: number;
     cluster?: Cluster;
 }
@@ -27,20 +27,20 @@ class RateLimiter {
     public nextRequestTime: number;
     public rateLimit: number;
     public runningSize: number;
-    public priorityCount: number;
+    public priorityLevels: number;
     public defaultPriority: number;
 
-    constructor({ maxConnections, rateLimit, priorityCount = 1, defaultPriority = 0, cluster }: RateLimiterOptions) {
-        if (!Number.isInteger(maxConnections) || !Number.isInteger(rateLimit) || !Number.isInteger(priorityCount)) {
-            throw new Error("maxConnections, rateLimit and priorityCount must be positive integers");
+    constructor({ maxConnections, rateLimit, priorityLevels = 1, defaultPriority = 0, cluster }: RateLimiterOptions) {
+        if (!Number.isInteger(maxConnections) || !Number.isInteger(rateLimit) || !Number.isInteger(priorityLevels)) {
+            throw new Error("maxConnections, rateLimit and priorityLevels must be positive integers");
         }
         this.maxConnections = maxConnections;
-        this.priorityCount = priorityCount;
-        this.defaultPriority = Number.isInteger(defaultPriority) ? defaultPriority : Math.floor(this.priorityCount / 2);
-        this.defaultPriority >= priorityCount ? priorityCount - 1 : defaultPriority;
+        this.priorityLevels = priorityLevels;
+        this.defaultPriority = Number.isInteger(defaultPriority) ? defaultPriority : Math.floor(this.priorityLevels / 2);
+        this.defaultPriority >= priorityLevels ? priorityLevels - 1 : defaultPriority;
         this.nextRequestTime = Date.now();
 
-        this._waitingTasks = new multiPriorityQueue<Task>(priorityCount);
+        this._waitingTasks = new multiPriorityQueue<Task>(priorityLevels);
         this._cluster = cluster;
 
         this.rateLimit = rateLimit;
@@ -69,7 +69,7 @@ class RateLimiter {
     submit(options: number | { priority: number }, task: Task): void {
         const priority = typeof options === "number" ? options : options.priority;
         const validPriority = Number.isInteger(priority) ? priority : this.defaultPriority;
-        const clampedPriority = validPriority > this.priorityCount - 1 ? this.priorityCount - 1 : validPriority;
+        const clampedPriority = validPriority > this.priorityLevels - 1 ? this.priorityLevels - 1 : validPriority;
         this._waitingTasks.enqueue(task, clampedPriority);
         this._schedule_old();
     }

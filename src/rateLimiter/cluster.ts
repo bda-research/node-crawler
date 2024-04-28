@@ -11,13 +11,13 @@ class Cluster {
 
     public globalMaxConnections: number;
     public globalRateLimit: number;
-    public globalPriorityCount: number;
+    public globalpriorityLevels: number;
     public globalDefaultPriority: number;
 
-    constructor({ maxConnections, rateLimit, priorityCount, defaultPriority, homogeneous }: ClusterOptions) {
+    constructor({ maxConnections, rateLimit, priorityLevels, defaultPriority, homogeneous }: ClusterOptions) {
         this.globalMaxConnections = maxConnections;
         this.globalRateLimit = rateLimit;
-        this.globalPriorityCount = priorityCount;
+        this.globalpriorityLevels = priorityLevels;
         this.globalDefaultPriority = defaultPriority;
 
         this._homogeneous = homogeneous || false;
@@ -31,7 +31,7 @@ class Cluster {
             this._rateLimiters[id] = new RateLimiter({
                 "maxConnections": this.globalMaxConnections,
                 "rateLimit": this.globalRateLimit,
-                "priorityCount": this.globalPriorityCount,
+                "priorityLevels": this.globalpriorityLevels,
                 "defaultPriority": this.globalDefaultPriority,
                 "cluster": this,
             });
