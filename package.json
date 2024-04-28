@@ -15,13 +15,13 @@
     "license": "MIT",
     "dependencies": {
         "cheerio": "1.0.0-rc.12",
-        "dayjs": "^1.11.10",
         "got": "^13.0.0",
-        "winston": "^3.11.0"
+        "iconv-lite": "^0.6.3",
+        "seenreq": "^3.0.0"
     },
     "devDependencies": {
         "@types/got": "^9.6.12",
         "@types/node": "^20.10.6",
-        "ts-node": "^10.9.2"
+        "tsx": "^4.7.3"
     }
 }
