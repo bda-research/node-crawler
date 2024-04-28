@@ -1,4 +1,3 @@
-console.log("1")
-console.warn('2')
-console.error('3')
-console.debug('4')
+import { crawler } from './src/index.js';
+const result = await crawler.send('http://www.google.com');
+console.log(result)

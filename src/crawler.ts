@@ -25,7 +25,7 @@ class Crawler extends EventEmitter {
     public globalOnlyOptions: string[];
     public seen: any;
 
-    constructor(options: crawlerOptions) {
+    constructor(options?: crawlerOptions) {
         super();
         const defaultOptions: crawlerOptions = {
             forceUTF8: true,
