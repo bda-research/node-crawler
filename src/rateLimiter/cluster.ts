@@ -83,18 +83,19 @@ class Cluster {
             if (this._rateLimiters[id].waitingSize) {
                 return {
                     "next": this._rateLimiters[id].dequeue(),
-                    "rateLimiterId": parseInt(id, 10),
+                    "rateLimiterId": id,
                 };
             } else {
-                this.deleteRateLimiter(parseInt(id, 10));
+                this.deleteRateLimiter(id);
             }
-        }
+        });
         return void 0;
     }
 
     get status(): string {
         const status: string[] = [];
-        Object.keys(this._rateLimiters).forEach(id => {
+        Object.keys(this._rateLimiters).forEach(key => {
+            const id = Number(key);
             status.push(
                 [
                     "Id: " + id,
@@ -110,7 +111,8 @@ class Cluster {
         clearInterval(this._interval as NodeJS.Timeout);
         const base = (this._interval = setInterval(() => {
             const time = Date.now();
-            Object.keys(this._rateLimiters).forEach(id => {
+            Object.keys(this._rateLimiters).forEach(key => {
+                const id = Number(key);
                 const rateLimiter = this._rateLimiters[id];
                 if (rateLimiter.nextRequestTime + 1000 * 60 * 5 < time) {
                     this.deleteRateLimiter(id);

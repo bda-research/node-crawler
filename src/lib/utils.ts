@@ -3,8 +3,11 @@
  */
 export const getType = (value: unknown): string =>
     Object.prototype.toString.call(value).slice(8, -1).toLocaleLowerCase();
+
 export const isNumber = (value: unknown): boolean => getType(value) === "number" && !isNaN(value as number);
+
 export const isFunction = (value: unknown): boolean => getType(value) === "function";
+
 /**
  * @param target
  * @param source
@@ -21,6 +24,7 @@ export const setDefaults = (target: Record<string, unknown>, source: Record<stri
     }
     return target;
 };
+
 export const isValidUrl = (url: string): boolean => {
     try {
         new URL(url);
@@ -32,12 +36,12 @@ export const isValidUrl = (url: string): boolean => {
 
 export function flattenDeep<T>(array: T[]): T[];
 /**
- * 
- * @param array 
+ *
+ * @param array
  * @returns a flattened array
  * @description
  * Flattens an array of arrays recursively.
- * 
+ *
  */
 export function flattenDeep(array: any[]): any[] {
     const result: any[] = [];
@@ -51,12 +55,11 @@ export function flattenDeep(array: any[]): any[] {
     return result;
 }
 
-
-export function pick<T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
+export function pick<T extends Object, K extends keyof T>(target: T, keys: (keyof T)[]): Pick<T, K> {
     const result: any = {};
     keys.forEach(key => {
-        if (key in obj) {
-            result[key] = obj[key];
+        if (target[key] !== undefined) {
+            result[key] = target[key];
         }
     });
     return result;

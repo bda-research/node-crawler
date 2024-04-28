@@ -4,7 +4,6 @@ declare global {
 
 type crawlerOptions = {
     headers: Record<string, unknown>;
-    autoWindowClose: boolean;
     forceUTF8: boolean;
     gzip: boolean;
     incomingEncoding: string | null;
@@ -21,8 +20,10 @@ type crawlerOptions = {
     skipDuplicates: boolean;
     rotateUA: boolean;
     homogeneous: boolean;
-    proxies: string[];
-    proxy: string;
+    skipEventRequest?: boolean;
+    html?: boolean;
+    proxies?: string[];
+    proxy?: string;
     http2: boolean;
     debug?: boolean;
     logger?: any;
@@ -32,7 +33,7 @@ type requestOptions = crawlerOptions & {
     preRequest: (options: requestOptions, done: (error: Error | null, options: requestOptions) => void) => void;
     release: () => void;
     callback?: (error: Error, response: unknown, done: unknown) => void;
-    uri: string;
+    uri: string | function;
     userAgent: string;
     headers: Record<string, unknown>;
     encoding: string | null;
