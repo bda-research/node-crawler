@@ -1,7 +1,21 @@
 import { HttpProxyAgent, HttpsProxyAgent } from "hpagent";
+import { cleanObject } from "./lib/utils.js";
 
 export const alignOptions = (options: any): any => {
-    const deprecatedOptions = ["qs", "strictSSL", "gzip", "jar", "jsonReviver", "jsonReplacer"];
+    const crawlerOnlyOptions = [
+        "forceUTF8",
+        "incomingEncoding",
+        "jQuery",
+        "retryTimeout",
+        "timeout",
+        "priority",
+        "proxy",
+        "retries",
+        "preRequest",
+    ];
+    const deprecatedOptions = ["uri", "qs", "strictSSL", "gzip", "jar", "jsonReviver", "jsonReplacer"].concat(
+        crawlerOnlyOptions
+    );
     const defaultagent = {
         https: new HttpsProxyAgent({
             proxy: options["proxy"],
@@ -21,12 +35,13 @@ export const alignOptions = (options: any): any => {
         parseJson: options.jsonReviver,
         stringifyJson: options.jsonReplacer,
     };
-    gotOptions.agent = gotOptions.agent ?? defaultagent;
+    gotOptions.agent = gotOptions.agent ?? (options.proxy ? defaultagent : undefined);
 
     Object.keys(gotOptions).forEach(key => {
         if (deprecatedOptions.includes(key)) {
             delete gotOptions[key];
         }
     });
+    cleanObject(gotOptions);
     return gotOptions;
 };

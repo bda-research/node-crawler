@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import { Cluster } from "./rateLimiter/index.js";
-import { getType, isValidUrl, isFunction, setDefaults, flattenDeep } from "./lib/utils.js";
+import { getType, isValidUrl, isFunction, setDefaults, flattenDeep, isNumber } from "./lib/utils.js";
 import { alignOptions } from "./options.js";
 import type { crawlerOptions, requestOptions } from "./types/crawler.js";
 import { promisify } from "util";
@@ -9,7 +9,7 @@ import seenreq from "seenreq";
 import iconv from "iconv-lite";
 import cheerio from "cheerio";
 
-process.env.NODE_ENV = process.env.NODE_ENV ?? process.argv[2] ?? "production";
+process.env.NODE_ENV = process.env.NODE_ENV ?? process.argv[2] ?? "debug";
 
 if (process.env.NODE_ENV !== "debug") {
     console.log = () => { };
@@ -28,21 +28,20 @@ class Crawler extends EventEmitter {
     constructor(options?: crawlerOptions) {
         super();
         const defaultOptions: crawlerOptions = {
-            forceUTF8: true,
-            gzip: true,
-            incomingEncoding: null,
-            jQuery: true,
             maxConnections: 10,
-            priority: 5,
-            priorityLevels: 10,
             rateLimit: 1000,
-            retries: 3,
-            retryTimeout: 10000,
-            timeout: 15000,
+            priorityLevels: 10,
             skipDuplicates: false,
             rotateUA: false,
             homogeneous: false,
-            http2: false,
+
+            forceUTF8: true,
+            incomingEncoding: null,
+            jQuery: true,
+            priority: 5,
+            retries: 3,
+            retryTimeout: 10000,
+            timeout: 15000
         };
         this.options = { ...defaultOptions, ...options };
 
@@ -59,7 +58,7 @@ class Crawler extends EventEmitter {
             maxConnections: this.options.maxConnections,
             rateLimit: this.options.rateLimit,
             priorityLevels: this.options.priorityLevels,
-            defaultPriority: this.options.priority,
+            defaultPriority: this.options.priority as number,
             homogeneous: this.options.homogeneous,
         });
 
@@ -95,9 +94,9 @@ class Crawler extends EventEmitter {
         throw new TypeError(`Invalid options: ${JSON.stringify(options)}`);
     };
 
-    private _schedule = async (options: requestOptions): Promise<void> => {
+    private _schedule = async (options: crawlerOptions): Promise<void> => {
         this.emit("schedule", options);
-        this._limiters.getRateLimiter(options.rateLimit).submit(options.priority, (done, limiter) => {
+        this._limiters.getRateLimiter(options.rateLimit).submit(options.priority as number, (done, limiter) => {
             options.release = () => {
                 done();
                 this.emit("_release");
@@ -121,8 +120,8 @@ class Crawler extends EventEmitter {
         });
     };
 
-    private _execute = async (options: Partial<requestOptions>): Promise<void> => {
-        const reqOptions = { ...options } as requestOptions;
+    private _execute = async (options: crawlerOptions): Promise<void> => {
+        const reqOptions = { ...options } as crawlerOptions;
 
         if (options.proxy) console.debug(`Using proxy: ${options.proxy}`);
 
@@ -156,7 +155,7 @@ class Crawler extends EventEmitter {
         }
 
         try {
-            const response = await got(reqOptions.uri, alignOptions(reqOptions));
+            const response = await got(alignOptions(reqOptions));
             this._handler(null, reqOptions, response);
         } catch (error) {
             console.log("error:", error);
@@ -170,11 +169,11 @@ class Crawler extends EventEmitter {
                 `Error: ${error} when fetching ${options.uri} ${options.retries ? `(${options.retries} retries left)` : ""
                 }`
             );
-            if (options.retries) {
+            if (options.retries){
                 setTimeout(() => {
-                    options.retries--;
-                    this._execute(options);
-                    options.release();
+                    options.retries!--;
+                    this._execute(options as crawlerOptions);
+                    options.release!();
                 }, options.retryTimeout);
                 return;
             }
@@ -242,14 +241,14 @@ class Crawler extends EventEmitter {
     public send = async (options: requestOptions): Promise<any> => {
         options = this._getValidOptions(options) as requestOptions;
         // send request does not follow the global preRequest
-        options.preRequest = options.preRequest || null;
+        options.preRequest = options.preRequest;
         options.retries = options.retries ?? 0;
         // @todo skip event request
         setDefaults(options, this.options);
         this.globalOnlyOptions.forEach(globalOnlyOption => {
             delete (options as any)[globalOnlyOption];
         });
-        return await this._execute(options);
+        return await this._execute(options as crawlerOptions);
     };
     /**
      * Old interface version. It is recommended to use `Crawler.send()` instead.
@@ -272,14 +271,14 @@ class Crawler extends EventEmitter {
                     delete (options as any)[globalOnlyOption];
                 });
                 if (!this.options.skipDuplicates) {
-                    this._schedule(options);
+                    this._schedule(options as crawlerOptions);
                 }
 
                 this.seen
                     .exists(options, options.seenreq)
                     .then((rst: any) => {
                         if (!rst) {
-                            this._schedule(options);
+                            this._schedule(options as crawlerOptions);
                         }
                     })
                     .catch((err: any) => console.error(err));
