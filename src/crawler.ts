@@ -1,6 +1,7 @@
 import { EventEmitter } from "events";
 import { Cluster } from "./rateLimiter/index.js";
-import { getType, isValidUrl, isFunction, setDefaults, flattenDeep } from "./lib/utils.js";
+import { getType, isValidUrl, isFunction, setDefaults, flattenDeep, isNumber } from "./lib/utils.js";
+import { alignOptions } from "./options.js";
 import type { crawlerOptions, requestOptions } from "./types/crawler.js";
 import { promisify } from "util";
 import got from "got";
@@ -8,13 +9,14 @@ import seenreq from "seenreq";
 import iconv from "iconv-lite";
 import cheerio from "cheerio";
 
-process.env.NODE_ENV = process.env.NODE_ENV ?? process.argv[2] ?? "production";
+process.env.NODE_ENV = process.env.NODE_ENV ?? process.argv[2] ?? "debug";
 
 if (process.env.NODE_ENV !== "debug") {
     console.log = () => { };
     console.error = () => { };
     console.debug = () => { };
 }
+
 class Crawler extends EventEmitter {
     private _limiters: Cluster;
     private _rotatingUAIndex = 0;
@@ -23,25 +25,23 @@ class Crawler extends EventEmitter {
     public globalOnlyOptions: string[];
     public seen: any;
 
-    constructor(options: crawlerOptions) {
+    constructor(options?: crawlerOptions) {
         super();
-        // @todo change uri to url
         const defaultOptions: crawlerOptions = {
-            forceUTF8: true,
-            gzip: true,
-            incomingEncoding: null,
-            jQuery: true,
             maxConnections: 10,
-            priority: 5,
-            priorityLevels: 10,
             rateLimit: 1000,
-            retries: 3,
-            retryTimeout: 10000,
-            timeout: 15000,
+            priorityLevels: 10,
             skipDuplicates: false,
             rotateUA: false,
             homogeneous: false,
-            http2: false,
+            method: 'GET',
+            forceUTF8: true,
+            incomingEncoding: null,
+            jQuery: true,
+            priority: 5,
+            retries: 3,
+            retryTimeout: 10000,
+            timeout: 15000
         };
         this.options = { ...defaultOptions, ...options };
 
@@ -58,7 +58,7 @@ class Crawler extends EventEmitter {
             maxConnections: this.options.maxConnections,
             rateLimit: this.options.rateLimit,
             priorityLevels: this.options.priorityLevels,
-            defaultPriority: this.options.priority,
+            defaultPriority: this.options.priority as number,
             homogeneous: this.options.homogeneous,
         });
 
@@ -94,9 +94,9 @@ class Crawler extends EventEmitter {
         throw new TypeError(`Invalid options: ${JSON.stringify(options)}`);
     };
 
-    private _schedule = async (options: requestOptions): Promise<void> => {
+    private _schedule = async (options: crawlerOptions): Promise<void> => {
         this.emit("schedule", options);
-        this._limiters.getRateLimiter(options.rateLimit).submit(options.priority, (done, limiter) => {
+        this._limiters.getRateLimiter(options.rateLimit).submit(options.priority as number, (done, limiter) => {
             options.release = () => {
                 done();
                 this.emit("_release");
@@ -120,8 +120,8 @@ class Crawler extends EventEmitter {
         });
     };
 
-    private _execute = async (options: Partial<requestOptions>): Promise<void> => {
-        const reqOptions = { ...options } as requestOptions;
+    private _execute = async (options: crawlerOptions): Promise<void> => {
+        const reqOptions = { ...options } as crawlerOptions;
 
         if (options.proxy) console.debug(`Using proxy: ${options.proxy}`);
 
@@ -155,25 +155,25 @@ class Crawler extends EventEmitter {
         }
 
         try {
-            // @todo got options 对齐
-            const response = await got(reqOptions.uri, reqOptions);
-            this._handler(null, reqOptions, response);
+            const response = await got(alignOptions(reqOptions));
+            return this._handler(null, reqOptions, response);
         } catch (error) {
             console.log("error:", error);
-            this._handler(error, reqOptions);
+            return this._handler(error, reqOptions);
         }
     };
 
-    private _handler = (error: any | null, options: requestOptions, response?: any): void => {
+    private _handler = (error: any | null, options: requestOptions, response?: any): any => {
         if (error) {
             console.log(
-                `Error: ${error} when fetching ${options.uri} ${options.retries ? `(${options.retries} retries left)` : ""}`
+                `Error: ${error} when fetching ${options.uri} ${options.retries ? `(${options.retries} retries left)` : ""
+                }`
             );
             if (options.retries) {
                 setTimeout(() => {
-                    options.retries--;
-                    this._execute(options);
-                    options.release();
+                    options.retries!--;
+                    this._execute(options as crawlerOptions);
+                    options.release!();
                 }, options.retryTimeout);
                 return;
             }
@@ -196,24 +196,28 @@ class Crawler extends EventEmitter {
                 console.debug("Charset: " + charset);
                 if (charset && charset !== "utf-8" && charset != "ascii") {
                     response.body = iconv.decode(response.body, charset);
+                    response.body = response.body.toString();
                 }
             }
         } catch (error) {
             if (options.callback && typeof options.callback === "function") {
                 return options.callback(error, { options }, options.release);
             }
-            return response
+            return response;
         }
 
         response.options = options;
-
-        // @todo: jQuery injection
-        if (options.method === "HEAD" || !options.jQuery) {
-            if (options.callback && typeof options.callback === "function") {
-                return options.callback(null, response, options.release);
-            }
-            return response;
+        if (options.callback && typeof options.callback === "function") {
+            return options.callback(null, response, options.release);
         }
+        return response;
+        // @todo: jQuery injection
+        // if (options.method === "HEAD" || !options.jQuery) {
+        //     if (options.callback && typeof options.callback === "function") {
+        //         return options.callback(null, response, options.release);
+        //     }
+        //     return response;
+        // }
 
         // const injectableTypes = ["html", "xhtml", "text/xml", "application/xml", "+xml"];
         // if (!options.html && !typeis(contentType(response), injectableTypes)) {
@@ -241,14 +245,14 @@ class Crawler extends EventEmitter {
     public send = async (options: requestOptions): Promise<any> => {
         options = this._getValidOptions(options) as requestOptions;
         // send request does not follow the global preRequest
-        options.preRequest = options.preRequest || null;
+        options.preRequest = options.preRequest;
         options.retries = options.retries ?? 0;
         // @todo skip event request
         setDefaults(options, this.options);
         this.globalOnlyOptions.forEach(globalOnlyOption => {
             delete (options as any)[globalOnlyOption];
         });
-        return await this._execute(options);
+        return await this._execute(options as crawlerOptions);
     };
     /**
      * Old interface version. It is recommended to use `Crawler.send()` instead.
@@ -271,14 +275,14 @@ class Crawler extends EventEmitter {
                     delete (options as any)[globalOnlyOption];
                 });
                 if (!this.options.skipDuplicates) {
-                    this._schedule(options);
+                    this._schedule(options as crawlerOptions);
                 }
 
                 this.seen
                     .exists(options, options.seenreq)
                     .then((rst: any) => {
                         if (!rst) {
-                            this._schedule(options);
+                            this._schedule(options as crawlerOptions);
                         }
                     })
                     .catch((err: any) => console.error(err));

@@ -64,3 +64,15 @@ export function pick<T extends Object, K extends keyof T>(target: T, keys: (keyo
     });
     return result;
 }
+
+export const cleanObject = (obj: Record<string, unknown>): Record<string, unknown> => {
+    Object.keys(obj).forEach(key => {
+        if (getType(obj[key]) === "object") {
+            obj[key] = cleanObject(obj[key] as Record<string, unknown>);
+        }
+        if (obj[key] === undefined || obj[key] === null) {
+            delete obj[key];
+        }
+    });
+    return obj;
+}
