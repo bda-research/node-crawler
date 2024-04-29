@@ -34,7 +34,7 @@ class Crawler extends EventEmitter {
             skipDuplicates: false,
             rotateUA: false,
             homogeneous: false,
-
+            method: 'GET',
             forceUTF8: true,
             incomingEncoding: null,
             jQuery: true,
@@ -156,20 +156,20 @@ class Crawler extends EventEmitter {
 
         try {
             const response = await got(alignOptions(reqOptions));
-            this._handler(null, reqOptions, response);
+            return this._handler(null, reqOptions, response);
         } catch (error) {
             console.log("error:", error);
-            this._handler(error, reqOptions);
+            return this._handler(error, reqOptions);
         }
     };
 
-    private _handler = (error: any | null, options: requestOptions, response?: any): void => {
+    private _handler = (error: any | null, options: requestOptions, response?: any): any => {
         if (error) {
             console.log(
                 `Error: ${error} when fetching ${options.uri} ${options.retries ? `(${options.retries} retries left)` : ""
                 }`
             );
-            if (options.retries){
+            if (options.retries) {
                 setTimeout(() => {
                     options.retries!--;
                     this._execute(options as crawlerOptions);
@@ -196,6 +196,7 @@ class Crawler extends EventEmitter {
                 console.debug("Charset: " + charset);
                 if (charset && charset !== "utf-8" && charset != "ascii") {
                     response.body = iconv.decode(response.body, charset);
+                    response.body = response.body.toString();
                 }
             }
         } catch (error) {
@@ -206,14 +207,17 @@ class Crawler extends EventEmitter {
         }
 
         response.options = options;
-
-        // @todo: jQuery injection
-        if (options.method === "HEAD" || !options.jQuery) {
-            if (options.callback && typeof options.callback === "function") {
-                return options.callback(null, response, options.release);
-            }
-            return response;
+        if (options.callback && typeof options.callback === "function") {
+            return options.callback(null, response, options.release);
         }
+        return response;
+        // @todo: jQuery injection
+        // if (options.method === "HEAD" || !options.jQuery) {
+        //     if (options.callback && typeof options.callback === "function") {
+        //         return options.callback(null, response, options.release);
+        //     }
+        //     return response;
+        // }
 
         // const injectableTypes = ["html", "xhtml", "text/xml", "application/xml", "+xml"];
         // if (!options.html && !typeis(contentType(response), injectableTypes)) {

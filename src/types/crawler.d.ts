@@ -41,7 +41,12 @@ type globalOnlyOptions = {
 type requestOptions = {
     forceUTF8?: boolean;
     jQuery?: boolean;
+    /**
+     * @deprecated
+     * @description Use "encoding" instead.
+     */
     incomingEncoding?: string | null;
+    encoding?: string | null;
     retries?: number;
     retryTimeout?: number;
     timeout?: number;

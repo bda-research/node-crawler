@@ -27,7 +27,7 @@ export const alignOptions = (options: any): any => {
 
     const gotOptions = {
         ...options,
-        url: options.uri,
+        url: options.url ?? options.uri,
         searchParams: options.qs,
         rejectUnauthorized: options.strictSSL,
         decompress: options.gzip,
