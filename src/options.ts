@@ -1,5 +1,24 @@
 import { HttpProxyAgent, HttpsProxyAgent } from "hpagent";
-import { cleanObject } from "./lib/utils.js";
+import { cleanObject, getType, isValidUrl } from "./lib/utils.js";
+
+
+export const getValidOptions = (options: unknown): Object => {
+    const type = getType(options);
+    if (type === "string") {
+        try {
+            if (isValidUrl(options as string)) return { url: options };
+            options = JSON.parse(options as string);
+            return options as Object;
+        } catch (e) {
+            throw new TypeError(`Invalid options: ${JSON.stringify(options)}`);
+        }
+    } else if (type === "object") {
+        const prototype = Object.getPrototypeOf(options);
+        if (prototype === Object.prototype || prototype === null) return options as Object;
+    }
+    throw new TypeError(`Invalid options: ${JSON.stringify(options)}`);
+};
+
 
 export const alignOptions = (options: any): any => {
     const crawlerOnlyOptions = [
