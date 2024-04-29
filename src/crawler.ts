@@ -112,7 +112,7 @@ class Crawler extends EventEmitter {
                 this._handler(null, options, { body: options.html, headers: { "content-type": "text/html" } });
             } else if (typeof options.uri === "function") {
                 options.uri((uri: any) => {
-                    options.uri = uri;
+                    options.url = uri;
                     this._execute(options);
                 });
             } else {
@@ -122,30 +122,28 @@ class Crawler extends EventEmitter {
     };
 
     private _execute = async (options: crawlerOptions): Promise<void> => {
-        const reqOptions = { ...options } as crawlerOptions;
-
         if (options.proxy) console.debug(`Using proxy: ${options.proxy}`);
         else if (options.proxies) console.debug(`Using proxies: ${options.proxies}`);
 
-        reqOptions.headers = reqOptions.headers ?? {};
+        options.headers = options.headers ?? {};
 
-        if (reqOptions.forceUTF8 || reqOptions.json) reqOptions.encoding = null;
+        if (options.forceUTF8 || options.json) options.encoding = null;
 
-        if (reqOptions.rotateUA && Array.isArray(reqOptions.userAgent)) {
-            this._rotatingUAIndex = this._rotatingUAIndex % reqOptions.userAgent.length;
-            reqOptions.headers["user-agent"] = reqOptions.userAgent[this._rotatingUAIndex];
+        if (options.rotateUA && Array.isArray(options.userAgent)) {
+            this._rotatingUAIndex = this._rotatingUAIndex % options.userAgent.length;
+            options.headers["user-agent"] = options.userAgent[this._rotatingUAIndex];
             this._rotatingUAIndex++;
         } else {
-            reqOptions.headers["user-agent"] = reqOptions.userAgent;
+            options.headers["user-agent"] = options.userAgent;
         }
 
-        if (reqOptions.proxies) {
-            reqOptions.proxy = reqOptions.proxies[Math.floor(Math.random() * reqOptions.proxies.length)];
+        if (options.proxies) {
+            options.proxy = options.proxies[Math.floor(Math.random() * options.proxies.length)];
         }
 
-        if (isFunction(reqOptions.preRequest)) {
+        if (isFunction(options.preRequest)) {
             try {
-                await promisify(reqOptions.preRequest as any)(reqOptions);
+                await promisify(options.preRequest as any)(options);
             } catch (err) {
                 console.error(err);
             }
@@ -154,18 +152,18 @@ class Crawler extends EventEmitter {
         // @todo skipEventRequest
 
         try {
-            const response = await got(alignOptions(reqOptions));
-            return this._handler(null, reqOptions, response);
+            const response = await got(alignOptions({ ...options }));
+            return this._handler(null, options, response);
         } catch (error) {
             console.log("error:", error);
-            return this._handler(error, reqOptions);
+            return this._handler(error, options);
         }
     };
 
     private _handler = (error: any | null, options: requestOptions, response?: any): any => {
         if (error) {
             console.log(
-                `Error: ${error} when fetching ${options.uri} ${options.retries ? `(${options.retries} retries left)` : ""
+                `Error: ${error} when fetching ${options.url} ${options.retries ? `(${options.retries} retries left)` : ""
                 }`
             );
             if (options.retries) {

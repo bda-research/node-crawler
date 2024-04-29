@@ -31,6 +31,8 @@ export const alignOptions = (options: any): any => {
         "proxy",
         "retries",
         "preRequest",
+        "callback",
+        "release"
     ];
     const deprecatedOptions = ["uri", "qs", "strictSSL", "gzip", "jar", "jsonReviver", "jsonReplacer"].concat(
         crawlerOnlyOptions
@@ -62,5 +64,7 @@ export const alignOptions = (options: any): any => {
         }
     });
     cleanObject(gotOptions);
+    // console.log(gotOptions);
+    // process.exit(0);
     return gotOptions;
 };
