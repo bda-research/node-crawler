@@ -63,7 +63,6 @@ type requestOptions = {
     headers?: Record<string, unknown>;
     gzip?: boolean;
     method?: string;
-    referer?: boolean | string;
     skipEventRequest?: boolean;
     html?: boolean;
     proxies?: string[];

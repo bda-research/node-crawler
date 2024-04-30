@@ -26,14 +26,15 @@ class Cluster {
     /**
      * Alternative to Old Cluster.prototype.key
      */
-    getRateLimiter(id: number = 0): RateLimiter {
+    getRateLimiter(id?: number): RateLimiter {
+        id = id ?? 0;
         if (!this._rateLimiters[id]) {
             this._rateLimiters[id] = new RateLimiter({
                 "maxConnections": this.globalMaxConnections,
                 "rateLimit": this.globalRateLimit,
                 "priorityLevels": this.globalpriorityLevels,
                 "defaultPriority": this.globalDefaultPriority,
-                "cluster": this,
+                "cluster": this._homogeneous ? this : void 0,
             });
             this._rateLimiters[id].setId(id);
             return this._rateLimiters[id];
@@ -41,14 +42,22 @@ class Cluster {
             return this._rateLimiters[id];
         }
     }
-    hasRateLimiter(id: number = 0): boolean {
+
+    hasRateLimiter(id: number): boolean {
         return !!this._rateLimiters[id];
     }
 
-    deleteRateLimiter(id: number = 0): boolean {
+    deleteRateLimiter(id: number): boolean {
+        id = id ?? 0;
         return delete this._rateLimiters[id];
     }
 
+    /**
+     * @deprecated use waitingSize instead
+     */
+    get waitingClients(): number {
+        return this.waitingSize;
+    }
     get waitingSize(): number {
         return Object.values(this._rateLimiters).reduce(
             (waitingCount, rateLimiter) => waitingCount + rateLimiter.waitingSize,
@@ -56,6 +65,12 @@ class Cluster {
         );
     }
 
+    /**
+     * @deprecated use unfinishedSize instead
+     */
+    get unfinishedClients(): number {
+        return this.unfinishedSize;
+    }
     get unfinishedSize(): number {
         return Object.values(this._rateLimiters).reduce(
             (unfinishedCount, rateLimiter) => unfinishedCount + rateLimiter.runningSize + rateLimiter.waitingSize,
@@ -68,27 +83,17 @@ class Cluster {
     }
 
     dequeue(): TaskWrapper | undefined {
-        // for (const id in this._rateLimiters) {
-        //     if (this._rateLimiters[id].waitingSize) {
-        //         return {
-        //             next: this._rateLimiters[id].dequeue(),
-        //             rateLimiterId: id,
-        //         };
-        //     } else {
-        //         delete this._rateLimiters[id];
-        //     }
-        // }
-        Object.keys(this._rateLimiters).forEach(key => {
-            const id = Number(key);
-            if (this._rateLimiters[id].waitingSize) {
+        for (const rateLimiter of Object.values(this._rateLimiters)) {
+            if (rateLimiter.waitingSize) {
                 return {
-                    "next": this._rateLimiters[id].dequeue(),
-                    "rateLimiterId": id,
+                    "next": rateLimiter.directDequeue(),
+                    "rateLimiterId": rateLimiter.id,
                 };
             } else {
-                this.deleteRateLimiter(id);
+                // @todo The logic design of the code is not up to the mark.
+                // this.deleteRateLimiter(rateLimiter.id as number);
             }
-        });
+        }
         return void 0;
     }
 
@@ -107,22 +112,22 @@ class Cluster {
         return status.join(";");
     }
 
-    startCleanup(): void {
-        clearInterval(this._interval as NodeJS.Timeout);
-        const base = (this._interval = setInterval(() => {
-            const time = Date.now();
-            Object.keys(this._rateLimiters).forEach(key => {
-                const id = Number(key);
-                const rateLimiter = this._rateLimiters[id];
-                if (rateLimiter.nextRequestTime + 1000 * 60 * 5 < time) {
-                    this.deleteRateLimiter(id);
-                }
-            });
-        }, 1000 * 30));
-        if (typeof base.unref === "function") {
-            base.unref();
-        }
-    }
+    // startCleanup(): void {
+    //     clearInterval(this._interval as NodeJS.Timeout);
+    //     const base = (this._interval = setInterval(() => {
+    //         const time = Date.now();
+    //         Object.keys(this._rateLimiters).forEach(key => {
+    //             const id = Number(key);
+    //             const rateLimiter = this._rateLimiters[id];
+    //             if (rateLimiter.nextRequestTime + 1000 * 60 * 5 < time) {
+    //                 this.deleteRateLimiter(id);
+    //             }
+    //         });
+    //     }, 1000 * 30));
+    //     if (typeof base.unref === "function") {
+    //         base.unref();
+    //     }
+    // }
 
     get empty(): boolean {
         return this.unfinishedSize === 0;

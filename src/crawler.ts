@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 import { Cluster } from "./rateLimiter/index.js";
-import { getType, isValidUrl, isFunction, setDefaults, flattenDeep, isNumber } from "./lib/utils.js";
-import { alignOptions } from "./options.js";
+import { isFunction, setDefaults, flattenDeep } from "./lib/utils.js";
+import { getValidOptions, alignOptions } from "./options.js";
 import type { crawlerOptions, requestOptions } from "./types/crawler.js";
 import { promisify } from "util";
 import got from "got";
@@ -29,19 +29,19 @@ class Crawler extends EventEmitter {
         super();
         const defaultOptions: crawlerOptions = {
             maxConnections: 10,
-            rateLimit: 1000,
+            rateLimit: 0,
             priorityLevels: 10,
             skipDuplicates: false,
             rotateUA: false,
             homogeneous: false,
-            method: 'GET',
+            method: "GET",
             forceUTF8: true,
             incomingEncoding: null,
             jQuery: true,
             priority: 5,
             retries: 3,
             retryTimeout: 10000,
-            timeout: 15000
+            timeout: 15000,
         };
         this.options = { ...defaultOptions, ...options };
 
@@ -77,22 +77,23 @@ class Crawler extends EventEmitter {
         });
     }
 
-    private _getValidOptions = (options: unknown): Object => {
-        const type = getType(options);
-        if (type === "string") {
-            try {
-                if (isValidUrl(options as string)) return { uri: options };
-                options = JSON.parse(options as string);
-                return options as Object;
-            } catch (e) {
-                throw new TypeError(`Invalid options: ${JSON.stringify(options)}`);
+    private _getCharset = (headers: Record<string, string>, body: string): string => {
+        let charset = "utf-8";
+        const contentType = headers["content-type"];
+        if (contentType) {
+            const match = contentType.match(/charset=([^;]*)/);
+            if (match) {
+                charset = match[1].trim().toLowerCase();
             }
-        } else if (type === "object") {
-            const prototype = Object.getPrototypeOf(options);
-            if (prototype === Object.prototype || prototype === null) return options as Object;
         }
-        throw new TypeError(`Invalid options: ${JSON.stringify(options)}`);
+        return charset;
     };
+
+    // private _getContentType = (headers: Record<string, string>): string[] => {
+    //     let contentType = headers["content-type"];
+    //     if (!contentType) return [];
+    //     return contentType.split(";").map((type: string) => type.trim());
+    // }
 
     private _schedule = async (options: crawlerOptions): Promise<void> => {
         this.emit("schedule", options);
@@ -111,7 +112,7 @@ class Crawler extends EventEmitter {
                 this._handler(null, options, { body: options.html, headers: { "content-type": "text/html" } });
             } else if (typeof options.uri === "function") {
                 options.uri((uri: any) => {
-                    options.uri = uri;
+                    options.url = uri;
                     this._execute(options);
                 });
             } else {
@@ -121,52 +122,48 @@ class Crawler extends EventEmitter {
     };
 
     private _execute = async (options: crawlerOptions): Promise<void> => {
-        const reqOptions = { ...options } as crawlerOptions;
-
         if (options.proxy) console.debug(`Using proxy: ${options.proxy}`);
+        else if (options.proxies) console.debug(`Using proxies: ${options.proxies}`);
 
-        reqOptions.headers = reqOptions.headers ?? {};
-        if (reqOptions.forceUTF8 || reqOptions.json) reqOptions.encoding = null;
+        options.headers = options.headers ?? {};
 
-        if (reqOptions.rotateUA && Array.isArray(reqOptions.userAgent)) {
-            reqOptions.headers["user-agent"] =
-                reqOptions.userAgent[this._rotatingUAIndex++ % reqOptions.userAgent.length];
+        if (options.forceUTF8 || options.json) options.encoding = null;
+
+        if (options.rotateUA && Array.isArray(options.userAgent)) {
+            this._rotatingUAIndex = this._rotatingUAIndex % options.userAgent.length;
+            options.headers["user-agent"] = options.userAgent[this._rotatingUAIndex];
+            this._rotatingUAIndex++;
         } else {
-            reqOptions.headers["user-agent"] = reqOptions.userAgent;
+            options.headers["user-agent"] = options.userAgent;
         }
 
-        if (reqOptions.referer) {
-            reqOptions.headers.referer = reqOptions.referer;
-        }
-        if (reqOptions.proxies) {
-            reqOptions.proxy = reqOptions.proxies[Math.floor(Math.random() * reqOptions.proxies.length)];
+        if (options.proxies) {
+            options.proxy = options.proxies[Math.floor(Math.random() * options.proxies.length)];
         }
 
-        if (isFunction(reqOptions.preRequest)) {
+        if (isFunction(options.preRequest)) {
             try {
-                await promisify(reqOptions.preRequest as any)(reqOptions);
+                await promisify(options.preRequest as any)(options);
             } catch (err) {
                 console.error(err);
             }
         }
 
-        if (reqOptions.skipEventRequest !== true) {
-            this.emit("request", reqOptions);
-        }
+        // @todo skipEventRequest
 
         try {
-            const response = await got(alignOptions(reqOptions));
-            return this._handler(null, reqOptions, response);
+            const response = await got(alignOptions({ ...options }));
+            return this._handler(null, options, response);
         } catch (error) {
             console.log("error:", error);
-            return this._handler(error, reqOptions);
+            return this._handler(error, options);
         }
     };
 
     private _handler = (error: any | null, options: requestOptions, response?: any): any => {
         if (error) {
             console.log(
-                `Error: ${error} when fetching ${options.uri} ${options.retries ? `(${options.retries} retries left)` : ""
+                `Error: ${error} when fetching ${options.url} ${options.retries ? `(${options.retries} retries left)` : ""
                 }`
             );
             if (options.retries) {
@@ -183,12 +180,10 @@ class Crawler extends EventEmitter {
             return void 0;
         }
 
-        if (!response.body) {
-            response.body = "";
-        }
-
-        console.debug("Got " + (options.uri || "html") + " (" + response.body.length + " bytes)...");
-
+        if (!response.body) response.body = "";
+        console.debug("Got " + (options.url || "html") + " (" + response.body.length + " bytes)...");
+        response.options = options;
+        let resError = null;
         try {
             if (options.forceUTF8) {
                 const charset = options.incomingEncoding || this._getCharset(response.headers, response.body);
@@ -200,42 +195,20 @@ class Crawler extends EventEmitter {
                 }
             }
         } catch (error) {
-            if (options.callback && typeof options.callback === "function") {
-                return options.callback(error, { options }, options.release);
-            }
-            return response;
+            resError = error;
         }
 
-        response.options = options;
-        if (options.callback && typeof options.callback === "function") {
-            return options.callback(null, response, options.release);
-        }
-        return response;
         // @todo: jQuery injection
-        // if (options.method === "HEAD" || !options.jQuery) {
-        //     if (options.callback && typeof options.callback === "function") {
-        //         return options.callback(null, response, options.release);
-        //     }
-        //     return response;
-        // }
 
         // const injectableTypes = ["html", "xhtml", "text/xml", "application/xml", "+xml"];
-        // if (!options.html && !typeis(contentType(response), injectableTypes)) {
-        //     log("warn", "response body is not HTML, skip injecting. Set jQuery to false to suppress this message");
-        //     return options.callback(null, response, options.release);
+        // if (this._getContentType(response.headers).some(type => injectableTypes.includes(type))) {
+        //     console.warn("response body is not HTML, skip injecting. Set jQuery to false to suppress this message");
         // }
-    };
 
-    private _getCharset = (headers: Record<string, string>, body: string): string => {
-        let charset = "utf-8";
-        const contentType = headers["content-type"];
-        if (contentType) {
-            const match = contentType.match(/charset=([^;]*)/);
-            if (match) {
-                charset = match[1].trim().toLowerCase();
-            }
+        if (options.callback && typeof options.callback === "function") {
+            return options.callback(resError, response, options.release);
         }
-        return charset;
+        return response;
     };
 
     private get queueSize(): number {
@@ -243,11 +216,8 @@ class Crawler extends EventEmitter {
     }
 
     public send = async (options: requestOptions): Promise<any> => {
-        options = this._getValidOptions(options) as requestOptions;
-        // send request does not follow the global preRequest
-        options.preRequest = options.preRequest;
+        options = getValidOptions(options) as requestOptions;
         options.retries = options.retries ?? 0;
-        // @todo skip event request
         setDefaults(options, this.options);
         this.globalOnlyOptions.forEach(globalOnlyOption => {
             delete (options as any)[globalOnlyOption];
@@ -255,8 +225,8 @@ class Crawler extends EventEmitter {
         return await this._execute(options as crawlerOptions);
     };
     /**
-     * Old interface version. It is recommended to use `Crawler.send()` instead.
-     *
+     * @deprecated
+     * @description Old interface version. It is recommended to use `Crawler.send()` instead.
      * @see Crawler.send
      */
     public direct = async (options: requestOptions): Promise<any> => {
@@ -268,32 +238,33 @@ class Crawler extends EventEmitter {
         optionsArray = flattenDeep(optionsArray);
         optionsArray.forEach(options => {
             try {
-                options = this._getValidOptions(options) as requestOptions;
-                setDefaults(options, this.options);
-                options.headers = { ...this.options.headers, ...options.headers };
-                this.globalOnlyOptions.forEach(globalOnlyOption => {
-                    delete (options as any)[globalOnlyOption];
-                });
-                if (!this.options.skipDuplicates) {
-                    this._schedule(options as crawlerOptions);
-                }
-
-                this.seen
-                    .exists(options, options.seenreq)
-                    .then((rst: any) => {
-                        if (!rst) {
-                            this._schedule(options as crawlerOptions);
-                        }
-                    })
-                    .catch((err: any) => console.error(err));
+                options = getValidOptions(options) as requestOptions;
             } catch (err) {
                 console.warn(err);
+                return;
             }
+            setDefaults(options, this.options);
+            options.headers = { ...this.options.headers, ...options.headers };
+            this.globalOnlyOptions.forEach(globalOnlyOption => {
+                delete (options as any)[globalOnlyOption];
+            });
+            if (!this.options.skipDuplicates) {
+                this._schedule(options as crawlerOptions);
+            }
+
+            this.seen
+                .exists(options, options.seenreq)
+                .then((rst: any) => {
+                    if (!rst) {
+                        this._schedule(options as crawlerOptions);
+                    }
+                })
+                .catch((err: any) => console.error(err));
         });
     };
     /**
-     * Old interface version. It is recommended to use `Crawler.add()` instead.
-     *
+     * @deprecated
+     * @description Old interface version. It is recommended to use `Crawler.add()` instead.
      * @see Crawler.add
      */
     public queue = async (options: requestOptions | requestOptions[]): Promise<void> => {
