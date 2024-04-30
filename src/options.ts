@@ -57,6 +57,11 @@ export const alignOptions = (options: any): any => {
         stringifyJson: options.jsonReplacer,
     };
     gotOptions.agent = gotOptions.agent ?? (options.proxy ? defaultagent : undefined);
+    
+    if(gotOptions.encoding === null){
+        gotOptions.responseType = gotOptions.responseType ?? "buffer";
+        delete gotOptions.encoding;
+    }
 
     Object.keys(gotOptions).forEach(key => {
         if (deprecatedOptions.includes(key)) {

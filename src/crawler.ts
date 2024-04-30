@@ -2,21 +2,19 @@ import { EventEmitter } from "events";
 import { Cluster } from "./rateLimiter/index.js";
 import { isFunction, setDefaults, flattenDeep } from "./lib/utils.js";
 import { getValidOptions, alignOptions } from "./options.js";
+import { logOptions } from "./logger.js";
 import type { crawlerOptions, requestOptions } from "./types/crawler.js";
 import { promisify } from "util";
 import { load } from "cheerio";
 import got from "got";
 import seenreq from "seenreq";
 import iconv from "iconv-lite";
+import { Logger } from "tslog";
 
 //@todo change log method
-process.env.NODE_ENV = process.env.NODE_ENV ?? process.argv[2] ?? "debug";
+process.env.NODE_ENV = process.env.NODE_ENV ?? process.argv[2] ?? "production";
 
-if (process.env.NODE_ENV !== "debug") {
-    console.log = () => { };
-    console.error = () => { };
-    console.debug = () => { };
-}
+const log = process.env.NODE_ENV === "debug" ? new Logger(logOptions) : new Logger({ type: "hidden" });
 
 class Crawler extends EventEmitter {
     private _limiters: Cluster;
@@ -67,13 +65,13 @@ class Crawler extends EventEmitter {
         this.seen
             .initialize()
             .then(() => {
-                console.log("seenreq initialized");
+                log.info("seenreq initialized");
             })
             .catch((err: any) => {
-                console.error(err);
+                log.error(err);
             });
         this.on("_release", () => {
-            console.debug(`Queue size: ${this.queueSize}`);
+            log.debug(`Queue size: ${this.queueSize}`);
             if (this._limiters.empty) this.emit("drain");
         });
     }
@@ -123,8 +121,8 @@ class Crawler extends EventEmitter {
     };
 
     private _execute = async (options: crawlerOptions): Promise<void> => {
-        if (options.proxy) console.debug(`Using proxy: ${options.proxy}`);
-        else if (options.proxies) console.debug(`Using proxies: ${options.proxies}`);
+        if (options.proxy) log.debug(`Using proxy: ${options.proxy}`);
+        else if (options.proxies) log.debug(`Using proxies: ${options.proxies}`);
 
         options.headers = options.headers ?? {};
 
@@ -146,7 +144,7 @@ class Crawler extends EventEmitter {
             try {
                 await promisify(options.preRequest as any)(options);
             } catch (err) {
-                console.error(err);
+                log.error(err);
             }
         }
 
@@ -156,14 +154,14 @@ class Crawler extends EventEmitter {
             const response = await got(alignOptions({ ...options }));
             return this._handler(null, options, response);
         } catch (error) {
-            console.log("error:", error);
+            log.info("error:", error);
             return this._handler(error, options);
         }
     };
 
     private _handler = (error: any | null, options: requestOptions, response?: any): any => {
         if (error) {
-            console.log(
+            log.info(
                 `Error: ${error} when fetching ${options.url} ${options.retries ? `(${options.retries} retries left)` : ""
                 }`
             );
@@ -182,14 +180,14 @@ class Crawler extends EventEmitter {
         }
 
         if (!response.body) response.body = "";
-        console.debug("Got " + (options.url || "html") + " (" + response.body.length + " bytes)...");
+        log.debug("Got " + (options.url || "html") + " (" + response.body.length + " bytes)...");
         response.options = options;
         let resError = null;
         try {
             if (options.forceUTF8) {
                 const charset = options.incomingEncoding || this._getCharset(response.headers, response.body);
                 response.charset = charset;
-                console.debug("Charset: " + charset);
+                log.debug("Charset: " + charset);
                 if (charset && charset !== "utf-8" && charset != "ascii") {
                     response.body = iconv.decode(response.body, charset);
                     response.body = response.body.toString();
@@ -206,7 +204,7 @@ class Crawler extends EventEmitter {
                 try {
                     response.$ = load(response.body);
                 } catch (err) {
-                    console.error(err);
+                    log.error(err);
                 }
             }
         }
@@ -265,7 +263,7 @@ class Crawler extends EventEmitter {
                         this._schedule(options as crawlerOptions);
                     }
                 })
-                .catch((err: any) => console.error(err));
+                .catch((err: any) => log.error(err));
         });
     };
     /**

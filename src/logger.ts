@@ -1,7 +1,5 @@
-import { Logger } from "tslog"
-
-const log = new Logger({
-    type: "pretty",
+export const logOptions = {
+    type: "pretty" as any,
     name: "Crawler",
     hideLogPositionForProduction: true,
     prettyLogTemplate: "{{name}} {{logLevelName}} ",
@@ -23,12 +21,4 @@ const log = new Logger({
         errorName: ["bold", "bgRedBright", "whiteBright"],
         fileName: ["yellow"],
     },
-});
-
-log.silly("I am a silly log.");
-log.trace("I am a trace log.");
-log.debug("I am a debug log.");
-log.info("I am an info log.");
-log.warn("I am a warn log with a json object:", { foo: "bar" });
-log.error("I am an error log.");
-log.fatal(new Error("I am a pretty Error with a stacktrace."));
+}

@@ -2,6 +2,7 @@ import { crawler } from './dist/index.js';
 crawler.add({
     url: 'https://www.google.com',
     method: 'GET',
+    incomingEncoding: 'utf8',
     headers: {
         'Content-Type': 'application/json'
     },
