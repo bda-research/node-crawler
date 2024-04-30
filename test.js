@@ -18,19 +18,21 @@
 // console.log(a++ % 6)
 const a = {
     a: {
-        q1 : 1,
-        q2 : 2,
-        q3 : 3
+        q1: 1,
+        q2: 2,
+        q3: 3
     },
     b: {
-        q1 : 1,
-        q2 : 2,
-        q3 : 3
+        q1: 1,
+        q2: 2,
+        q3: 3
     }
 }
-for(const value of Object.values(a)){
-    value.q1++;
-    value.q2 = 0;
-    delete value.q3;
-}
-console.log(a)
+// for(const value of Object.values(a)){
+//     value.q1++;
+//     value.q2 = 0;
+//     delete value.q3;
+// }
+// console.log(a)
+const { q1, q4 } = a.a;
+console.log(q1, q4)

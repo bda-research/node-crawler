@@ -55,7 +55,9 @@ class Cluster {
     /**
      * @deprecated use waitingSize instead
      */
-    get waitingClients(): number { return this.waitingSize; }
+    get waitingClients(): number {
+        return this.waitingSize;
+    }
     get waitingSize(): number {
         return Object.values(this._rateLimiters).reduce(
             (waitingCount, rateLimiter) => waitingCount + rateLimiter.waitingSize,
@@ -66,7 +68,9 @@ class Cluster {
     /**
      * @deprecated use unfinishedSize instead
      */
-    get unfinishedClients(): number { return this.unfinishedSize; }
+    get unfinishedClients(): number {
+        return this.unfinishedSize;
+    }
     get unfinishedSize(): number {
         return Object.values(this._rateLimiters).reduce(
             (unfinishedCount, rateLimiter) => unfinishedCount + rateLimiter.runningSize + rateLimiter.waitingSize,
