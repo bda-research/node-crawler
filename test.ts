@@ -1,3 +1,10 @@
-process.env.NODE_ENV = process.env.NODE_ENV ?? process.argv[2] ?? "production";
-console.log(process.argv[2])
-console.log(process.env.NODE_ENV !== "debug")
+import { getType } from './src/lib/utils.js';
+class test {
+    public a: Record<number, number>;
+    constructor() {
+        this.a = {};
+    }
+}
+const b = new test();
+b.a[0] = 1;
+console.log(Array.isArray(b.a));

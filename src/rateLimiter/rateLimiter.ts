@@ -1,13 +1,13 @@
 import { multiPriorityQueue } from "../lib/index.js";
 import Cluster from "./cluster.js";
 
-export type Task = { 
-    (done: () => void, limiter: RateLimiter | null) : void 
+export type Task = {
+    (done: () => void, limiter: RateLimiter | null): void
 };
 
 export type TaskWrapper = {
     next: Task;
-    rateLimiterId: number | null;
+    rateLimiterId?: number;
 }
 
 export type RateLimiterOptions = {
@@ -46,7 +46,7 @@ class RateLimiter {
         this.rateLimit = rateLimit;
         this.runningSize = 0;
     }
-    
+
     get waitingSize(): number {
         return this._waitingTasks.size();
     }
@@ -80,7 +80,7 @@ class RateLimiter {
             const delay = Math.max(this.nextRequestTime - Date.now(), 0);
             this.nextRequestTime = Date.now() + delay + this.rateLimit;
 
-            const {next} = this.dequeue() as TaskWrapper;
+            const { next } = this.dequeue() as TaskWrapper;
             setTimeout(() => {
                 const done = () => {
                     --this.runningSize;
@@ -91,11 +91,15 @@ class RateLimiter {
         }
     }
 
+    directDequeue(): Task {
+        return this._waitingTasks.dequeue() as Task;
+    }
+
     dequeue(): TaskWrapper | undefined {
         if (this.waitingSize) {
             return {
                 next: this._waitingTasks.dequeue() as Task,
-                rateLimiterId: null,
+                rateLimiterId: undefined,
             };
         }
         return this._cluster?.dequeue();
