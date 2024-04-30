@@ -1,38 +1,16 @@
-// const crawler = require('./dist/index.js');
-// const result = crawler.add({
-//     url: "http://www.google.com",
-//     method: "GET",
-//     incomingEncoding: "utf8",
-//     callback: (err, res, done) => {
-//         console.log(response.body)
-//     }
-// });
-// console.log(result)
-// import got from "got";
-// import fs from "fs";
-// const result = await got({
-//     url: "http://www.google.com"
-// });
-// fs.writeFileSync("result", result.body);
-// let a = 5
-// console.log(a++ % 6)
-const a = {
-    a: {
-        q1: 1,
-        q2: 2,
-        q3: 3
+import { crawler } from './dist/index.js';
+crawler.add({
+    url: 'https://www.google.com',
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
     },
-    b: {
-        q1: 1,
-        q2: 2,
-        q3: 3
+    callback: (err, res, done) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(res.body);
+        }
+        done();
     }
-}
-// for(const value of Object.values(a)){
-//     value.q1++;
-//     value.q2 = 0;
-//     delete value.q3;
-// }
-// console.log(a)
-const { q1, q4 } = a.a;
-console.log(q1, q4)
+});

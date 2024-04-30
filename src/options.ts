@@ -64,7 +64,5 @@ export const alignOptions = (options: any): any => {
         }
     });
     cleanObject(gotOptions);
-    // console.log(gotOptions);
-    // process.exit(0);
     return gotOptions;
 };

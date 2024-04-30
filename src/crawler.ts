@@ -4,11 +4,12 @@ import { isFunction, setDefaults, flattenDeep } from "./lib/utils.js";
 import { getValidOptions, alignOptions } from "./options.js";
 import type { crawlerOptions, requestOptions } from "./types/crawler.js";
 import { promisify } from "util";
+import { load } from "cheerio";
 import got from "got";
 import seenreq from "seenreq";
 import iconv from "iconv-lite";
-import cheerio from "cheerio";
 
+//@todo change log method
 process.env.NODE_ENV = process.env.NODE_ENV ?? process.argv[2] ?? "debug";
 
 if (process.env.NODE_ENV !== "debug") {
@@ -89,11 +90,11 @@ class Crawler extends EventEmitter {
         return charset;
     };
 
-    // private _getContentType = (headers: Record<string, string>): string[] => {
-    //     let contentType = headers["content-type"];
-    //     if (!contentType) return [];
-    //     return contentType.split(";").map((type: string) => type.trim());
-    // }
+    private _checkHtml = (headers: Record<string, string>): boolean => {
+        const contentType = headers["content-type"];
+        if (/xml|html/i.test(contentType)) return true;
+        return false;
+    };
 
     private _schedule = async (options: crawlerOptions): Promise<void> => {
         this.emit("schedule", options);
@@ -198,12 +199,17 @@ class Crawler extends EventEmitter {
             resError = error;
         }
 
-        // @todo: jQuery injection
-
-        // const injectableTypes = ["html", "xhtml", "text/xml", "application/xml", "+xml"];
-        // if (this._getContentType(response.headers).some(type => injectableTypes.includes(type))) {
-        //     console.warn("response body is not HTML, skip injecting. Set jQuery to false to suppress this message");
-        // }
+        if (options.jQuery === true) {
+            if (response.body === "" || !this._checkHtml(response.headers)) {
+                console.warn("response body is not HTML, skip injecting. Set jQuery to false to suppress this message");
+            } else {
+                try {
+                    response.$ = load(response.body);
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        }
 
         if (options.callback && typeof options.callback === "function") {
             return options.callback(resError, response, options.release);
