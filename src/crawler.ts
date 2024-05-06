@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import { Cluster } from "./rateLimiter/index.js";
-import { isFunction, setDefaults, flattenDeep } from "./lib/utils.js";
+import { isBoolean, isFunction, setDefaults, flattenDeep } from "./lib/utils.js";
 import { getValidOptions, alignOptions } from "./options.js";
 import { logOptions } from "./logger.js";
 import type { crawlerOptions, requestOptions } from "./types/crawler.js";
@@ -56,9 +56,9 @@ class Crawler extends EventEmitter {
         ];
 
         this._limiters = new Cluster({
-            maxConnections: this.options.maxConnections,
-            rateLimit: this.options.rateLimit,
-            priorityLevels: this.options.priorityLevels,
+            maxConnections: this.options.maxConnections as number,
+            rateLimit: this.options.rateLimit as number,
+            priorityLevels: this.options.priorityLevels as number,
             defaultPriority: this.options.priority as number,
             homogeneous: this.options.homogeneous,
         });
@@ -110,6 +110,7 @@ class Crawler extends EventEmitter {
             }
 
             if (options.html) {
+                options.url = options.url ?? "";
                 this._handler(null, options, { body: options.html, headers: { "content-type": "text/html" } });
             } else if (typeof options.uri === "function") {
                 options.uri((uri: any) => {
@@ -117,6 +118,8 @@ class Crawler extends EventEmitter {
                     this._execute(options);
                 });
             } else {
+                options.url = options.url ?? options.uri;
+                delete options.uri;
                 this._execute(options);
             }
         });
@@ -128,7 +131,7 @@ class Crawler extends EventEmitter {
 
         options.headers = options.headers ?? {};
 
-        if (options.forceUTF8 || options.json) options.encoding = null;
+        if (options.forceUTF8 || options.json) options.encoding = "utf8";
 
         if (options.rotateUA && Array.isArray(options.userAgent)) {
             this._rotatingUAIndex = this._rotatingUAIndex % options.userAgent.length;
@@ -150,24 +153,25 @@ class Crawler extends EventEmitter {
             }
         }
 
-        // @todo skipEventRequest
+        if (options.skipEventRequest !== true) {
+            this.emit("request", options)
+        }
 
         try {
             const response = await got(alignOptions({ ...options }));
             return this._handler(null, options, response);
         } catch (error) {
-            log.info("error:", error);
+            log.error("error:", error);
             return this._handler(error, options);
         }
     };
 
     private _handler = (error: any | null, options: requestOptions, response?: any): any => {
         if (error) {
-            log.info(
-                `Error: ${error} when fetching ${options.url} ${options.retries ? `(${options.retries} retries left)` : ""
-                }`
+            log.error(
+                `${error} when fetching ${options.url} ${options.retries ? `(${options.retries} retries left)` : ""}`
             );
-            if (options.retries) {
+            if (options.retries && options.retries > 0) {
                 setTimeout(() => {
                     options.retries!--;
                     this._execute(options as crawlerOptions);
@@ -221,13 +225,15 @@ class Crawler extends EventEmitter {
         return 0;
     }
 
-    public send = async (options: requestOptions): Promise<any> => {
+    public send = async (options: string | requestOptions): Promise<any> => {
         options = getValidOptions(options) as requestOptions;
         options.retries = options.retries ?? 0;
         setDefaults(options, this.options);
         this.globalOnlyOptions.forEach(globalOnlyOption => {
             delete (options as any)[globalOnlyOption];
         });
+        options.skipEventRequest = isBoolean(options.skipEventRequest) ? options.skipEventRequest : true;
+        delete options.preRequest;
         return await this._execute(options as crawlerOptions);
     };
     /**
@@ -235,11 +241,11 @@ class Crawler extends EventEmitter {
      * @description Old interface version. It is recommended to use `Crawler.send()` instead.
      * @see Crawler.send
      */
-    public direct = async (options: requestOptions): Promise<any> => {
+    public direct = async (options: string | requestOptions): Promise<any> => {
         return await this.send(options);
     };
 
-    public add = async (options: requestOptions | requestOptions[]): Promise<void> => {
+    public add = async (options: string | requestOptions | requestOptions[]): Promise<void> => {
         let optionsArray = Array.isArray(options) ? options : [options];
         optionsArray = flattenDeep(optionsArray);
         optionsArray.forEach(options => {
@@ -273,7 +279,7 @@ class Crawler extends EventEmitter {
      * @description Old interface version. It is recommended to use `Crawler.add()` instead.
      * @see Crawler.add
      */
-    public queue = async (options: requestOptions | requestOptions[]): Promise<void> => {
+    public queue = async (options: string | requestOptions | requestOptions[]): Promise<void> => {
         return this.add(options);
     };
 }

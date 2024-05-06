@@ -1,5 +1,5 @@
 import { HttpProxyAgent, HttpsProxyAgent } from "hpagent";
-import { proxies as Http2Proxies } from "http2-wrapper";
+import http2Wrapper from "http2-wrapper";
 import { cleanObject, getType, isValidUrl } from "./lib/utils.js";
 
 export const getValidOptions = (options: unknown): Object => {
@@ -33,7 +33,7 @@ export const alignOptions = (options: any): any => {
         "callback",
         "release",
     ];
-    const deprecatedOptions = ["uri", "qs", "strictSSL", "gzip", "jar", "jsonReviver", "jsonReplacer"].concat(
+    const deprecatedOptions = ["uri", "qs", "strictSSL", "gzip", "jar", "jsonReviver", "jsonReplacer", "json", "skipEventRequest"].concat(
         crawlerOnlyOptions
     );
     const defaultagent = {
@@ -58,6 +58,7 @@ export const alignOptions = (options: any): any => {
 
     // http2 proxy
     if (options.http2 === true && options.proxy) {
+        const { proxies: Http2Proxies } = http2Wrapper;
         const protocol = options.proxy.startsWith("https") ? "https" : "http";
         const http2Agent =
             protocol === "https"

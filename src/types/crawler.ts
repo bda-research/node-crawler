@@ -124,6 +124,6 @@ type requestOptions = {
     callback?: (error: any, response: unknown, done: unknown) => void;
 };
 
-type crawlerOptions = globalOnlyOptions & requestOptions;
+type crawlerOptions = Partial<globalOnlyOptions> & requestOptions;
 
 export { crawlerOptions, requestOptions };
