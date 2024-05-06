@@ -17,6 +17,7 @@
         "cheerio": "1.0.0-rc.12",
         "got": "^13.0.0",
         "hpagent": "^1.2.0",
+        "http2-wrapper": "^2.2.1",
         "iconv-lite": "^0.6.3",
         "seenreq": "^3.0.0",
         "tslog": "^4.9.2"

@@ -21,4 +21,5 @@ export const logOptions = {
         errorName: ["bold", "bgRedBright", "whiteBright"],
         fileName: ["yellow"],
     },
-}
+    minLevel: 0,
+};

@@ -11,10 +11,12 @@ import seenreq from "seenreq";
 import iconv from "iconv-lite";
 import { Logger } from "tslog";
 
-//@todo change log method
-process.env.NODE_ENV = process.env.NODE_ENV ?? process.argv[2] ?? "production";
-
-const log = process.env.NODE_ENV === "debug" ? new Logger(logOptions) : new Logger({ type: "hidden" });
+process.env.NODE_ENV = process.env.NODE_ENV ?? process.argv[2];
+// test
+process.env.NODE_ENV = "debug";
+//
+logOptions.minLevel = process.env.NODE_ENV === "debug" ? 0 : 4;
+const log = new Logger(logOptions);
 
 class Crawler extends EventEmitter {
     private _limiters: Cluster;
@@ -199,7 +201,7 @@ class Crawler extends EventEmitter {
 
         if (options.jQuery === true) {
             if (response.body === "" || !this._checkHtml(response.headers)) {
-                console.warn("response body is not HTML, skip injecting. Set jQuery to false to suppress this message");
+                log.warn("response body is not HTML, skip injecting. Set jQuery to false to suppress this message");
             } else {
                 try {
                     response.$ = load(response.body);
@@ -244,7 +246,7 @@ class Crawler extends EventEmitter {
             try {
                 options = getValidOptions(options) as requestOptions;
             } catch (err) {
-                console.warn(err);
+                log.warn(err);
                 return;
             }
             setDefaults(options, this.options);

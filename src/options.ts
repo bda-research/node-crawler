@@ -1,6 +1,6 @@
 import { HttpProxyAgent, HttpsProxyAgent } from "hpagent";
+import { proxies as Http2Proxies } from "http2-wrapper";
 import { cleanObject, getType, isValidUrl } from "./lib/utils.js";
-
 
 export const getValidOptions = (options: unknown): Object => {
     const type = getType(options);
@@ -19,7 +19,6 @@ export const getValidOptions = (options: unknown): Object => {
     throw new TypeError(`Invalid options: ${JSON.stringify(options)}`);
 };
 
-
 export const alignOptions = (options: any): any => {
     const crawlerOnlyOptions = [
         "forceUTF8",
@@ -32,7 +31,7 @@ export const alignOptions = (options: any): any => {
         "retries",
         "preRequest",
         "callback",
-        "release"
+        "release",
     ];
     const deprecatedOptions = ["uri", "qs", "strictSSL", "gzip", "jar", "jsonReviver", "jsonReplacer"].concat(
         crawlerOnlyOptions
@@ -56,9 +55,24 @@ export const alignOptions = (options: any): any => {
         parseJson: options.jsonReviver,
         stringifyJson: options.jsonReplacer,
     };
-    gotOptions.agent = gotOptions.agent ?? (options.proxy ? defaultagent : undefined);
-    
-    if(gotOptions.encoding === null){
+
+    // http2 proxy
+    if (options.http2 === true && options.proxy) {
+        const protocol = options.proxy.startsWith("https") ? "https" : "http";
+        const http2Agent =
+            protocol === "https"
+                ? new Http2Proxies.HttpsOverHttp2({
+                    proxyOptions: { url: options.proxy },
+                })
+                : new Http2Proxies.HttpOverHttp2({
+                    proxyOptions: { url: options.proxy },
+                });
+        gotOptions.agent = http2Agent;
+    } else {
+        gotOptions.agent = gotOptions.agent ?? (options.proxy ? defaultagent : undefined);
+    }
+
+    if (gotOptions.encoding === null) {
         gotOptions.responseType = gotOptions.responseType ?? "buffer";
         delete gotOptions.encoding;
     }
