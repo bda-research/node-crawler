@@ -2,6 +2,18 @@ import { HttpProxyAgent, HttpsProxyAgent } from "hpagent";
 import http2Wrapper from "http2-wrapper";
 import { cleanObject, getType, isValidUrl } from "./lib/utils.js";
 
+export const getCharset = (headers: Record<string, string>): null | string => {
+    let charset = null;
+    const contentType = headers["content-type"];
+    if (contentType) {
+        const match = contentType.match(/charset=['"]?([\w.-]+)/i);
+        if (match) {
+            charset = match[1].trim().toLowerCase();
+        }
+    }
+    return charset;
+};
+
 export const getValidOptions = (options: unknown): Object => {
     const type = getType(options);
     if (type === "string") {
@@ -73,10 +85,12 @@ export const alignOptions = (options: any): any => {
         gotOptions.agent = gotOptions.agent ?? (options.proxy ? defaultagent : undefined);
     }
 
-    if (gotOptions.encoding === null) {
-        gotOptions.responseType = gotOptions.responseType ?? "buffer";
-        delete gotOptions.encoding;
-    }
+    /**
+     * @deprecated The support of incomingEncoding will be removed in the next major version.
+     */
+    if (options.encoding === undefined) options.encoding = options.incomingEncoding;
+    delete options["incomingEncoding"];
+    gotOptions.responseType = "buffer";
 
     Object.keys(gotOptions).forEach(key => {
         if (deprecatedOptions.includes(key)) {
