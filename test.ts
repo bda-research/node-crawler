@@ -1,21 +1,9 @@
-// import Crawler from "./src/index.js";
-// const c = new Crawler({
-//     jQuery: false,
-//     skipDuplicates: true,
-//     callback: function (error, result) {
-//         console.log("test")
-//         // expect(error).to.be.null;
-//         // expect(result.statusCode).to.equal(200);
-//         // expect(call.isDone()).to.be.true;
-//         // done();
-//     },
-// });
-
-// c.queue('http://target.com');
-const a = {
-    a:1,
-    b:2,
+const options = {
+    preRequest: (args) => {
+        console.log(args)
+        console.log("preRequest");
+    }
 }
-delete a.c;
-delete a.a;
-console.log(a)
+
+options.preRequest(1, () => { });
+console.log(options.preRequest.length);

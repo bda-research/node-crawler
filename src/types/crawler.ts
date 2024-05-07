@@ -119,7 +119,7 @@ type requestOptions = {
     jsonReplacer?: Function;
     stringifyJson?: Function;
 
-    preRequest?: (options: requestOptions, done: (error: Error | null, options: requestOptions) => void) => void;
+    preRequest?: (options: requestOptions, done?: (error: Error | null, options: requestOptions) => void) => void;
     release?: () => void;
     callback?: (error: any, response: unknown, done: unknown) => void;
 };

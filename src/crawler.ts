@@ -96,7 +96,7 @@ class Crawler extends EventEmitter {
         return false;
     };
 
-    private _schedule = async (options: crawlerOptions): Promise<void> => {
+    private _schedule = (options: crawlerOptions): void => {
         this.emit("schedule", options);
         this._limiters.getRateLimiter(options.rateLimit).submit(options.priority as number, (done, limiter) => {
             options.release = () => {
@@ -147,16 +147,15 @@ class Crawler extends EventEmitter {
 
         if (isFunction(options.preRequest)) {
             try {
-                await promisify(options.preRequest as any)(options);
+                options.preRequest!(options, () => { });
             } catch (err) {
-                log.error(err);
+                log.error(err);  
             }
         }
 
         if (options.skipEventRequest !== true) {
             this.emit("request", options)
         }
-
         try {
             const response = await got(alignOptions({ ...options }));
             return this._handler(null, options, response);
@@ -245,7 +244,7 @@ class Crawler extends EventEmitter {
         return await this.send(options);
     };
 
-    public add = async (options: string | requestOptions | requestOptions[]): Promise<void> => {
+    public add = (options: string | requestOptions | requestOptions[]): void => {
         let optionsArray = Array.isArray(options) ? options : [options];
         optionsArray = flattenDeep(optionsArray);
         optionsArray.forEach(options => {
@@ -262,6 +261,7 @@ class Crawler extends EventEmitter {
             });
             if (!this.options.skipDuplicates) {
                 this._schedule(options as crawlerOptions);
+                return;
             }
 
             this.seen
@@ -279,7 +279,7 @@ class Crawler extends EventEmitter {
      * @description Old interface version. It is recommended to use `Crawler.add()` instead.
      * @see Crawler.add
      */
-    public queue = async (options: string | requestOptions | requestOptions[]): Promise<void> => {
+    public queue = (options: string | requestOptions | requestOptions[]): void => {
         return this.add(options);
     };
 }
