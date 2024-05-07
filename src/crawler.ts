@@ -1,10 +1,9 @@
 import { EventEmitter } from "events";
 import { Cluster } from "./rateLimiter/index.js";
-import { isFunction, setDefaults, flattenDeep } from "./lib/utils.js";
-import { getValidOptions, alignOptions } from "./options.js";
+import { isBoolean, isFunction, setDefaults, flattenDeep } from "./lib/utils.js";
+import { getValidOptions, alignOptions, getCharset } from "./options.js";
 import { logOptions } from "./logger.js";
 import type { crawlerOptions, requestOptions } from "./types/crawler.js";
-import { promisify } from "util";
 import { load } from "cheerio";
 import got from "got";
 import seenreq from "seenreq";
@@ -13,6 +12,7 @@ import { Logger } from "tslog";
 
 process.env.NODE_ENV = process.env.NODE_ENV ?? process.argv[2];
 // test
+import fs from "fs";
 process.env.NODE_ENV = "debug";
 //
 logOptions.minLevel = process.env.NODE_ENV === "debug" ? 0 : 4;
@@ -36,8 +36,7 @@ class Crawler extends EventEmitter {
             rotateUA: false,
             homogeneous: false,
             method: "GET",
-            forceUTF8: true,
-            incomingEncoding: null,
+            forceUTF8: false,
             jQuery: true,
             priority: 5,
             retries: 3,
@@ -56,9 +55,9 @@ class Crawler extends EventEmitter {
         ];
 
         this._limiters = new Cluster({
-            maxConnections: this.options.maxConnections,
-            rateLimit: this.options.rateLimit,
-            priorityLevels: this.options.priorityLevels,
+            maxConnections: this.options.maxConnections as number,
+            rateLimit: this.options.rateLimit as number,
+            priorityLevels: this.options.priorityLevels as number,
             defaultPriority: this.options.priority as number,
             homogeneous: this.options.homogeneous,
         });
@@ -78,25 +77,13 @@ class Crawler extends EventEmitter {
         });
     }
 
-    private _getCharset = (headers: Record<string, string>, body: string): string => {
-        let charset = "utf-8";
-        const contentType = headers["content-type"];
-        if (contentType) {
-            const match = contentType.match(/charset=([^;]*)/);
-            if (match) {
-                charset = match[1].trim().toLowerCase();
-            }
-        }
-        return charset;
-    };
-
     private _checkHtml = (headers: Record<string, string>): boolean => {
         const contentType = headers["content-type"];
         if (/xml|html/i.test(contentType)) return true;
         return false;
     };
 
-    private _schedule = async (options: crawlerOptions): Promise<void> => {
+    private _schedule = (options: crawlerOptions): void => {
         this.emit("schedule", options);
         this._limiters.getRateLimiter(options.rateLimit).submit(options.priority as number, (done, limiter) => {
             options.release = () => {
@@ -110,6 +97,7 @@ class Crawler extends EventEmitter {
             }
 
             if (options.html) {
+                options.url = options.url ?? "";
                 this._handler(null, options, { body: options.html, headers: { "content-type": "text/html" } });
             } else if (typeof options.uri === "function") {
                 options.uri((uri: any) => {
@@ -117,6 +105,8 @@ class Crawler extends EventEmitter {
                     this._execute(options);
                 });
             } else {
+                options.url = options.url ?? options.uri;
+                delete options.uri;
                 this._execute(options);
             }
         });
@@ -128,7 +118,7 @@ class Crawler extends EventEmitter {
 
         options.headers = options.headers ?? {};
 
-        if (options.forceUTF8 || options.json) options.encoding = null;
+        if (options.forceUTF8 || options.json) options.encoding = "utf8";
 
         if (options.rotateUA && Array.isArray(options.userAgent)) {
             this._rotatingUAIndex = this._rotatingUAIndex % options.userAgent.length;
@@ -144,30 +134,30 @@ class Crawler extends EventEmitter {
 
         if (isFunction(options.preRequest)) {
             try {
-                await promisify(options.preRequest as any)(options);
+                options.preRequest!(options, () => { });
             } catch (err) {
                 log.error(err);
             }
         }
 
-        // @todo skipEventRequest
-
+        if (options.skipEventRequest !== true) {
+            this.emit("request", options)
+        }
         try {
-            const response = await got(alignOptions({ ...options }));
+            const response = await got(alignOptions(options));
             return this._handler(null, options, response);
         } catch (error) {
-            log.info("error:", error);
+            log.error("error:", error);
             return this._handler(error, options);
         }
     };
 
     private _handler = (error: any | null, options: requestOptions, response?: any): any => {
         if (error) {
-            log.info(
-                `Error: ${error} when fetching ${options.url} ${options.retries ? `(${options.retries} retries left)` : ""
-                }`
+            log.error(
+                `${error} when fetching ${options.url} ${options.retries ? `(${options.retries} retries left)` : ""}`
             );
-            if (options.retries) {
+            if (options.retries && options.retries > 0) {
                 setTimeout(() => {
                     options.retries!--;
                     this._execute(options as crawlerOptions);
@@ -180,23 +170,25 @@ class Crawler extends EventEmitter {
             }
             return void 0;
         }
-
         if (!response.body) response.body = "";
         log.debug("Got " + (options.url || "html") + " (" + response.body.length + " bytes)...");
         response.options = options;
-        let resError = null;
-        try {
-            if (options.forceUTF8) {
-                const charset = options.incomingEncoding || this._getCharset(response.headers, response.body);
-                response.charset = charset;
-                log.debug("Charset: " + charset);
-                if (charset && charset !== "utf-8" && charset != "ascii") {
-                    response.body = iconv.decode(response.body, charset);
-                    response.body = response.body.toString();
-                }
+
+        response.charset = getCharset(response.headers);
+        if (!response.charset) {
+            const match = response.body.toString().match(/charset=['"]?([\w.-]+)/i);
+            response.charset = match ? match[1].trim().toLowerCase() : null;
+        }
+        log.debug("Charset: " + response.charset);
+
+        if (options.encoding !== null) {
+            options.encoding = options.encoding ?? response.charset ?? "utf8";
+            try {
+                response.body = iconv.decode(response.body, options.encoding as string);
+                response.body = response.body.toString();
+            } catch (err) {
+                log.error(err);
             }
-        } catch (error) {
-            resError = error;
         }
 
         if (options.jQuery === true) {
@@ -212,7 +204,7 @@ class Crawler extends EventEmitter {
         }
 
         if (options.callback && typeof options.callback === "function") {
-            return options.callback(resError, response, options.release);
+            return options.callback(null, response, options.release);
         }
         return response;
     };
@@ -221,13 +213,15 @@ class Crawler extends EventEmitter {
         return 0;
     }
 
-    public send = async (options: requestOptions): Promise<any> => {
+    public send = async (options: string | requestOptions): Promise<any> => {
         options = getValidOptions(options) as requestOptions;
         options.retries = options.retries ?? 0;
         setDefaults(options, this.options);
         this.globalOnlyOptions.forEach(globalOnlyOption => {
             delete (options as any)[globalOnlyOption];
         });
+        options.skipEventRequest = isBoolean(options.skipEventRequest) ? options.skipEventRequest : true;
+        delete options.preRequest;
         return await this._execute(options as crawlerOptions);
     };
     /**
@@ -235,11 +229,11 @@ class Crawler extends EventEmitter {
      * @description Old interface version. It is recommended to use `Crawler.send()` instead.
      * @see Crawler.send
      */
-    public direct = async (options: requestOptions): Promise<any> => {
+    public direct = async (options: string | requestOptions): Promise<any> => {
         return await this.send(options);
     };
 
-    public add = async (options: requestOptions | requestOptions[]): Promise<void> => {
+    public add = (options: string | requestOptions | requestOptions[]): void => {
         let optionsArray = Array.isArray(options) ? options : [options];
         optionsArray = flattenDeep(optionsArray);
         optionsArray.forEach(options => {
@@ -256,6 +250,7 @@ class Crawler extends EventEmitter {
             });
             if (!this.options.skipDuplicates) {
                 this._schedule(options as crawlerOptions);
+                return;
             }
 
             this.seen
@@ -273,7 +268,7 @@ class Crawler extends EventEmitter {
      * @description Old interface version. It is recommended to use `Crawler.add()` instead.
      * @see Crawler.add
      */
-    public queue = async (options: requestOptions | requestOptions[]): Promise<void> => {
+    public queue = (options: string | requestOptions | requestOptions[]): void => {
         return this.add(options);
     };
 }

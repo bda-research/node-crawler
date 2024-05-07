@@ -13,7 +13,7 @@ export const logOptions = {
             ERROR: ["bold", "red"],
             FATAL: ["bold", "redBright"],
         },
-        name: ["bold", "blue"],
+        name: ["bold", "green"],
         dateIsoStr: "white",
         filePathWithLine: "white",
         nameWithDelimiterPrefix: ["white", "bold"],

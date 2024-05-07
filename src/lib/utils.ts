@@ -8,6 +8,7 @@ export const isNumber = (value: unknown): boolean => getType(value) === "number"
 
 export const isFunction = (value: unknown): boolean => getType(value) === "function";
 
+export const isBoolean = (value: unknown): boolean => getType(value) === "boolean";
 /**
  * @param target
  * @param source

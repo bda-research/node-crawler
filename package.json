@@ -4,7 +4,7 @@
     "description": "",
     "exports": "./index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "npx mocha --timeout=15000 tests/*.test.js"
     },
     "engines": {
         "node": ">=16"
@@ -25,6 +25,10 @@
     "devDependencies": {
         "@types/got": "^9.6.12",
         "@types/node": "^20.10.6",
+        "chai": "^5.1.0",
+        "mocha": "^10.4.0",
+        "nock": "^13.5.4",
+        "sinon": "^17.0.1",
         "tsx": "^4.7.3"
     }
 }
