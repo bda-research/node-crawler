@@ -1,7 +1,7 @@
 {
     "name": "crawler",
-    "version": "1.0.0",
-    "description": "",
+    "version": "1.5.1-beta.0",
+    "description": "New TypeScript Crawler Test version",
     "exports": "./index.js",
     "scripts": {
         "test": "npx mocha --timeout=15000 tests/*.test.js"
