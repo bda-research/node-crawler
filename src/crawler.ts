@@ -263,8 +263,19 @@ class Crawler extends EventEmitter {
     /**
      * 
      * @param options 
-     * @returns if the request is successful, return the response object. Otherwise, The error
-     * @description Send a request.
+     * @returns if there is a "callback" function in the options, return the result of the callback function. \
+     * Otherwise, return a promise, which resolves when the request is successful and rejects when the request fails.
+     * In the case of the promise, the resolved value will be the response object.
+     * @description Send a request directly.
+     * @example
+     * ```js
+     * const crawler = new Crawler();
+     * crawler.send({
+     *      url: "https://example.com",
+     *      callback: (error, response, done) => { done(); }
+     * });
+     * await crawler.send("https://example.com");
+     * ```
      */
     public send = async (options: string | requestOptions): Promise<any> => {
         options = getValidOptions(options) as requestOptions;
@@ -286,6 +297,19 @@ class Crawler extends EventEmitter {
         return await this.send(options);
     };
 
+    /**
+     * 
+     * @param options 
+     * @description Add a request to the queue.
+     * @example
+     * ```js
+     * const crawler = new Crawler();
+     * crawler.add({
+     *     url: "https://example.com",
+     *     callback: (error, response, done) => { done(); }
+     * });
+     * ```
+     */
     public add = (options: string | requestOptions | requestOptions[]): void => {
         let optionsArray = Array.isArray(options) ? options : [options];
         optionsArray = flattenDeep(optionsArray);
