@@ -33,7 +33,6 @@ class Crawler extends EventEmitter {
             rateLimit: 0,
             priorityLevels: 10,
             skipDuplicates: false,
-            rotateUA: false,
             homogeneous: false,
             method: "GET",
             forceUTF8: false,
@@ -42,6 +41,7 @@ class Crawler extends EventEmitter {
             retries: 3,
             retryTimeout: 2000,
             timeout: 15000,
+            isJson: true,
         };
         this.options = { ...defaultOptions, ...options };
 
@@ -50,8 +50,8 @@ class Crawler extends EventEmitter {
             "rateLimit",
             "priorityLevels",
             "skipDuplicates",
-            "rotateUA",
             "homogeneous",
+            "userAgents",
         ];
 
         this._limiters = new Cluster({
@@ -121,12 +121,12 @@ class Crawler extends EventEmitter {
 
         if (options.forceUTF8 || options.json) options.encoding = "utf8";
 
-        if (options.rotateUA && Array.isArray(options.userAgent)) {
-            this._rotatingUAIndex = this._rotatingUAIndex % options.userAgent.length;
-            options.headers["user-agent"] = options.userAgent[this._rotatingUAIndex];
+        if (Array.isArray(options.userAgents)) {
+            this._rotatingUAIndex = this._rotatingUAIndex % options.userAgents.length;
+            options.headers["user-agent"] = options.userAgents[this._rotatingUAIndex];
             this._rotatingUAIndex++;
         } else {
-            options.headers["user-agent"] = options.headers["user-agent"] ?? options.userAgent;
+            options.headers["user-agent"] = options.headers["user-agent"] ?? options.userAgents;
         }
 
         if (options.proxies) {
@@ -209,9 +209,17 @@ class Crawler extends EventEmitter {
             }
         }
 
+        if (options.isJson) {
+            try {
+                response.body = JSON.parse(response.body);
+            } catch (err) {
+                log.warn("JSON parsing failed, body is not JSON. Set isJson to false to mute this warning.")
+            }
+        }
+
         if (options.jQuery === true) {
             if (response.body === "" || !this._checkHtml(response.headers)) {
-                log.warn("response body is not HTML, skip injecting. Set jQuery to false to suppress this message");
+                log.warn("response body is not HTML, skip injecting. Set jQuery to false to mute this warning.");
             } else {
                 try {
                     response.$ = load(response.body);

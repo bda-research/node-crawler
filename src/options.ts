@@ -44,6 +44,8 @@ export const alignOptions = (options: any): any => {
         "preRequest",
         "callback",
         "release",
+        "userAgents",
+        "isJson",
     ];
     const deprecatedOptions = ["uri", "qs", "strictSSL", "gzip", "jar", "jsonReviver", "jsonReplacer", "json", "skipEventRequest"].concat(
         crawlerOnlyOptions
