@@ -126,6 +126,8 @@ type requestOptions = {
      */
     isJson?: boolean;
 
+    referer?: string;
+
     /**
      * @deprecated Please use "parseJson" instead.
      */

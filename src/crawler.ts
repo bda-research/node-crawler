@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import { Cluster } from "./rateLimiter/index.js";
-import { isBoolean, isFunction, setDefaults, flattenDeep, lowerObjectKeys } from "./lib/utils.js";
+import { isBoolean, isFunction, setDefaults, flattenDeep, lowerObjectKeys, isNumber } from "./lib/utils.js";
 import { getValidOptions, alignOptions, getCharset } from "./options.js";
 import { logOptions } from "./logger.js";
 import type { crawlerOptions, requestOptions } from "./types/crawler.js";
@@ -13,7 +13,7 @@ import { Logger } from "tslog";
 process.env.NODE_ENV = process.env.NODE_ENV ?? process.argv[2];
 // test
 import fs from "fs";
-process.env.NODE_ENV = "debug";
+// process.env.NODE_ENV = "debug";
 //
 logOptions.minLevel = process.env.NODE_ENV === "debug" ? 0 : 3;
 const log = new Logger(logOptions);
@@ -237,6 +237,17 @@ class Crawler extends EventEmitter {
 
     private get queueSize(): number {
         return 0;
+    }
+
+    public setLimiter(rateLimiterId: number, property: string, value: any): void {
+        if (!isNumber(rateLimiterId)) {
+            log.error("rateLimiterId must be a number");
+            return;
+        }
+        if (property === "rateLimit") {
+            this._limiters.getRateLimiter(rateLimiterId).setRateLimit(value);
+        }
+        // @todo other properties
     }
 
     public send = async (options: string | requestOptions): Promise<any> => {

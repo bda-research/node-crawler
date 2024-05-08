@@ -46,6 +46,7 @@ export const alignOptions = (options: any): any => {
         "release",
         "userAgents",
         "isJson",
+        "referer",
     ];
     const deprecatedOptions = ["uri", "qs", "strictSSL", "gzip", "jar", "jsonReviver", "jsonReplacer", "json", "skipEventRequest"].concat(
         crawlerOnlyOptions
@@ -103,6 +104,16 @@ export const alignOptions = (options: any): any => {
     cleanObject(gotOptions);
     gotOptions.headers = headers;
 
+    if (!gotOptions.headers.referer) {
+        if (options.referer) {
+            gotOptions.headers.referer = options.referer;
+        }
+        else {
+            const domain = options.url.match(/^(\w+):\/\/([^\/]+)/);
+            if (domain) gotOptions.headers.referer = domain[0];
+        }
+    }
+    
     gotOptions.retry = { limit: 0 };
     return gotOptions;
 };
