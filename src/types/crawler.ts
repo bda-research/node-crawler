@@ -64,7 +64,7 @@ type requestOptions = {
      */
     rateLimiterId?: number;
     retries?: number;
-    retryTimeout?: number;
+    retryInterval?: number;
     timeout?: number;
     priority?: number;
     seenreq?: any;
@@ -116,6 +116,7 @@ type requestOptions = {
 
     /**
      * @deprecated Please use "cookieJar" instead.
+     * @see tough-cookie https://github.com/sindresorhus/got/blob/main/documentation/migration-guides/request.md
      */
     jar?: Object;
     cookieJar?: Object;

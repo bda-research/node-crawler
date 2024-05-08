@@ -12,7 +12,7 @@ describe('Errors', function () {
     describe('timeout', function () {
         const crawler = new Crawler({
             timeout: 2000,
-            retryTimeout: 1000,
+            retryInterval: 1000,
             retries: 2,
             jQuery: false,
             http2: true
@@ -47,7 +47,7 @@ describe('Errors', function () {
 
     describe('error status code', function () {
         const crawler = new Crawler({
-            retryTimeout: 1000,
+            retryInterval: 1000,
             retries: 2,
             jQuery: false,
             http2: true

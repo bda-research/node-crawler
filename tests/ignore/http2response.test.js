@@ -13,7 +13,7 @@ describe('request body', function () {
 
 	it('response statusCode', function (finishTest) {
 		c = new Crawler({
-			retryTimeout: 1000,
+			retryInterval: 1000,
 			retries: 2,
 			jQuery: false,
 			http2: true
@@ -31,7 +31,7 @@ describe('request body', function () {
 
 	it('response headers', function (finishTest) {
 		c = new Crawler({
-			retryTimeout: 1000,
+			retryInterval: 1000,
 			retries: 2,
 			jQuery: false,
 			http2: true
@@ -52,7 +52,7 @@ describe('request body', function () {
 
 	it('html response body', function (finishTest) {
 		c = new Crawler({
-			retryTimeout: 1000,
+			retryInterval: 1000,
 			retries: 2,
 			jQuery: true,
 			http2: true

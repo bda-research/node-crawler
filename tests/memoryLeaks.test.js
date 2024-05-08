@@ -23,7 +23,7 @@
 //            jQuery: true,
 //            timeout: 500,
 //            autoWindowClose: false,
-//            retryTimeout: 1000,
+//            retryInterval: 1000,
 //            retries: 1,
 //            onDrain: function() {
 //                // Wait a bit for the GC to kick in
@@ -56,7 +56,7 @@
 //            jQuery: false,
 //            timeout: 500,
 //            autoWindowClose: false,
-//            retryTimeout: 1000,
+//            retryInterval: 1000,
 //            retries: 1,
 //            onDrain: function() {
 //                // Wait a bit for the GC to kick in

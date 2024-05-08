@@ -100,7 +100,7 @@ describe('preRequest feature tests', function() {
 		crawler = new Crawler({
 			jQuery: false,
 			rateLimit: 20,
-			retryTimeout: 0,
+			retryInterval: 0,
 			preRequest: (options, done) => {
 				cb('preRequest');
 				done(new Error());
@@ -119,7 +119,7 @@ describe('preRequest feature tests', function() {
 	// 	crawler = new Crawler({
 	// 		jQuery: false,
 	// 		rateLimit: 20,
-	// 		retryTimeout: 0,
+	// 		retryInterval: 0,
 	// 		preRequest: (options, done) => {
 	// 			cb('preRequest');
 	// 			const error = new Error();

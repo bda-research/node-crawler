@@ -24,7 +24,7 @@ describe('Errors', function() {
 	describe('timeout', function() {
 		const crawler = new Crawler({
 			timeout: 500,
-			retryTimeout: 500,
+			retryInterval: 500,
 			retries: 2,
 			jQuery: false
 		});

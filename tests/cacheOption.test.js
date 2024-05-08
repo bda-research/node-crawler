@@ -57,7 +57,7 @@ describe('Cache features tests', function () {
                 jQuery: false,
                 skipDuplicates: true,
                 retries: 1,
-                retryTimeout: 10,
+                retryInterval: 10,
                 callback: function (error) {
                     expect(error).to.exist;
                     expect(koScope.isDone()).to.be.true;

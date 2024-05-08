@@ -37,7 +37,7 @@ class Crawler extends EventEmitter {
             jQuery: true,
             priority: 5,
             retries: 3,
-            retryTimeout: 2000,
+            retryInterval: 2000,
             timeout: 15000,
             isJson: true,
         };
@@ -172,7 +172,7 @@ class Crawler extends EventEmitter {
                     options.retries!--;
                     this._execute(options as crawlerOptions);
                     options.release!();
-                }, options.retryTimeout);
+                }, options.retryInterval);
                 return;
             }
             else {
