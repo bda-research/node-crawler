@@ -3,4 +3,3 @@ node_modules
 archive
 pnpm-lock.yaml
 dist
-tests

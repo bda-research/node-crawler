@@ -32,10 +32,10 @@ type globalOnlyOptions = {
     homogeneous: boolean;
     /**
      * Global option.
-     * @default false
-     * @description If true, the crawler will rotate the user agent for each request. The "userAgent" option must be an array if activated.
+     * @default undefined
+     * @description If passed, the crawler will rotate the user agent for each request. The "userAgents" option must be an array if activated.
      */
-    rotateUA: boolean;
+    userAgents?: string | string[];
 };
 
 type requestOptions = {
@@ -58,6 +58,11 @@ type requestOptions = {
      * @description The encoding of the response body.
      */
     encoding?: string | null;
+    /**
+     * @default 0
+     * @description rateLimiter ID
+     */
+    rateLimiterId?: number;
     retries?: number;
     retryTimeout?: number;
     timeout?: number;
@@ -71,55 +76,71 @@ type requestOptions = {
     proxy?: string;
     http2?: boolean;
     body?: string | Record<string, unknown>;
-    userAgent?: string | string[];
     headers?: Record<string, unknown>;
 
     agent?: any;
+
     /**
      * @deprecated Please use "url" instead.
      */
     uri?: string | Function;
     url?: string | Function;
+
     /**
      * @deprecated Please use "searchParams" instead.
      */
     qs?: Record<string, unknown>;
+
     /**
      * @description The query string of the URL.
      */
     searchParams?: Record<string, unknown>;
+
     /**
      * @deprecated Please use "rejectUnauthorized" instead.
      */
     strictSSL?: boolean;
+
     /**
      * @description If false, the crawler will ignore SSL certificate errors.
      * @default true
      */
     rejectUnauthorized?: boolean;
+
     json?: boolean;
     /**
      * @deprecated Please use "decompress" instead.
      */
     gzip?: boolean;
     decompress?: boolean;
+
     /**
      * @deprecated Please use "cookieJar" instead.
      */
     jar?: Object;
     cookieJar?: Object;
+
+    /**
+     * @description If true, the crawler will parse the response body as JSON.
+     * @default true
+     */
+    isJson?: boolean;
+
+    referer?: string;
+
     /**
      * @deprecated Please use "parseJson" instead.
      */
     jsonReviver?: Function;
     parseJson?: Function;
+
     /**
      * @deprecated Please use "stringifyJson" instead.
      */
     jsonReplacer?: Function;
     stringifyJson?: Function;
 
-    preRequest?: (options: requestOptions, done?: (error: Error | null, options: requestOptions) => void) => void;
+    preRequest?: (options: requestOptions, done?: (error?: Error | null) => void) => void;
     release?: () => void;
     callback?: (error: any, response: unknown, done: unknown) => void;
 };

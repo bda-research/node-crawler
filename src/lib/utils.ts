@@ -65,7 +65,14 @@ export function pick<T extends Object, K extends keyof T>(target: T, keys: (keyo
     });
     return result;
 }
-
+/**
+ * 
+ * @param obj
+ * @returns a cleaned object
+ * @description
+ * Removes all undefined and null values from an object, this will be done recursively.
+ * But it will not remove empty objects. (i.e. {})
+ */
 export const cleanObject = (obj: Record<string, unknown>): Record<string, unknown> => {
     Object.keys(obj).forEach(key => {
         if (getType(obj[key]) === "object") {
@@ -76,4 +83,18 @@ export const cleanObject = (obj: Record<string, unknown>): Record<string, unknow
         }
     });
     return obj;
+}
+/**
+ * 
+ * @param obj 
+ * @returns an object with all keys in lowercase
+ * @description
+ * Converts all keys of an object to lowercase. 
+ */
+export const lowerObjectKeys = (obj: Record<string, unknown>): Record<string, unknown> => {
+    const result: Record<string, unknown> = {};
+    Object.keys(obj).forEach(key => {
+        result[key.toLowerCase()] = obj[key];
+    });
+    return result;
 }

@@ -33,17 +33,20 @@ export const getValidOptions = (options: unknown): Object => {
 
 export const alignOptions = (options: any): any => {
     const crawlerOnlyOptions = [
+        "rateLimiterId",
         "forceUTF8",
         "incomingEncoding",
         "jQuery",
         "retryTimeout",
-        "timeout",
         "priority",
         "proxy",
         "retries",
         "preRequest",
         "callback",
         "release",
+        "userAgents",
+        "isJson",
+        "referer",
     ];
     const deprecatedOptions = ["uri", "qs", "strictSSL", "gzip", "jar", "jsonReviver", "jsonReplacer", "json", "skipEventRequest"].concat(
         crawlerOnlyOptions
@@ -56,7 +59,6 @@ export const alignOptions = (options: any): any => {
             proxy: options["proxy"],
         }),
     };
-
     const gotOptions = {
         ...options,
         url: options.url ?? options.uri,
@@ -66,6 +68,7 @@ export const alignOptions = (options: any): any => {
         cookieJar: options.jar,
         parseJson: options.jsonReviver,
         stringifyJson: options.jsonReplacer,
+        timeout: { request: options.timeout },
     };
 
     // http2 proxy
@@ -91,12 +94,26 @@ export const alignOptions = (options: any): any => {
     if (options.encoding === undefined) options.encoding = options.incomingEncoding;
     delete options["incomingEncoding"];
     gotOptions.responseType = "buffer";
-
     Object.keys(gotOptions).forEach(key => {
         if (deprecatedOptions.includes(key)) {
             delete gotOptions[key];
         }
     });
+
+    const headers = gotOptions.headers;
     cleanObject(gotOptions);
+    gotOptions.headers = headers;
+
+    if (!gotOptions.headers.referer) {
+        if (options.referer) {
+            gotOptions.headers.referer = options.referer;
+        }
+        else {
+            const domain = options.url.match(/^(\w+):\/\/([^\/]+)/);
+            if (domain) gotOptions.headers.referer = domain[0];
+        }
+    }
+    
+    gotOptions.retry = { limit: 0 };
     return gotOptions;
 };
