@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import { Cluster } from "./rateLimiter/index.js";
-import { isBoolean, isFunction, setDefaults, flattenDeep } from "./lib/utils.js";
+import { isBoolean, isFunction, setDefaults, flattenDeep, lowerObjectKeys } from "./lib/utils.js";
 import { getValidOptions, alignOptions, getCharset } from "./options.js";
 import { logOptions } from "./logger.js";
 import type { crawlerOptions, requestOptions } from "./types/crawler.js";
@@ -13,7 +13,7 @@ import { Logger } from "tslog";
 process.env.NODE_ENV = process.env.NODE_ENV ?? process.argv[2];
 // test
 import fs from "fs";
-// process.env.NODE_ENV = "debug";
+process.env.NODE_ENV = "debug";
 //
 logOptions.minLevel = process.env.NODE_ENV === "debug" ? 0 : 3;
 const log = new Logger(logOptions);
@@ -117,6 +117,7 @@ class Crawler extends EventEmitter {
         else if (options.proxies) log.debug(`Using proxies: ${options.proxies}`);
 
         options.headers = options.headers ?? {};
+        options.headers = lowerObjectKeys(options.headers);
 
         if (options.forceUTF8 || options.json) options.encoding = "utf8";
 
@@ -125,7 +126,7 @@ class Crawler extends EventEmitter {
             options.headers["user-agent"] = options.userAgent[this._rotatingUAIndex];
             this._rotatingUAIndex++;
         } else {
-            options.headers["user-agent"] = options.userAgent;
+            options.headers["user-agent"] = options.headers["user-agent"] ?? options.userAgent;
         }
 
         if (options.proxies) {

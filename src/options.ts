@@ -96,7 +96,10 @@ export const alignOptions = (options: any): any => {
             delete gotOptions[key];
         }
     });
+
+    const headers = gotOptions.headers;
     cleanObject(gotOptions);
+    gotOptions.headers = headers;
 
     gotOptions.retry = { limit: 0 };
     return gotOptions;
