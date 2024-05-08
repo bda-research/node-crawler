@@ -42,7 +42,7 @@ type requestOptions = {
     forceUTF8?: boolean;
     /**
      * crawlerOption
-     * @default false
+     * @default true
      * @description If true, the crawler will use the cheerio library to parse the HTML content.
      * @see cheerio.load()
      * @example If inject successfully, the response object will have "$" property, which is a function to use jQuery.
@@ -64,7 +64,7 @@ type requestOptions = {
      */
     rateLimiterId?: number;
     retries?: number;
-    retryTimeout?: number;
+    retryInterval?: number;
     timeout?: number;
     priority?: number;
     seenreq?: any;
@@ -116,13 +116,14 @@ type requestOptions = {
 
     /**
      * @deprecated Please use "cookieJar" instead.
+     * @see tough-cookie https://github.com/sindresorhus/got/blob/main/documentation/migration-guides/request.md
      */
     jar?: Object;
     cookieJar?: Object;
 
     /**
      * @description If true, the crawler will parse the response body as JSON.
-     * @default true
+     * @default false
      */
     isJson?: boolean;
 

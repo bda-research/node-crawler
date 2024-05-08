@@ -18,7 +18,8 @@ const log = new Logger(logOptions);
 
 class Crawler extends EventEmitter {
     private _limiters: Cluster;
-    private _rotatingUAIndex = 0;
+    private _UAIndex = 0;
+    private _proxyIndex = 0;
 
     public options: crawlerOptions;
     public globalOnlyOptions: string[];
@@ -37,9 +38,9 @@ class Crawler extends EventEmitter {
             jQuery: true,
             priority: 5,
             retries: 3,
-            retryTimeout: 2000,
+            retryInterval: 2000,
             timeout: 15000,
-            isJson: true,
+            isJson: false,
         };
         this.options = { ...defaultOptions, ...options };
 
@@ -120,15 +121,17 @@ class Crawler extends EventEmitter {
         if (options.forceUTF8 || options.json) options.encoding = "utf8";
 
         if (Array.isArray(options.userAgents)) {
-            this._rotatingUAIndex = this._rotatingUAIndex % options.userAgents.length;
-            options.headers["user-agent"] = options.userAgents[this._rotatingUAIndex];
-            this._rotatingUAIndex++;
+            this._UAIndex = this._UAIndex % options.userAgents.length;
+            options.headers["user-agent"] = options.userAgents[this._UAIndex];
+            this._UAIndex++;
         } else {
             options.headers["user-agent"] = options.headers["user-agent"] ?? options.userAgents;
         }
 
-        if (options.proxies) {
-            options.proxy = options.proxies[Math.floor(Math.random() * options.proxies.length)];
+        if (Array.isArray(options.proxies)) {
+            this._proxyIndex = this._proxyIndex % options.proxies.length;
+            options.proxy = options.proxies[this._proxyIndex];
+            this._proxyIndex++;
         }
 
         const request = async () => {
@@ -148,13 +151,14 @@ class Crawler extends EventEmitter {
             try {
                 options.preRequest!(options, async (err?: Error | null) => {
                     if (err) {
-                        log.error(err);
+                        log.debug(err);
                         return this._handler(err, options);
                     }
                     return await request();
                 });
             } catch (err) {
                 log.error(err);
+                throw err;
             }
         }
         else {
@@ -172,18 +176,16 @@ class Crawler extends EventEmitter {
                     options.retries!--;
                     this._execute(options as crawlerOptions);
                     options.release!();
-                }, options.retryTimeout);
+                }, options.retryInterval);
                 return;
             }
             else {
-                log.error(
-                    `${error} when fetching ${options.url} ${options.retries ? `(${options.retries} retries left)` : ""}`
-                );
+                log.error(`${error} when fetching ${options.url}. Request failed.`);
+                if (options.callback && typeof options.callback === "function") {
+                    return options.callback(error, { options }, options.release);
+                }
+                throw error;
             }
-            if (options.callback && typeof options.callback === "function") {
-                return options.callback(error, { options }, options.release);
-            }
-            return void 0;
         }
         if (!response.body) response.body = "";
         log.debug("Got " + (options.url || "html") + " (" + response.body.length + " bytes)...");
@@ -222,7 +224,7 @@ class Crawler extends EventEmitter {
                 try {
                     response.$ = load(response.body);
                 } catch (err) {
-                    log.error(err);
+                    log.warn("HTML detected failed. Set jQuery to false to mute this warning.");
                 }
             }
         }
@@ -233,10 +235,23 @@ class Crawler extends EventEmitter {
         return response;
     };
 
-    private get queueSize(): number {
+    public get queueSize(): number {
         return 0;
     }
 
+    /**
+     * 
+     * @param rateLimiterId 
+     * @param property 
+     * @param value 
+     * @description Set the rate limiter property.
+     * @version 2.0.0 Only support `rateLimit` change.
+     * @example
+     * ```js
+     * const crawler = new Crawler();
+     * crawler.setLimiter(0, "rateLimit", 1000);
+     * ```
+     */
     public setLimiter(rateLimiterId: number, property: string, value: any): void {
         if (!isNumber(rateLimiterId)) {
             log.error("rateLimiterId must be a number");
@@ -248,6 +263,23 @@ class Crawler extends EventEmitter {
         // @todo other properties
     }
 
+    /**
+     * 
+     * @param options 
+     * @returns if there is a "callback" function in the options, return the result of the callback function. \
+     * Otherwise, return a promise, which resolves when the request is successful and rejects when the request fails.
+     * In the case of the promise, the resolved value will be the response object.
+     * @description Send a request directly.
+     * @example
+     * ```js
+     * const crawler = new Crawler();
+     * crawler.send({
+     *      url: "https://example.com",
+     *      callback: (error, response, done) => { done(); }
+     * });
+     * await crawler.send("https://example.com");
+     * ```
+     */
     public send = async (options: string | requestOptions): Promise<any> => {
         options = getValidOptions(options) as requestOptions;
         options.retries = options.retries ?? 0;
@@ -268,6 +300,19 @@ class Crawler extends EventEmitter {
         return await this.send(options);
     };
 
+    /**
+     * 
+     * @param options 
+     * @description Add a request to the queue.
+     * @example
+     * ```js
+     * const crawler = new Crawler();
+     * crawler.add({
+     *     url: "https://example.com",
+     *     callback: (error, response, done) => { done(); }
+     * });
+     * ```
+     */
     public add = (options: string | requestOptions | requestOptions[]): void => {
         let optionsArray = Array.isArray(options) ? options : [options];
         optionsArray = flattenDeep(optionsArray);
@@ -284,7 +329,9 @@ class Crawler extends EventEmitter {
                 delete (options as any)[globalOnlyOption];
             });
             if (!this.options.skipDuplicates) {
-                this._schedule(options as crawlerOptions);
+                try {
+                    this._schedule(options as crawlerOptions);
+                } catch (err) { }
                 return;
             }
 
@@ -292,7 +339,9 @@ class Crawler extends EventEmitter {
                 .exists(options, options.seenreq)
                 .then((rst: any) => {
                     if (!rst) {
-                        this._schedule(options as crawlerOptions);
+                        try {
+                            this._schedule(options as crawlerOptions);
+                        } catch (err) { }
                     }
                 })
                 .catch((err: any) => log.error(err));

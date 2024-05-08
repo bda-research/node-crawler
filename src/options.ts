@@ -37,7 +37,7 @@ export const alignOptions = (options: any): any => {
         "forceUTF8",
         "incomingEncoding",
         "jQuery",
-        "retryTimeout",
+        "retryInterval",
         "priority",
         "proxy",
         "retries",
@@ -65,7 +65,6 @@ export const alignOptions = (options: any): any => {
         searchParams: options.qs,
         rejectUnauthorized: options.strictSSL,
         decompress: options.gzip,
-        cookieJar: options.jar,
         parseJson: options.jsonReviver,
         stringifyJson: options.jsonReplacer,
         timeout: { request: options.timeout },
@@ -109,7 +108,7 @@ export const alignOptions = (options: any): any => {
             gotOptions.headers.referer = options.referer;
         }
         else {
-            const domain = options.url.match(/^(\w+):\/\/([^\/]+)/);
+            const domain = gotOptions.url.match(/^(\w+):\/\/([^\/]+)/);
             if (domain) gotOptions.headers.referer = domain[0];
         }
     }

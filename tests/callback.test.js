@@ -14,12 +14,9 @@ describe('Callback test', function() {
 
 	beforeEach(() => {
 		crawler = new Crawler({
-			retryTimeout:0,
+			retryInterval:0,
 			retries:0,
 			timeout:100,
-			logger: {
-				log:() => {}
-			},
 		});
 	});
 	
