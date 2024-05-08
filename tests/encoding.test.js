@@ -6,7 +6,7 @@ import Crawler from '../dist/index.js';
 import { expect } from 'chai';
 import nock from 'nock';
 import fs from 'fs';
-var __dirname = "./";
+var __dirname = "./tests";
 
 describe('Encoding', function () {
     before(function () {

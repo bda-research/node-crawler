@@ -39,7 +39,7 @@ class Crawler extends EventEmitter {
             retries: 3,
             retryInterval: 2000,
             timeout: 15000,
-            isJson: true,
+            isJson: false,
         };
         this.options = { ...defaultOptions, ...options };
 
@@ -148,7 +148,7 @@ class Crawler extends EventEmitter {
             try {
                 options.preRequest!(options, async (err?: Error | null) => {
                     if (err) {
-                        log.error(err);
+                        log.debug(err);
                         return this._handler(err, options);
                     }
                     return await request();
@@ -222,7 +222,7 @@ class Crawler extends EventEmitter {
                 try {
                     response.$ = load(response.body);
                 } catch (err) {
-                    log.error(err);
+                    log.warn("HTML detected failed. Set jQuery to false to mute this warning.");
                 }
             }
         }

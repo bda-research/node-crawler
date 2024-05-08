@@ -108,7 +108,7 @@ export const alignOptions = (options: any): any => {
             gotOptions.headers.referer = options.referer;
         }
         else {
-            const domain = options.url.match(/^(\w+):\/\/([^\/]+)/);
+            const domain = gotOptions.url.match(/^(\w+):\/\/([^\/]+)/);
             if (domain) gotOptions.headers.referer = domain[0];
         }
     }

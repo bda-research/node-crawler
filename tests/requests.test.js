@@ -20,7 +20,7 @@ describe('Request tests', function () {
     beforeEach(function () {
         crawler = new Crawler({
             retries: 0,
-            json: true,
+            isJson: true,
             jQuery: false,
         });
 
@@ -95,7 +95,7 @@ describe('Request tests', function () {
         crawler = new Crawler({
             headers: { 'User-Agent': 'test/1.2' },
             jQuery: false,
-            json: true,
+            isJson: true,
             callback: function (error, res, done) {
                 expect(error).to.be.null;
                 expect(res.body['user-agent']).to.equal('foo/bar');
@@ -113,7 +113,7 @@ describe('Request tests', function () {
                 'user-agent': 'test/1.2'
             },
             jQuery: false,
-            json: true,
+            isJson: true,
             callback: function (error, res, done) {
                 expect(error).to.be.null;
                 expect(res.body['user-agent']).to.equal('foo/bar');

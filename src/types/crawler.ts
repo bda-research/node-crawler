@@ -42,7 +42,7 @@ type requestOptions = {
     forceUTF8?: boolean;
     /**
      * crawlerOption
-     * @default false
+     * @default true
      * @description If true, the crawler will use the cheerio library to parse the HTML content.
      * @see cheerio.load()
      * @example If inject successfully, the response object will have "$" property, which is a function to use jQuery.
@@ -123,7 +123,7 @@ type requestOptions = {
 
     /**
      * @description If true, the crawler will parse the response body as JSON.
-     * @default true
+     * @default false
      */
     isJson?: boolean;
 

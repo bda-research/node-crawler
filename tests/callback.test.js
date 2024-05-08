@@ -17,9 +17,6 @@ describe('Callback test', function() {
 			retryInterval:0,
 			retries:0,
 			timeout:100,
-			logger: {
-				log:() => {}
-			},
 		});
 	});
 	
