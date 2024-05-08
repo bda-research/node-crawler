@@ -13,9 +13,9 @@ import { Logger } from "tslog";
 process.env.NODE_ENV = process.env.NODE_ENV ?? process.argv[2];
 // test
 import fs from "fs";
-process.env.NODE_ENV = "debug";
+// process.env.NODE_ENV = "debug";
 //
-logOptions.minLevel = process.env.NODE_ENV === "debug" ? 0 : 4;
+logOptions.minLevel = process.env.NODE_ENV === "debug" ? 0 : 3;
 const log = new Logger(logOptions);
 
 class Crawler extends EventEmitter {
@@ -40,7 +40,7 @@ class Crawler extends EventEmitter {
             jQuery: true,
             priority: 5,
             retries: 3,
-            retryTimeout: 10000,
+            retryTimeout: 2000,
             timeout: 15000,
         };
         this.options = { ...defaultOptions, ...options };
@@ -66,7 +66,7 @@ class Crawler extends EventEmitter {
         this.seen
             .initialize()
             .then(() => {
-                log.info("seenreq initialized");
+                log.debug("seenreq initialized");
             })
             .catch((err: any) => {
                 log.error(err);
@@ -85,7 +85,7 @@ class Crawler extends EventEmitter {
 
     private _schedule = (options: crawlerOptions): void => {
         this.emit("schedule", options);
-        this._limiters.getRateLimiter(options.rateLimit).submit(options.priority as number, (done, limiter) => {
+        this._limiters.getRateLimiter(options.rateLimiterId).submit(options.priority as number, (done, limiter) => {
             options.release = () => {
                 done();
                 this.emit("_release");
@@ -132,38 +132,54 @@ class Crawler extends EventEmitter {
             options.proxy = options.proxies[Math.floor(Math.random() * options.proxies.length)];
         }
 
+        const request = async () => {
+            if (options.skipEventRequest !== true) {
+                this.emit("request", options)
+            }
+            try {
+                const response = await got(alignOptions(options));
+                return this._handler(null, options, response);
+            } catch (error) {
+                log.debug(error);
+                return this._handler(error, options);
+            }
+        }
+
         if (isFunction(options.preRequest)) {
             try {
-                options.preRequest!(options, () => { });
+                options.preRequest!(options, async (err?: Error | null) => {
+                    if (err) {
+                        log.error(err);
+                        return this._handler(err, options);
+                    }
+                    return await request();
+                });
             } catch (err) {
                 log.error(err);
             }
         }
-
-        if (options.skipEventRequest !== true) {
-            this.emit("request", options)
-        }
-        try {
-            const response = await got(alignOptions(options));
-            return this._handler(null, options, response);
-        } catch (error) {
-            log.error("error:", error);
-            return this._handler(error, options);
+        else {
+            return await request();
         }
     };
 
     private _handler = (error: any | null, options: requestOptions, response?: any): any => {
         if (error) {
-            log.error(
-                `${error} when fetching ${options.url} ${options.retries ? `(${options.retries} retries left)` : ""}`
-            );
             if (options.retries && options.retries > 0) {
+                log.warn(
+                    `${error} when fetching ${options.url} ${options.retries ? `(${options.retries} retries left)` : ""}`
+                );
                 setTimeout(() => {
                     options.retries!--;
                     this._execute(options as crawlerOptions);
                     options.release!();
                 }, options.retryTimeout);
                 return;
+            }
+            else {
+                log.error(
+                    `${error} when fetching ${options.url} ${options.retries ? `(${options.retries} retries left)` : ""}`
+                );
             }
             if (options.callback && typeof options.callback === "function") {
                 return options.callback(error, { options }, options.release);
@@ -184,6 +200,7 @@ class Crawler extends EventEmitter {
         if (options.encoding !== null) {
             options.encoding = options.encoding ?? response.charset ?? "utf8";
             try {
+                if (!Buffer.isBuffer(response.body)) response.body = Buffer.from(response.body);
                 response.body = iconv.decode(response.body, options.encoding as string);
                 response.body = response.body.toString();
             } catch (err) {

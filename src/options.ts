@@ -33,11 +33,11 @@ export const getValidOptions = (options: unknown): Object => {
 
 export const alignOptions = (options: any): any => {
     const crawlerOnlyOptions = [
+        "rateLimiterId",
         "forceUTF8",
         "incomingEncoding",
         "jQuery",
         "retryTimeout",
-        "timeout",
         "priority",
         "proxy",
         "retries",
@@ -56,7 +56,6 @@ export const alignOptions = (options: any): any => {
             proxy: options["proxy"],
         }),
     };
-
     const gotOptions = {
         ...options,
         url: options.url ?? options.uri,
@@ -66,6 +65,7 @@ export const alignOptions = (options: any): any => {
         cookieJar: options.jar,
         parseJson: options.jsonReviver,
         stringifyJson: options.jsonReplacer,
+        timeout: { request: options.timeout },
     };
 
     // http2 proxy
@@ -91,12 +91,13 @@ export const alignOptions = (options: any): any => {
     if (options.encoding === undefined) options.encoding = options.incomingEncoding;
     delete options["incomingEncoding"];
     gotOptions.responseType = "buffer";
-
     Object.keys(gotOptions).forEach(key => {
         if (deprecatedOptions.includes(key)) {
             delete gotOptions[key];
         }
     });
     cleanObject(gotOptions);
+
+    gotOptions.retry = { limit: 0 };
     return gotOptions;
 };

@@ -58,6 +58,11 @@ type requestOptions = {
      * @description The encoding of the response body.
      */
     encoding?: string | null;
+    /**
+     * @default 0
+     * @description rateLimiter ID
+     */
+    rateLimiterId?: number;
     retries?: number;
     retryTimeout?: number;
     timeout?: number;
@@ -119,7 +124,7 @@ type requestOptions = {
     jsonReplacer?: Function;
     stringifyJson?: Function;
 
-    preRequest?: (options: requestOptions, done?: (error: Error | null, options: requestOptions) => void) => void;
+    preRequest?: (options: requestOptions, done?: (error?: Error | null) => void) => void;
     release?: () => void;
     callback?: (error: any, response: unknown, done: unknown) => void;
 };

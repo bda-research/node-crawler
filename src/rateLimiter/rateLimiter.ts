@@ -63,7 +63,7 @@ class RateLimiter {
 
     setRateLimit(rateLimit: number): void {
         if (!Number.isInteger(rateLimit) || rateLimit < 0) {
-            throw new Error("rateLimit must be positive integers");
+            throw new Error("rateLimit must be non negative integers");
         }
         this.rateLimit = rateLimit;
         if (this.rateLimit > 0) this.maxConnections = 1;
