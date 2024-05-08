@@ -18,7 +18,8 @@ const log = new Logger(logOptions);
 
 class Crawler extends EventEmitter {
     private _limiters: Cluster;
-    private _rotatingUAIndex = 0;
+    private _UAIndex = 0;
+    private _proxyIndex = 0;
 
     public options: crawlerOptions;
     public globalOnlyOptions: string[];
@@ -120,15 +121,17 @@ class Crawler extends EventEmitter {
         if (options.forceUTF8 || options.json) options.encoding = "utf8";
 
         if (Array.isArray(options.userAgents)) {
-            this._rotatingUAIndex = this._rotatingUAIndex % options.userAgents.length;
-            options.headers["user-agent"] = options.userAgents[this._rotatingUAIndex];
-            this._rotatingUAIndex++;
+            this._UAIndex = this._UAIndex % options.userAgents.length;
+            options.headers["user-agent"] = options.userAgents[this._UAIndex];
+            this._UAIndex++;
         } else {
             options.headers["user-agent"] = options.headers["user-agent"] ?? options.userAgents;
         }
 
-        if (options.proxies) {
-            options.proxy = options.proxies[Math.floor(Math.random() * options.proxies.length)];
+        if (Array.isArray(options.proxies)) {
+            this._proxyIndex = this._proxyIndex % options.proxies.length;
+            options.proxy = options.proxies[this._proxyIndex];
+            this._proxyIndex++;
         }
 
         const request = async () => {
