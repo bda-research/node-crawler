@@ -155,6 +155,7 @@ class Crawler extends EventEmitter {
                 });
             } catch (err) {
                 log.error(err);
+                throw err;
             }
         }
         else {
@@ -176,14 +177,12 @@ class Crawler extends EventEmitter {
                 return;
             }
             else {
-                log.error(
-                    `${error} when fetching ${options.url} ${options.retries ? `(${options.retries} retries left)` : ""}`
-                );
+                log.error(`${error} when fetching ${options.url}. Request failed.`);
+                if (options.callback && typeof options.callback === "function") {
+                    return options.callback(error, { options }, options.release);
+                }
+                throw error;
             }
-            if (options.callback && typeof options.callback === "function") {
-                return options.callback(error, { options }, options.release);
-            }
-            return void 0;
         }
         if (!response.body) response.body = "";
         log.debug("Got " + (options.url || "html") + " (" + response.body.length + " bytes)...");
@@ -233,10 +232,23 @@ class Crawler extends EventEmitter {
         return response;
     };
 
-    private get queueSize(): number {
+    public get queueSize(): number {
         return 0;
     }
 
+    /**
+     * 
+     * @param rateLimiterId 
+     * @param property 
+     * @param value 
+     * @description Set the rate limiter property.
+     * @version 2.0.0 Only support `rateLimit` change.
+     * @example
+     * ```js
+     * const crawler = new Crawler();
+     * crawler.setLimiter(0, "rateLimit", 1000);
+     * ```
+     */
     public setLimiter(rateLimiterId: number, property: string, value: any): void {
         if (!isNumber(rateLimiterId)) {
             log.error("rateLimiterId must be a number");
@@ -248,6 +260,12 @@ class Crawler extends EventEmitter {
         // @todo other properties
     }
 
+    /**
+     * 
+     * @param options 
+     * @returns if the request is successful, return the response object. Otherwise, The error
+     * @description Send a request.
+     */
     public send = async (options: string | requestOptions): Promise<any> => {
         options = getValidOptions(options) as requestOptions;
         options.retries = options.retries ?? 0;
@@ -284,7 +302,9 @@ class Crawler extends EventEmitter {
                 delete (options as any)[globalOnlyOption];
             });
             if (!this.options.skipDuplicates) {
-                this._schedule(options as crawlerOptions);
+                try {
+                    this._schedule(options as crawlerOptions);
+                } catch (err) { }
                 return;
             }
 
@@ -292,7 +312,9 @@ class Crawler extends EventEmitter {
                 .exists(options, options.seenreq)
                 .then((rst: any) => {
                     if (!rst) {
-                        this._schedule(options as crawlerOptions);
+                        try {
+                            this._schedule(options as crawlerOptions);
+                        } catch (err) { }
                     }
                 })
                 .catch((err: any) => log.error(err));
