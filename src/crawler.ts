@@ -175,7 +175,6 @@ class Crawler extends EventEmitter {
                 setTimeout(() => {
                     options.retries!--;
                     this._execute(options as crawlerOptions);
-                    options.release!();
                 }, options.retryInterval);
                 return;
             }

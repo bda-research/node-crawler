@@ -52,12 +52,8 @@ export const alignOptions = (options: any): any => {
         crawlerOnlyOptions
     );
     const defaultagent = {
-        https: new HttpsProxyAgent({
-            proxy: options["proxy"],
-        }),
-        http: new HttpProxyAgent({
-            proxy: options["proxy"],
-        }),
+        https: new HttpsProxyAgent({ proxy: options["proxy"] }),
+        http: new HttpProxyAgent({ proxy: options["proxy"] }),
     };
     const gotOptions = {
         ...options,
@@ -76,13 +72,13 @@ export const alignOptions = (options: any): any => {
         const protocol = options.proxy.startsWith("https") ? "https" : "http";
         const http2Agent =
             protocol === "https"
-                ? new Http2Proxies.HttpsOverHttp2({
+                ? new Http2Proxies.Http2OverHttps({
                     proxyOptions: { url: options.proxy },
                 })
-                : new Http2Proxies.HttpOverHttp2({
+                : new Http2Proxies.Http2OverHttp({
                     proxyOptions: { url: options.proxy },
                 });
-        gotOptions.agent = http2Agent;
+        gotOptions.agent = { http2: http2Agent }
     } else {
         gotOptions.agent = gotOptions.agent ?? (options.proxy ? defaultagent : undefined);
     }
@@ -112,7 +108,7 @@ export const alignOptions = (options: any): any => {
             if (domain) gotOptions.headers.referer = domain[0];
         }
     }
-    
+
     gotOptions.retry = { limit: 0 };
     return gotOptions;
 };
