@@ -1,8 +1,8 @@
 /*jshint expr:true */
 'use strict';
 
-const Crawler = require('../lib/crawler');
-const expect = require('chai').expect;
+import Crawler from '../dist/index.js';
+import { expect } from 'chai';
 let c;
 
 describe('request body', function () {

@@ -6,9 +6,9 @@
  */
 'use strict';
 
-var Crawler = require('../lib/crawler');
-var expect = require('chai').expect;
-var nock = require('nock');
+import Crawler from '../dist/index.js';
+import { expect } from 'chai';
+import nock from 'nock';
 
 var c;
 var tsArrs = [];
@@ -22,7 +22,7 @@ describe('Limiter tests', function () {
 		nock('http://nockHost').get(uri => uri.indexOf('status') >= 0).times(5).reply(200, 'Yes');
 
 		c = new Crawler({
-			jquery: false,
+			jQuery: false,
 			rateLimit: 500,
 			callback: function (err, result, done) {
 				expect(err).to.be.equal(null);
@@ -54,7 +54,7 @@ describe('Limiter tests', function () {
 	});
 	it('Multiple limiters, tasks should execute in parallel', function (done) {
 		for (var i = 0; i < 5; i++) {
-			c.queue({ uri: 'http://nockHost/status/200', limiter: i });
+			c.queue({ uri: 'http://nockHost/status/200', rateLimiterId: i });
 		}
 		c.on('drain', function () {
 			expect(tsArrs.length).to.equal(5);
@@ -68,7 +68,7 @@ describe('Limiter tests', function () {
 	it('Multiple limiters are mutual independent', function (done) {
 		for (var i = 0; i < 5; i++) {
 			var limiter = i === 4 ? 'second' : 'default';
-			c.queue({ uri: 'http://nockHost/status/200', limiter: limiter });
+			c.queue({ uri: 'http://nockHost/status/200', rateLimiterId: limiter });
 		}
 		c.on('drain', function () {
 			expect(tsArrs.length).to.equal(5);

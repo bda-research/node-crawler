@@ -1,8 +1,8 @@
 
 'use strict';
 
-const Crawler = require('../lib/crawler');
-const nock = require('nock');
+import Crawler from '../dist/index.js';
+import nock from 'nock';
 
 describe('Callback test', function() {
 	before(function() {
@@ -14,12 +14,9 @@ describe('Callback test', function() {
 
 	beforeEach(() => {
 		crawler = new Crawler({
-			retryTimeout:0,
+			retryInterval:0,
 			retries:0,
 			timeout:100,
-			logger: {
-				log:() => {}
-			},
 		});
 	});
 	

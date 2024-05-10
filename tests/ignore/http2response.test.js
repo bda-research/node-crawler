@@ -1,8 +1,8 @@
 /*jshint expr:true */
 'use strict';
 
-const Crawler = require('../lib/crawler');
-const expect = require('chai').expect;
+import Crawler from '../dist/index.js';
+import { expect } from 'chai';
 let c;
 
 describe('request body', function () {
@@ -13,9 +13,9 @@ describe('request body', function () {
 
 	it('response statusCode', function (finishTest) {
 		c = new Crawler({
-			retryTimeout: 1000,
+			retryInterval: 1000,
 			retries: 2,
-			jquery: false,
+			jQuery: false,
 			http2: true
 		});
 
@@ -31,9 +31,9 @@ describe('request body', function () {
 
 	it('response headers', function (finishTest) {
 		c = new Crawler({
-			retryTimeout: 1000,
+			retryInterval: 1000,
 			retries: 2,
-			jquery: false,
+			jQuery: false,
 			http2: true
 		});
 
@@ -52,9 +52,9 @@ describe('request body', function () {
 
 	it('html response body', function (finishTest) {
 		c = new Crawler({
-			retryTimeout: 1000,
+			retryInterval: 1000,
 			retries: 2,
-			jquery: true,
+			jQuery: true,
 			http2: true
 		});
 

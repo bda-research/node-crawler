@@ -1,12 +1,13 @@
 /*jshint expr:true */
 'use strict';
 
-const Crawler = require('../lib/crawler');
+import Crawler from '../dist/index.js';
 const request = require('request');
-const expect = require('chai').expect;
+import chai from 'chai';
+const expect = chai.expect;
 
 // settings for nock to mock http server
-const nock = require('nock');
+import nock from 'nock';
 
 describe('Jar Options', function() {
 

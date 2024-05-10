@@ -5,9 +5,9 @@
  */
 'use strict';
 
-var Crawler = require('../lib/crawler');
-var expect = require('chai').expect;
-var nock = require('nock');
+import Crawler from '../dist/index.js';
+import { expect } from 'chai';
+import nock from 'nock';
 
 var c;
 var tsArrs = [];
@@ -26,8 +26,8 @@ describe('rateLimit tests', function () {
 	// Setup
 	beforeEach(function () {
 		c = new Crawler({
-			jquery: false,
-			rateLimit: 300,
+			jQuery: false,
+			rateLimit: 500,
 			callback: function (err, result, done) {
 				expect(err).to.be.equal(null);
 				expect(result.statusCode).to.equal(200);
@@ -92,7 +92,7 @@ describe('rateLimit tests', function () {
 					var interval = tsArrs[i] - tsArrs[i - 1];
 					// setTimeout() in nodejs doesn't guarantee action will occur at time(timestamp) you assigned
 					// so 10% of rateLimit time will be given to assert
-					var diff = Math.abs(interval - 300);
+					var diff = Math.abs(interval - 500);
 					expect(diff).to.be.most(30);
 				}
 
@@ -101,7 +101,7 @@ describe('rateLimit tests', function () {
 		});
 
 		it('should be able to modify rateLimit', function (done) {
-			c.setLimiterProperty('default', 'rateLimit', 500);
+			c.setLimiter(0, 'rateLimit', 300);
 			for (var i = 0; i < 5; i++) {
 				c.queue('http://nockHost/status/200');
 			}
@@ -110,7 +110,7 @@ describe('rateLimit tests', function () {
 				expect(tsArrs.length).to.equal(5);
 				for (var i = 1; i < tsArrs.length; i++) {
 					var interval = tsArrs[i] - tsArrs[i - 1];
-					var diff = Math.abs(interval - 500);
+					var diff = Math.abs(interval - 300);
 					// setTimeout() in nodejs doesn't guarantee action will occur at time(timestamp) you assigned
 					// so 10% of rateLimit time will be given to assert
 					expect(diff).to.be.at.most(50);

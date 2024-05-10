@@ -1,12 +1,12 @@
 /*jshint expr:true */
 'use strict';
 
-const Crawler = require('../lib/crawler');
-const expect = require('chai').expect;
-const sinon = require('sinon');
+import Crawler from '../dist/index.js';
+import { expect } from 'chai';
+import sinon from 'sinon';
 
 // settings for nock to mock http server
-const nock = require('nock');
+import nock from 'nock';
 
 describe('Uri Options', function() {
 
@@ -43,7 +43,7 @@ describe('Uri Options', function() {
 	});
 
 	it('should skip if the uri is undefined or an empty string', function(finishTest) {
-		const push = sinon.spy(crawler, '_pushToQueue');
+		const push = sinon.spy(crawler, '_schedule');
 		crawler.queue([undefined, null, []]);
 		crawler.queue({
 			uri: 'http://test.crawler.com/',

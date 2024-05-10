@@ -1,9 +1,9 @@
 
 'use strict';
 
-const Crawler = require('../lib/crawler');
-const expect = require('chai').expect;
-const given = require('mocha-testdata');
+import Crawler from '../dist/index.js';
+import { expect } from 'chai';
+import { given } from 'mocha-testdata';
 
 describe('Unsupported function test', function() {
 	given.async('onDrain','preRequest','cache')

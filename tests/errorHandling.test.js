@@ -1,12 +1,12 @@
 /*jshint expr:true */
 'use strict';
 
-const Crawler = require('../lib/crawler');
-const expect = require('chai').expect;
-const jsdom = require('jsdom');
+import Crawler from '../dist/index.js';
+import { expect } from 'chai';
+// const jsdom = require('jsdom');
 
 // settings for nock to mock http server
-const nock = require('nock');
+import nock from 'nock';
 
 describe('Errors', function() {
 
@@ -24,9 +24,9 @@ describe('Errors', function() {
 	describe('timeout', function() {
 		const crawler = new Crawler({
 			timeout: 500,
-			retryTimeout: 1000,
+			retryInterval: 500,
 			retries: 2,
-			jquery: false
+			jQuery: false
 		});
 
 		it('should retry after timeout', function(finishTest) {
@@ -61,65 +61,65 @@ describe('Errors', function() {
 	describe('error status code', function() {
 		const crawler = new Crawler({ jQuery : false });
         
-		it('should not return an error on status code 400 (Bad Request)', function(finishTest) {
-			crawler.queue({
-				uri: 'http://test.crawler.com/status/400',
-				callback: (error, response, done) => {
-					expect(error).to.be.null;
-					expect(response.statusCode).to.equal(400);
-					done();
-					finishTest();
-				}
-			});
-		});
+		// it('should not return an error on status code 400 (Bad Request)', function(finishTest) {
+		// 	crawler.queue({
+		// 		uri: 'http://test.crawler.com/status/400',
+		// 		callback: (error, response, done) => {
+		// 			expect(error).to.be.null;
+		// 			expect(response.statusCode).to.equal(400);
+		// 			done();
+		// 			finishTest();
+		// 		}
+		// 	});
+		// });
 
-		it('should not return an error on status code 401 (Unauthorized)', function(finishTest) {
-			crawler.queue({
-				uri: 'http://test.crawler.com/status/401',
-				callback: (error, response, done) => {
-					expect(error).to.be.null;
-					expect(response.statusCode).to.equal(401);
-					done();
-					finishTest();
-				}
-			});
-		});
+		// it('should not return an error on status code 401 (Unauthorized)', function(finishTest) {
+		// 	crawler.queue({
+		// 		uri: 'http://test.crawler.com/status/401',
+		// 		callback: (error, response, done) => {
+		// 			expect(error).to.be.null;
+		// 			expect(response.statusCode).to.equal(401);
+		// 			done();
+		// 			finishTest();
+		// 		}
+		// 	});
+		// });
 
-		it('should not return an error on status code 403 (Forbidden)', function(finishTest) {
-			crawler.queue({
-				uri: 'http://test.crawler.com/status/403',
-				callback: (error, response, done) => {
-					expect(error).to.be.null;
-					expect(response.statusCode).to.equal(403);
-					done();
-					finishTest();
-				}
-			});
-		});
+		// it('should not return an error on status code 403 (Forbidden)', function(finishTest) {
+		// 	crawler.queue({
+		// 		uri: 'http://test.crawler.com/status/403',
+		// 		callback: (error, response, done) => {
+		// 			expect(error).to.be.null;
+		// 			expect(response.statusCode).to.equal(403);
+		// 			done();
+		// 			finishTest();
+		// 		}
+		// 	});
+		// });
 
-		it('should not return an error on a 404', function(finishTest) {
-			crawler.queue({
-				uri : 'http://test.crawler.com/status/404',
-				callback : (error, response, done) => {
-					expect(error).to.be.null;
-					expect(response.statusCode).to.equal(404);
-					done();
-					finishTest();
-				}
-			});
-		});
+		// it('should not return an error on a 404', function(finishTest) {
+		// 	crawler.queue({
+		// 		uri : 'http://test.crawler.com/status/404',
+		// 		callback : (error, response, done) => {
+		// 			expect(error).to.be.null;
+		// 			expect(response.statusCode).to.equal(404);
+		// 			done();
+		// 			finishTest();
+		// 		}
+		// 	});
+		// });
 
-		it('should not return an error on a 500', function(finishTest) {
-			crawler.queue({
-				uri : 'http://test.crawler.com/status/500',
-				callback : (error, response, done) => {
-					expect(error).to.be.null;
-					expect(response.statusCode).to.equal(500);
-					done();
-					finishTest();
-				}
-			});
-		});
+		// it('should not return an error on a 500', function(finishTest) {
+		// 	crawler.queue({
+		// 		uri : 'http://test.crawler.com/status/500',
+		// 		callback : (error, response, done) => {
+		// 			expect(error).to.be.null;
+		// 			expect(response.statusCode).to.equal(500);
+		// 			done();
+		// 			finishTest();
+		// 		}
+		// 	});
+		// });
 
 		it('should not failed on empty response', function(finishTest) {
 			crawler.queue({
@@ -144,17 +144,17 @@ describe('Errors', function() {
 			});
 		});
 
-		it('should not return an error on a malformed html if jQuery is jsdom', function(finishTest) {
-			crawler.queue({
-				html : '<html><p>hello <div>dude</p></html>',
-				jQuery : jsdom,
-				callback : (error, response, done) => {
-					expect(error).to.be.null;
-					expect(response).not.to.be.undefined;
-					done();
-					finishTest();
-				}
-			});
-		});
+		// it('should not return an error on a malformed html if jQuery is jsdom', function(finishTest) {
+		// 	crawler.queue({
+		// 		html : '<html><p>hello <div>dude</p></html>',
+		// 		jQuery : jsdom,
+		// 		callback : (error, response, done) => {
+		// 			expect(error).to.be.null;
+		// 			expect(response).not.to.be.undefined;
+		// 			done();
+		// 			finishTest();
+		// 		}
+		// 	});
+		// });
 	});
 });

@@ -7,9 +7,9 @@
  */
 'use strict';
 
-var Crawler = require('../lib/crawler');
-var expect = require('chai').expect;
-var nock = require('nock');
+import Crawler from '../dist/index.js';
+import { expect } from 'chai';
+import nock from 'nock';
 var c;
 var spf = [0, 0, 0, 0];
 var cnt = 0;
@@ -20,7 +20,7 @@ describe('Priority test', function () {
 		nock('http://nockHost').get(uri => uri.indexOf('links') >= 0).times(4).reply(200, 'Yes');
 
 		c = new Crawler({
-			jquery: false,
+			jQuery: false,
 			maxConnections: 1
 		});
 

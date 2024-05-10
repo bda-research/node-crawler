@@ -1,10 +1,9 @@
 /*jshint expr:true */
 'use strict';
 
-var Crawler = require('../lib/crawler');
-var expect = require('chai').expect;
-var given = require('mocha-testdata');
-var jsdom = require('jsdom');
+import Crawler from '../dist/index.js';
+import { expect } from 'chai';
+import given from 'mocha-testdata';
 var c;
 
 describe('Jquery testing', function() {

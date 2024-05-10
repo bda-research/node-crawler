@@ -1,9 +1,9 @@
 /*jshint expr:true */
 'use strict';
-var Crawler = require('../lib/crawler');
-var expect = require('chai').expect;
-var sinon = require('sinon');
-var nock = require('nock');
+import Crawler from '../dist/index.js';
+import { expect } from 'chai';
+import sinon from 'sinon';
+import nock from 'nock';
 var c, spy;
 
 describe('Simple test', function () {
@@ -12,7 +12,7 @@ describe('Simple test', function () {
 	});
 	beforeEach(function () {
 		nock('http://nockhost').get(uri => uri.indexOf('status') >= 0).times(20).reply(200, 'Yes');
-		c = new Crawler({ maxConnections: 10, jquery: false });
+		c = new Crawler({ maxConnections: 10, jQuery: false });
 	});
 	afterEach(function () {
 		c = {};
@@ -38,7 +38,7 @@ describe('Simple test', function () {
 	it('should run the readme examples', function (done) {
 		c = new Crawler({
 			maxConnections: 10,
-			jquery: false,
+			jQuery: false,
 			callback: function (err, result, done) {
 				expect(err).to.be.null;
 
@@ -59,7 +59,7 @@ describe('Simple test', function () {
 		this.timeout(6000);
 		c.queue([{
 			uri: 'http://www.github.com',
-			jquery: true,
+			jQuery: true,
 			callback: function (err, result, done) {
 				expect(err).to.be.null;
 				expect(result.$).not.to.be.null;

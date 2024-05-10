@@ -1,8 +1,5 @@
 node_modules
-.DS_Store
-.idea/
-npm-debug.log
-.vscode/
-*~
-coverage
-.nyc_*
+.vscode
+archive
+pnpm-lock.yaml
+dist
