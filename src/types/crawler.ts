@@ -90,12 +90,8 @@ type requestOptions = {
      * @deprecated Please use "searchParams" instead.
      */
     qs?: Record<string, unknown>;
-
-    /**
-     * @description The query string of the URL.
-     */
     searchParams?: Record<string, unknown>;
-
+    
     /**
      * @deprecated Please use "rejectUnauthorized" instead.
      */

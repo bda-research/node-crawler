@@ -1,6 +1,6 @@
 {
     "name": "crawler",
-    "version": "1.5.1-beta.0",
+    "version": "2.0.0-beta.1",
     "description": "New TypeScript Crawler Test version",
     "exports": "./dist/index.js",
     "scripts": {
