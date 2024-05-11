@@ -96,7 +96,7 @@ describe('preRequest feature tests', function() {
 		});
 	});
 
-	it('when preRequest fail, should retry three times by default', function(finishTest) {
+	it('when preRequest fail, should retry two times by default', function(finishTest) {
 		crawler = new Crawler({
 			jQuery: false,
 			rateLimit: 20,
@@ -107,7 +107,7 @@ describe('preRequest feature tests', function() {
 			},
 			callback: (error, response, done) => {
 				expect(error).to.exist;
-				expect(cb.getCalls().length).to.equal(4);
+				expect(cb.getCalls().length).to.equal(3);
 				done();
 				finishTest();
 			}
