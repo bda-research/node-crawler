@@ -1,0 +1,1 @@
+{"version":3,"file":"multiPriorityQueue.d.ts","sourceRoot":"","sources":["../../src/lib/multiPriorityQueue.ts"],"names":[],"mappings":"AAEA,cAAM,kBAAkB,CAAC,CAAC;IACtB,OAAO,CAAC,SAAS,CAAkB;IACnC,OAAO,CAAC,KAAK,CAAS;gBAEV,UAAU,EAAE,MAAM;IAQ9B,IAAI,IAAI,MAAM;IASd,OAAO,CAAC,KAAK,EAAE,CAAC,EAAE,QAAQ,EAAE,MAAM,GAAG,IAAI;IAUzC,OAAO,IAAI,CAAC,GAAG,SAAS;CAU3B;AACD,eAAe,kBAAkB,CAAC"}
