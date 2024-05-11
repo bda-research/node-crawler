@@ -47,23 +47,34 @@ export const alignOptions = (options: any): any => {
         "userAgents",
         "isJson",
         "referer",
+        "rejectUnauthorized",
     ];
     const deprecatedOptions = ["uri", "qs", "strictSSL", "gzip", "jar", "jsonReviver", "jsonReplacer", "json", "skipEventRequest"].concat(
         crawlerOnlyOptions
     );
-    const defaultagent = {
-        https: new HttpsProxyAgent({ proxy: options["proxy"] }),
-        http: new HttpProxyAgent({ proxy: options["proxy"] }),
-    };
     const gotOptions = {
         ...options,
         url: options.url ?? options.uri,
-        searchParams: options.qs,
-        rejectUnauthorized: options.strictSSL,
-        decompress: options.gzip,
-        parseJson: options.jsonReviver,
-        stringifyJson: options.jsonReplacer,
+        searchParams: options.searchParams ?? options.qs,
+        decompress: options.decompress ?? options.gzip,
+        parseJson: options.parseJson ?? options.jsonReviver,
+        stringifyJson: options.stringifyJson ?? options.jsonReplacer,
         timeout: { request: options.timeout },
+    };
+
+    options.rejectUnauthorized = options.rejectUnauthorized ?? options.strictSSL;
+    if (options.rejectUnauthorized !== undefined) {
+        if (gotOptions.https === undefined) {
+            gotOptions.https = { rejectUnauthorized: options.rejectUnauthorized }
+        }
+        else {
+            gotOptions.https.rejectUnauthorized = options.rejectUnauthorized;
+        }
+    }
+
+    const defaultagent = {
+        https: new HttpsProxyAgent({ proxy: options["proxy"] }),
+        http: new HttpProxyAgent({ proxy: options["proxy"] }),
     };
 
     // http2 proxy
@@ -110,5 +121,6 @@ export const alignOptions = (options: any): any => {
     }
 
     gotOptions.retry = { limit: 0 };
+    console.log(gotOptions)
     return gotOptions;
 };
