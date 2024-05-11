@@ -84,15 +84,15 @@ class Crawler extends EventEmitter {
 
     private _schedule = (options: crawlerOptions): void => {
         this.emit("schedule", options);
-        this._limiters.getRateLimiter(options.rateLimiterId).submit(options.priority as number, (done, limiter) => {
+        this._limiters.getRateLimiter(options.rateLimiterId).submit(options.priority as number, (done, rateLimiterId) => {
             options.release = () => {
                 done();
                 this.emit("_release");
             };
             options.callback = options.callback || options.release;
 
-            if (limiter) {
-                this.emit("limiterChange", options, limiter);
+            if (rateLimiterId) {
+                this.emit("limiterChange", options, rateLimiterId);
             }
 
             if (options.html) {
