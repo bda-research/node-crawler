@@ -121,6 +121,5 @@ export const alignOptions = (options: any): any => {
     }
 
     gotOptions.retry = { limit: 0 };
-    console.log(gotOptions)
     return gotOptions;
 };
