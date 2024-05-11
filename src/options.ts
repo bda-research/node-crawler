@@ -48,6 +48,7 @@ export const alignOptions = (options: any): any => {
         "isJson",
         "referer",
         "rejectUnauthorized",
+        "userParams",
     ];
     const deprecatedOptions = ["uri", "qs", "strictSSL", "gzip", "jar", "jsonReviver", "jsonReplacer", "json", "skipEventRequest"].concat(
         crawlerOnlyOptions
@@ -62,13 +63,13 @@ export const alignOptions = (options: any): any => {
         timeout: { request: options.timeout },
     };
 
-    options.rejectUnauthorized = options.rejectUnauthorized ?? options.strictSSL;
-    if (options.rejectUnauthorized !== undefined) {
+    const sslConfig = options.rejectUnauthorized ?? options.strictSSL;
+    if (sslConfig !== undefined) {
         if (gotOptions.https === undefined) {
-            gotOptions.https = { rejectUnauthorized: options.rejectUnauthorized }
+            gotOptions.https = { rejectUnauthorized: sslConfig }
         }
         else {
-            gotOptions.https.rejectUnauthorized = options.rejectUnauthorized;
+            gotOptions.https.rejectUnauthorized = sslConfig;
         }
     }
 
