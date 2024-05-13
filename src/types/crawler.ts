@@ -1,44 +1,47 @@
-declare global {
-    var mainModule: string;
-}
-
-type globalOnlyOptions = {
+export type GlobalOnlyOptions = {
+    /**
+     * Global Only option.
+     * @default 10
+     * @description The maximum number of requests that can be sent simultaneously.
+     * @example If the value is 10, the crawler will send at most 10 requests at the same time.
+     * Note: The maxConnections(> 1) will be valid only if the global ratelimit is set to be 0.
+     */
     maxConnections: number;
     /**
-     * Global option.
+     * Global Only option.
      * @default 10
      * @description The number of levels of priority. Can be only assigned at the beginning.
      */
     priorityLevels: number;
     /**
-     * Global option.
+     * Global Only option.
      * @default 1000
      * @description The default priority of the tasks. Can be only assigned at the beginning.
      * @example 1000 means 1000 milliseconds delay between after the first request.
      */
     rateLimit: number;
     /**
-     * Global option.
+     * Global Only option.
      * @default false
      * @description If true, the crawler will skip duplicate tasks.
      * @example If the task is already in the queue, the crawler will not add it again.
      */
     skipDuplicates: boolean;
     /**
-     * Global option.
+     * Global Only option.
      * @default false
      * @description If true, the crawler will dynamically reallocate the tasks within the queue blocked due to header blocking to other queues.
      */
     homogeneous: boolean;
     /**
-     * Global option.
+     * Global Only option.
      * @default undefined
      * @description If passed, the crawler will rotate the user agent for each request. The "userAgents" option must be an array if activated.
      */
     userAgents?: string | string[];
 };
 
-type requestOptions = {
+export type RequestOptions = {
     forceUTF8?: boolean;
     /**
      * crawlerOption
@@ -77,7 +80,6 @@ type requestOptions = {
     http2?: boolean;
     body?: string | Record<string, unknown>;
     headers?: Record<string, unknown>;
-
     agent?: any;
 
     /**
@@ -91,7 +93,7 @@ type requestOptions = {
      */
     qs?: Record<string, unknown>;
     searchParams?: Record<string, unknown>;
-    
+
     /**
      * @deprecated Please use "rejectUnauthorized" instead.
      */
@@ -137,11 +139,11 @@ type requestOptions = {
     jsonReplacer?: Function;
     stringifyJson?: Function;
 
-    preRequest?: (options: requestOptions, done?: (error?: Error | null) => void) => void;
+    preRequest?: (options: RequestOptions, done?: (error?: Error | null) => void) => void;
     release?: () => void;
     callback?: (error: any, response: unknown, done: unknown) => void;
 };
 
-type crawlerOptions = Partial<globalOnlyOptions> & requestOptions;
-
-export { crawlerOptions, requestOptions };
+export type RequestConfig = string | RequestOptions | RequestOptions[];
+export type CrawlerOptions = Partial<GlobalOnlyOptions> & RequestOptions;
+export type CrawlerResponse = any

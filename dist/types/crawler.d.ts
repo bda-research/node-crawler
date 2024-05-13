@@ -1,7 +1,7 @@
 declare global {
     var mainModule: string;
 }
-type globalOnlyOptions = {
+type GlobalOnlyOptions = {
     maxConnections: number;
     /**
      * Global option.
@@ -129,6 +129,6 @@ type requestOptions = {
     release?: () => void;
     callback?: (error: any, response: unknown, done: unknown) => void;
 };
-type crawlerOptions = Partial<globalOnlyOptions> & requestOptions;
+type CrawlerOptions = Partial<GlobalOnlyOptions> & RequestOptions;
 export { crawlerOptions, requestOptions };
 //# sourceMappingURL=crawler.d.ts.map

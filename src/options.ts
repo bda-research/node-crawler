@@ -1,6 +1,7 @@
 import { HttpProxyAgent, HttpsProxyAgent } from "hpagent";
 import http2Wrapper from "http2-wrapper";
 import { cleanObject, getType, isValidUrl } from "./lib/utils.js";
+import { RequestConfig, RequestOptions } from "./types/crawler.js";
 
 export const getCharset = (headers: Record<string, string>): null | string => {
     let charset = null;
@@ -14,11 +15,11 @@ export const getCharset = (headers: Record<string, string>): null | string => {
     return charset;
 };
 
-export const getValidOptions = (options: unknown): Object => {
+export const getValidOptions = (options: RequestConfig): RequestOptions => {
     const type = getType(options);
     if (type === "string") {
         try {
-            if (isValidUrl(options as string)) return { url: options };
+            if (isValidUrl(options as string)) return { url: options } as RequestOptions;
             options = JSON.parse(options as string);
             return options as Object;
         } catch (e) {
