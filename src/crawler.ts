@@ -67,8 +67,8 @@ class Crawler extends EventEmitter {
             .then(() => {
                 log.debug("seenreq initialized");
             })
-            .catch((err: any) => {
-                log.error(err);
+            .catch((error: unknown) => {
+                log.error(error);
             });
         this.on("_release", () => {
             log.debug(`Queue size: ${this.queueSize}`);
@@ -99,7 +99,7 @@ class Crawler extends EventEmitter {
                 options.url = options.url ?? "";
                 this._handler(null, options, { body: options.html, headers: { "content-type": "text/html" } });
             } else if (typeof options.uri === "function") {
-                options.uri((uri: any) => {
+                options.uri((uri: string) => {
                     options.url = uri;
                     this._execute(options);
                 });
@@ -343,7 +343,7 @@ class Crawler extends EventEmitter {
                         } catch (err) { }
                     }
                 })
-                .catch((err: any) => log.error(err));
+                .catch((error: unknown) => log.error(error));
         });
     };
     /**

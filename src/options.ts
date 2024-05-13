@@ -32,7 +32,7 @@ export const getValidOptions = (options: RequestConfig): RequestOptions => {
     throw new TypeError(`Invalid options: ${JSON.stringify(options)}`);
 };
 
-export const alignOptions = (options: any): any => {
+export const alignOptions = (options: RequestOptions): any => {
     const crawlerOnlyOptions = [
         "rateLimiterId",
         "forceUTF8",
@@ -62,7 +62,7 @@ export const alignOptions = (options: any): any => {
         parseJson: options.parseJson ?? options.jsonReviver,
         stringifyJson: options.stringifyJson ?? options.jsonReplacer,
         timeout: { request: options.timeout },
-    };
+    } as any;
 
     const sslConfig = options.rejectUnauthorized ?? options.strictSSL;
     if (sslConfig !== undefined) {
@@ -74,10 +74,10 @@ export const alignOptions = (options: any): any => {
         }
     }
 
-    const defaultagent = {
+    const defaultagent = options["proxy"] ? {
         https: new HttpsProxyAgent({ proxy: options["proxy"] }),
         http: new HttpProxyAgent({ proxy: options["proxy"] }),
-    };
+    } : undefined;
 
     // http2 proxy
     if (options.http2 === true && options.proxy) {
