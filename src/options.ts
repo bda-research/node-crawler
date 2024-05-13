@@ -3,9 +3,9 @@ import http2Wrapper from "http2-wrapper";
 import { cleanObject, getType, isValidUrl } from "./lib/utils.js";
 import { RequestConfig, RequestOptions } from "./types/crawler.js";
 
-export const getCharset = (headers: Record<string, string>): null | string => {
+export const getCharset = (headers: Record<string, unknown>): null | string => {
     let charset = null;
-    const contentType = headers["content-type"];
+    const contentType = headers["content-type"] as string;
     if (contentType) {
         const match = contentType.match(/charset=['"]?([\w.-]+)/i);
         if (match) {

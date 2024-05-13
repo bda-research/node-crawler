@@ -1,5 +1,5 @@
 export const logOptions = {
-    type: "pretty" as any,
+    type: "pretty" as "json" | "pretty" | "hidden",
     name: "Crawler",
     hideLogPositionForProduction: true,
     prettyLogTemplate: "{{name}} {{logLevelName}} ",
