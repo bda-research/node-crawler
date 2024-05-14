@@ -3,7 +3,7 @@ import { Cluster } from "./rateLimiter/index.js";
 import { isBoolean, isFunction, setDefaults, flattenDeep, lowerObjectKeys, isNumber } from "./lib/utils.js";
 import { getValidOptions, alignOptions, getCharset } from "./options.js";
 import { logOptions } from "./logger.js";
-import type { CrawlerOptions, RequestOptions, RequestConfig, CrawlerResponse, GlobalOnlyOptions } from "./types/crawler.js";
+import type { CrawlerOptions, RequestOptions, RequestConfig, CrawlerResponse } from "./types/crawler.js";
 import { load } from "cheerio";
 import got from "got";
 import seenreq from "seenreq";

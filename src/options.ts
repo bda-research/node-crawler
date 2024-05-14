@@ -61,6 +61,7 @@ export const alignOptions = (options: RequestOptions): any => {
         decompress: options.decompress ?? options.gzip,
         parseJson: options.parseJson ?? options.jsonReviver,
         stringifyJson: options.stringifyJson ?? options.jsonReplacer,
+        cookieJar: options.cookieJar ?? options.jar,
         timeout: { request: options.timeout },
     } as any;
 

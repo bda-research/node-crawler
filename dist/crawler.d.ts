@@ -1,15 +1,15 @@
 /// <reference types="node" />
 import { EventEmitter } from "events";
-import type { crawlerOptions, requestOptions } from "./types/crawler.js";
+import type { CrawlerOptions, RequestConfig, CrawlerResponse } from "./types/crawler.js";
 declare class Crawler extends EventEmitter {
     private _limiters;
     private _UAIndex;
     private _proxyIndex;
-    options: crawlerOptions;
+    options: CrawlerOptions;
     globalOnlyOptions: string[];
     seen: any;
-    constructor(options?: crawlerOptions);
-    private _checkHtml;
+    constructor(options?: CrawlerOptions);
+    private _detectHtmlOnHeaders;
     private _schedule;
     private _execute;
     private _handler;
@@ -27,7 +27,7 @@ declare class Crawler extends EventEmitter {
      * crawler.setLimiter(0, "rateLimit", 1000);
      * ```
      */
-    setLimiter(rateLimiterId: number, property: string, value: any): void;
+    setLimiter(rateLimiterId: number, property: string, value: unknown): void;
     /**
      *
      * @param options
@@ -45,13 +45,13 @@ declare class Crawler extends EventEmitter {
      * await crawler.send("https://example.com");
      * ```
      */
-    send: (options: string | requestOptions) => Promise<any>;
+    send: (options: RequestConfig) => Promise<CrawlerResponse>;
     /**
      * @deprecated
      * @description Old interface version. It is recommended to use `Crawler.send()` instead.
      * @see Crawler.send
      */
-    direct: (options: string | requestOptions) => Promise<any>;
+    direct: (options: RequestConfig) => Promise<CrawlerResponse>;
     /**
      *
      * @param options
@@ -65,13 +65,13 @@ declare class Crawler extends EventEmitter {
      * });
      * ```
      */
-    add: (options: string | requestOptions | requestOptions[]) => void;
+    add: (options: RequestConfig) => void;
     /**
      * @deprecated
      * @description Old interface version. It is recommended to use `Crawler.add()` instead.
      * @see Crawler.add
      */
-    queue: (options: string | requestOptions | requestOptions[]) => void;
+    queue: (options: RequestConfig) => void;
 }
 export default Crawler;
 //# sourceMappingURL=crawler.d.ts.map

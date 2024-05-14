@@ -17,7 +17,7 @@ class Crawler extends EventEmitter {
         super();
         this._UAIndex = 0;
         this._proxyIndex = 0;
-        this._checkHtml = (headers) => {
+        this._detectHtmlOnHeaders = (headers) => {
             const contentType = headers["content-type"];
             if (/xml|html/i.test(contentType))
                 return true;
@@ -154,7 +154,7 @@ class Crawler extends EventEmitter {
                 }
             }
             if (options.jQuery === true) {
-                if (response.body === "" || !this._checkHtml(response.headers)) {
+                if (response.body === "" || !this._detectHtmlOnHeaders(response.headers)) {
                     log.warn("response body is not HTML, skip injecting. Set jQuery to false to mute this warning.");
                 }
                 else {
@@ -253,7 +253,7 @@ class Crawler extends EventEmitter {
                         catch (err) { }
                     }
                 })
-                    .catch((err) => log.error(err));
+                    .catch((error) => log.error(error));
             });
         };
         /**
@@ -301,8 +301,8 @@ class Crawler extends EventEmitter {
             .then(() => {
             log.debug("seenreq initialized");
         })
-            .catch((err) => {
-            log.error(err);
+            .catch((error) => {
+            log.error(error);
         });
         this.on("_release", () => {
             log.debug(`Queue size: ${this.queueSize}`);

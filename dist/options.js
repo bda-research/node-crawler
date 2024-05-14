@@ -59,6 +59,7 @@ export const alignOptions = (options) => {
         decompress: options.decompress ?? options.gzip,
         parseJson: options.parseJson ?? options.jsonReviver,
         stringifyJson: options.stringifyJson ?? options.jsonReplacer,
+        cookieJar: options.cookieJar ?? options.jar,
         timeout: { request: options.timeout },
     };
     const sslConfig = options.rejectUnauthorized ?? options.strictSSL;
@@ -70,10 +71,10 @@ export const alignOptions = (options) => {
             gotOptions.https.rejectUnauthorized = sslConfig;
         }
     }
-    const defaultagent = {
+    const defaultagent = options["proxy"] ? {
         https: new HttpsProxyAgent({ proxy: options["proxy"] }),
         http: new HttpProxyAgent({ proxy: options["proxy"] }),
-    };
+    } : undefined;
     // http2 proxy
     if (options.http2 === true && options.proxy) {
         const { proxies: Http2Proxies } = http2Wrapper;

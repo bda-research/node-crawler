@@ -1,4 +1,5 @@
-export declare const getCharset: (headers: Record<string, string>) => null | string;
-export declare const getValidOptions: (options: unknown) => Object;
-export declare const alignOptions: (options: any) => any;
+import { RequestConfig, RequestOptions } from "./types/crawler.js";
+export declare const getCharset: (headers: Record<string, unknown>) => null | string;
+export declare const getValidOptions: (options: RequestConfig) => RequestOptions;
+export declare const alignOptions: (options: RequestOptions) => any;
 //# sourceMappingURL=options.d.ts.map

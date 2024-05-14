@@ -1,5 +1,5 @@
 export declare const logOptions: {
-    type: any;
+    type: "hidden" | "json" | "pretty";
     name: string;
     hideLogPositionForProduction: boolean;
     prettyLogTemplate: string;

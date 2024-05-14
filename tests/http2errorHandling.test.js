@@ -11,14 +11,15 @@ describe('Errors', function () {
 
     describe('timeout', function () {
         const crawler = new Crawler({
-            timeout: 2000,
-            retryInterval: 1000,
+            timeout: 1000,
+            retryInterval: 0,
             retries: 2,
             jQuery: false,
             http2: true
         });
 
         it('should retry after timeout', function (finishTest) {
+            this.timeout(10000);
             let options = {
                 uri: 'https://nghttp2.org/httpbin/delay/4',
                 callback: (error, response, done) => {
@@ -32,7 +33,8 @@ describe('Errors', function () {
             expect(options.retries).to.equal(2);
         });
 
-        it('should return a timeout error after ~9sec', function (finishTest) {
+        it('should return a timeout error after ~3sec', function (finishTest) {
+            this.timeout(10000);
             crawler.queue({
                 uri: 'https://nghttp2.org/httpbin/delay/4',
                 callback: (error, response, done) => {
@@ -47,7 +49,8 @@ describe('Errors', function () {
 
     describe('error status code', function () {
         const crawler = new Crawler({
-            retryInterval: 1000,
+            timeout: 5000,
+            retryInterval: 0,
             retries: 2,
             jQuery: false,
             http2: true
@@ -114,6 +117,7 @@ describe('Errors', function () {
         // });
 
         it('should not failed on empty response', function (finishTest) {
+            this.timeout(10000)
             crawler.queue({
                 uri: 'http://nghttp2.org/httpbin/status/200',
                 callback: (error, response, done) => {
@@ -123,7 +127,7 @@ describe('Errors', function () {
                 }
             });
         });
-    });
+    });5
 
 
 });

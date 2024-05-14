@@ -91,7 +91,7 @@ export type RequestOptions = {
     /**
      * @deprecated Please use "searchParams" instead.
      */
-    qs?: Record<string, unknown>;
+    qs?: string | Record<string, unknown>;
     searchParams?: Record<string, unknown>;
 
     /**

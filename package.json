@@ -30,6 +30,7 @@
         "mocha-testdata": "^1.2.0",
         "nock": "^13.5.4",
         "sinon": "^17.0.1",
+        "tough-cookie": "^4.1.4",
         "tsx": "^4.7.3"
     }
 }
