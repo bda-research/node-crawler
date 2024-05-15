@@ -58,7 +58,7 @@ class Crawler extends EventEmitter {
                 log.debug(`Using proxies: ${options.proxies}`);
             options.headers = options.headers ?? {};
             options.headers = lowerObjectKeys(options.headers);
-            if (options.forceUTF8 || options.json)
+            if (options.forceUTF8 || options.isJson)
                 options.encoding = "utf8";
             if (Array.isArray(options.userAgents)) {
                 this._UAIndex = this._UAIndex % options.userAgents.length;
@@ -68,7 +68,7 @@ class Crawler extends EventEmitter {
             else {
                 options.headers["user-agent"] = options.headers["user-agent"] ?? options.userAgents;
             }
-            if (Array.isArray(options.proxies)) {
+            if (!options.proxy && Array.isArray(options.proxies)) {
                 this._proxyIndex = this._proxyIndex % options.proxies.length;
                 options.proxy = options.proxies[this._proxyIndex];
                 this._proxyIndex++;
@@ -77,14 +77,15 @@ class Crawler extends EventEmitter {
                 if (options.skipEventRequest !== true) {
                     this.emit("request", options);
                 }
+                let response;
                 try {
-                    const response = await got(alignOptions(options));
-                    return this._handler(null, options, response);
+                    response = await got(alignOptions(options));
                 }
                 catch (error) {
                     log.debug(error);
                     return this._handler(error, options);
                 }
+                return this._handler(null, options, response);
             };
             if (isFunction(options.preRequest)) {
                 try {

@@ -51,7 +51,7 @@ export const alignOptions = (options: RequestOptions): any => {
         "rejectUnauthorized",
         "userParams",
     ];
-    const deprecatedOptions = ["uri", "qs", "strictSSL", "gzip", "jar", "jsonReviver", "jsonReplacer", "json", "skipEventRequest"].concat(
+    const deprecatedOptions = ["uri", "qs", "strictSSL", "gzip", "jar", "jsonReviver", "jsonReplacer", "skipEventRequest"].concat(
         crawlerOnlyOptions
     );
     const gotOptions = {

@@ -117,7 +117,7 @@ describe('Errors', function () {
         // });
 
         it('should not failed on empty response', function (finishTest) {
-            this.timeout(10000)
+            this.timeout(15000)
             crawler.queue({
                 uri: 'http://nghttp2.org/httpbin/status/200',
                 callback: (error, response, done) => {

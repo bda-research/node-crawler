@@ -15,7 +15,7 @@ export type GlobalOnlyOptions = {
     priorityLevels: number;
     /**
      * Global Only option.
-     * @default 1000
+     * @default 0
      * @description The default priority of the tasks. Can be only assigned at the beginning.
      * @example 1000 means 1000 milliseconds delay between after the first request.
      */
@@ -98,14 +98,12 @@ export type RequestOptions = {
      * @deprecated Please use "rejectUnauthorized" instead.
      */
     strictSSL?: boolean;
-
     /**
      * @description If false, the crawler will ignore SSL certificate errors.
      * @default true
      */
     rejectUnauthorized?: boolean;
 
-    json?: boolean;
     /**
      * @deprecated Please use "decompress" instead.
      */
@@ -126,7 +124,7 @@ export type RequestOptions = {
     isJson?: boolean;
 
     referer?: string;
-
+    userParams?: unknown;
     /**
      * @deprecated Please use "parseJson" instead.
      */
@@ -141,7 +139,7 @@ export type RequestOptions = {
 
     preRequest?: (options: RequestOptions, done?: (error?: Error | null) => void) => void;
     release?: () => void;
-    callback?: (error: any, response: unknown, done: unknown) => void;
+    callback?: (error: unknown, response: CrawlerResponse, done?: unknown) => void;
 };
 
 export type RequestConfig = string | RequestOptions | RequestOptions[];
