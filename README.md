@@ -26,59 +26,7 @@ Features:
 -   Priority queue of requests,
 -   let crawler deal for you with charset detection and conversion,
 
-
-# Table of Contents
-
-- [Table of Contents](#table-of-contents)
-- [Quick start](#quick-start)
-  - [Install](#install)
-  - [Usage](#usage)
-    - [Direct request](#direct-request)
-    - [Execute asynchronously via custom options](#execute-asynchronously-via-custom-options)
-  - [Slow down](#slow-down)
-  - [Custom parameters](#custom-parameters)
-  - [Raw body](#raw-body)
-  - [preRequest](#prerequest)
-- [Advanced](#advanced)
-  - [Work with Http2](#work-with-http2)
-  - [Work with rateLimiters](#work-with-ratelimiters)
-  - [Class: Crawler](#class-crawler)
-    - [Event: 'schedule'](#event-schedule)
-    - [Event: 'limiterChange'](#event-limiterchange)
-    - [Event: 'request'](#event-request)
-    - [Event: 'drain'](#event-drain)
-    - [crawler.add(url|options)](#crawleraddurloptions)
-    - [crawler.queueSize](#crawlerqueuesize)
-  - [Options](#options)
-    - [Global only options](#global-only-options)
-      - [`maxConnections`](#maxconnections)
-      - [`priorityLevels`](#prioritylevels)
-      - [`rateLimit`](#ratelimit)
-      - [`skipDuplicates`](#skipduplicates)
-      - [`homogeneous`](#homogeneous)
-      - [`userAgents`](#useragents)
-    - [Crawler General options](#crawler-general-options)
-      - [`url | method | headers | body | searchParams...`](#url--method--headers--body--searchparams)
-      - [`forceUTF8`](#forceutf8)
-      - [`jQuery`](#jquery)
-      - [`encoding`](#encoding)
-      - [`rateLimiterId`](#ratelimiterid)
-      - [`retries`](#retries)
-      - [`retryInterval`](#retryinterval)
-      - [`timeout`](#timeout)
-      - [`priority`](#priority)
-      - [`skipEventRequest`](#skipeventrequest)
-      - [`html`](#html)
-      - [`proxies`](#proxies)
-      - [`proxy`](#proxy)
-      - [`http2`](#http2)
-      - [`referer`](#referer)
-      - [`userParams`](#userparams)
-      - [`preRequest`](#prerequest-1)
-      - [`Callback`](#callback)
-  - [Work with Cheerio](#work-with-cheerio)
-- [How to test](#how-to-test)
-
+If you have prior experience with Crawler v1, for fast migration, please proceed to the section [Differences and Breaking Changes](#differences-and-breaking-changes).
 
 # Quick start
 
@@ -279,7 +227,57 @@ c.add({
 });
 ```
 
-# Advanced
+
+
+# Table
+
+- [Content](#content)
+  - [Work with Http2](#work-with-http2)
+  - [Work with rateLimiters](#work-with-ratelimiters)
+  - [Class: Crawler](#class-crawler)
+    - [Event: 'schedule'](#event-schedule)
+    - [Event: 'limiterChange'](#event-limiterchange)
+    - [Event: 'request'](#event-request)
+    - [Event: 'drain'](#event-drain)
+    - [crawler.add(url|options)](#crawleraddurloptions)
+    - [crawler.queueSize](#crawlerqueuesize)
+  - [Options](#options)
+    - [Global only options](#global-only-options)
+      - [`maxConnections`](#maxconnections)
+      - [`priorityLevels`](#prioritylevels)
+      - [`rateLimit`](#ratelimit)
+      - [`skipDuplicates`](#skipduplicates)
+      - [`homogeneous`](#homogeneous)
+      - [`userAgents`](#useragents)
+    - [Crawler General options](#crawler-general-options)
+      - [`url | method | headers | body | searchParams...`](#url--method--headers--body--searchparams)
+      - [`forceUTF8`](#forceutf8)
+      - [`jQuery`](#jquery)
+      - [`encoding`](#encoding)
+      - [`rateLimiterId`](#ratelimiterid)
+      - [`retries`](#retries)
+      - [`retryInterval`](#retryinterval)
+      - [`timeout`](#timeout)
+      - [`priority`](#priority)
+      - [`skipEventRequest`](#skipeventrequest)
+      - [`html`](#html)
+      - [`proxies`](#proxies)
+      - [`proxy`](#proxy)
+      - [`http2`](#http2)
+      - [`referer`](#referer)
+      - [`userParams`](#userparams)
+      - [`preRequest`](#prerequest-1)
+      - [`Callback`](#callback)
+  - [Work with Cheerio](#work-with-cheerio)
+- [Differences and Breaking Changes](#differences-and-breaking-changes)
+  - [renaming](#renaming)
+    - [Crawler Options](#crawler-options)
+    - [Origin Request Options](#origin-request-options)
+  - [Behavior Changes](#behavior-changes)
+- [How to test](#how-to-test)
+
+
+# Content
 
 ## Work with Http2
 
@@ -613,10 +611,49 @@ crawler.on("schedule", options => {
             -   `res.request.method`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) HTTP request method. E.G. `GET`
             -   `res.request.headers`: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) HTTP request headers
     -   `done` : The function must be called when you've done your work in callback. This is the only way to tell the crawler that the task is finished.
-    
+
 ## Work with Cheerio
 
 Crawler by default use [Cheerio](https://github.com/cheeriojs/cheerio). We are temporarily no longer supporting jsdom for certain reasons.
+
+# Differences and Breaking Changes
+
+## renaming
+
+*Options list here are renamed but most of the old ones are still supported for backward compatibility.*
+
+### Crawler Options
+`options.priorityRange` → `options.priorityLevels`
+`options.uri` → `options.url`
+`options.json` → `options.isJson` (Boolean. The "json" option is now work completely different in Got.)
+`options.limiter` → `options.rateLimiterId`
+`options.retryTimeout` → `options.retryInterval`
+`crawler.direct` → `crawler.send`
+`crawler.queue` → `crawler.add`
+`crawler.setLimiterProperty` → `crawler.setLimiter`
+
+### Origin Request Options
+
+*Since we have switched from `request` to `got`, the following option names have been updated accordingly.*
+
+`incomingEncoding` → `encoding`
+`qs` → `searchParams`
+`strictSSL` → `rejectUnauthorized`
+`gzip` → `decompress`
+`jar` → `cookieJar` (accepts `tough-cookie` jar)
+`jsonReviver` → `parseJson`
+`jsonReplacer` → `stringifyJson`
+
+## Behavior Changes
+
+- default retries: 3 => 2
+
+**Some practices that were acceptable and offen used in version 1 but not in version 2：**
+
+-   use “jquery/JQuery/..." => **Only "jQuery" will be accepted.**
+-   use "body" as the POST form => **Please use "form" instead. For more, see [got options](https://github.com/sindresorhus/got/blob/main/documentation/2-options.md) .**
+-   add custom options on request options => **Not allowed. Only options.userParams could pass through the response.**
+-   We are temporarily no longer supporting jsdom for certain reasons.
 
 # How to test
 
