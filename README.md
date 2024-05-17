@@ -122,7 +122,7 @@ c.add([
 ]);
 ```
 
-please refer to [options](#options-reference) for detail.
+please refer to [options](#options) for detail.
 
 ## Slow down
 
@@ -600,21 +600,17 @@ crawler.on("schedule", options => {
 -   Function that will be called after a request was completed
 
     -   `error`: [Error](https://nodejs.org/api/errors.html) catched by the crawler
-    -   `response` : [http.IncomingMessage](https://nodejs.org/api/http.html#http_class_http_incomingmessage) A response of standard IncomingMessage includes `$` and `options`
-        -   `res.options`: [Options](#options-reference) of this task
-        -   `res.$`: [jQuery Selector](https://api.jquery.com/category/selectors/) A selector for html or xml document.
-        -   `res.statusCode`: [Number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type) HTTP status code. E.G.`200`
-        -   `res.body`: [Buffer](https://nodejs.org/api/buffer.html) | [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) HTTP response content which could be a html page, plain text or xml document e.g.
-        -   `res.headers`: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) HTTP response headers
-        -   `res.request`: [Request](https://github.com/request/request) An instance of Mikeal's `Request` instead of [http.ClientRequest](https://nodejs.org/api/http.html#http_class_http_clientrequest)
-            -   `res.request.url`: [urlObject](https://nodejs.org/api/url.html#url_url_strings_and_url_objects) HTTP request entity of parsed url
-            -   `res.request.method`: [String](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type) HTTP request method. E.G. `GET`
-            -   `res.request.headers`: [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) HTTP request headers
+    -   `response` :  A response of standard IncomingMessage includes `$` and `options`
+        -   `response.options`: [Options](#options) of this task
+        -   `response.$`: [jQuery Selector](https://api.jquery.com/category/selectors/) A selector for html or xml document.
+        -   `response.statusCode`: `Number` HTTP status code. E.G.`200`
+        -   `response.body`: `Buffer` | `String` | `JSON` HTTP response content which could be a html page, plain text or xml document e.g.
+        -   `response.headers`: HTTP response headers
     -   `done` : The function must be called when you've done your work in callback. This is the only way to tell the crawler that the task is finished.
 
 ## Work with Cheerio
 
-Crawler by default use [Cheerio](https://github.com/cheeriojs/cheerio). We are temporarily no longer supporting jsdom for certain reasons.
+Crawler by default use [Cheerio](https://github.com/cheeriojs/cheerio). We are temporarily no longer supporting jsdom for certain reasons, may be later.
 
 # Differences and Breaking Changes
 
