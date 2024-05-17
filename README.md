@@ -620,12 +620,19 @@ Crawler by default use [Cheerio](https://github.com/cheeriojs/cheerio). We are t
 
 ### Crawler Options
 `options.priorityRange` → `options.priorityLevels`
+
 `options.uri` → `options.url`
+
 `options.json` → `options.isJson` (Boolean. The "json" option is now work completely different in Got.)
+
 `options.limiter` → `options.rateLimiterId`
+
 `options.retryTimeout` → `options.retryInterval`
+
 `crawler.direct` → `crawler.send`
+
 `crawler.queue` → `crawler.add`
+
 `crawler.setLimiterProperty` → `crawler.setLimiter`
 
 ### Origin Request Options
@@ -633,11 +640,17 @@ Crawler by default use [Cheerio](https://github.com/cheeriojs/cheerio). We are t
 *Since we have switched from `request` to `got`, the following option names have been updated accordingly.*
 
 `incomingEncoding` → `encoding`
+
 `qs` → `searchParams`
+
 `strictSSL` → `rejectUnauthorized`
+
 `gzip` → `decompress`
+
 `jar` → `cookieJar` (accepts `tough-cookie` jar)
+
 `jsonReviver` → `parseJson`
+
 `jsonReplacer` → `stringifyJson`
 
 ## Behavior Changes
