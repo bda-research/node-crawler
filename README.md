@@ -47,7 +47,7 @@ $ npm install crawler
 Support both Promise and callback
 
 ```js
-import Crawler from "../node-crawler/dist/index.js";
+import Crawler from "crawler";
 
 const crawler = new Crawler();
 
