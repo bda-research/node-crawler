@@ -6,7 +6,7 @@
 
 #
 
-[![npm package](https://nodei.co/npm/crawler.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/crawler/v/2.0.0-beta.3)
+[![npm package](https://nodei.co/npm/crawler.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/crawler/v/2.0.0-beta.5)
 
 [![NPM download][download-image]][download-url]
 [![Package Quality][quality-image]][quality-url]
