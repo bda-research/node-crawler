@@ -1,6 +1,5 @@
 node_modules
 .vscode
 archive
-pnpm-lock.yaml
 .idea
 dist
