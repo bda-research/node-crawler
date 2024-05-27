@@ -11,7 +11,7 @@
         "test": "npx mocha --timeout=15000 tests/*.test.js"
     },
     "engines": {
-        "node": ">=16.20.2"
+        "node": ">=18.20.0"
     },
     "type": "module",
     "keywords": [],
@@ -34,6 +34,7 @@
         "nock": "^13.5.4",
         "sinon": "^17.0.1",
         "tough-cookie": "^4.1.4",
-        "tsx": "^4.7.3"
+        "tsx": "^4.7.3",
+        "typescript": "^5.4.5"
     }
 }
