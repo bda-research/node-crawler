@@ -43,6 +43,9 @@ class Crawler extends EventEmitter {
             isJson: false,
         };
         this.options = { ...defaultOptions, ...options };
+        if (this.options.rateLimit! > 0) {
+            this.options.maxConnections = 1;
+        }
 
         this.globalOnlyOptions = [
             "maxConnections",
