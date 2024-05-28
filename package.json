@@ -8,6 +8,7 @@
     },
     "exports": "./dist/index.js",
     "scripts": {
+        "build": "tsc",
         "test": "npx mocha --timeout=15000 tests/*.test.js"
     },
     "engines": {

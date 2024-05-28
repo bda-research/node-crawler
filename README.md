@@ -32,7 +32,7 @@ If you have prior experience with Crawler v1, for fast migration, please proceed
 
 ## Install
 
-Requires Node.js 16 or above
+Requires Node.js 18 or above
 
 ```sh
 $ npm install crawler
