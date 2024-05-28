@@ -477,7 +477,7 @@ items in the **crawler.add()** calls if you want them to be specific to that ite
 
 #### `url | method | headers | body | searchParams...`
 
--   Same as the options of [got options](https://github.com/sindresorhus/got/blob/main/documentation/2-options.md)
+-   Same as the options of [options](https://github.com/sindresorhus/got/blob/main/documentation/2-options.md)
 
 #### `forceUTF8`
 
@@ -623,7 +623,7 @@ Crawler by default use [Cheerio](https://github.com/cheeriojs/cheerio). We are t
 
 `options.uri` → `options.url`
 
-`options.json` → `options.isJson` (Boolean. The "json" option is now work completely different in Got.)
+`options.json` → `options.isJson` (Boolean. The "json" option is now work completely different.)
 
 `options.limiter` → `options.rateLimiterId`
 
@@ -636,9 +636,6 @@ Crawler by default use [Cheerio](https://github.com/cheeriojs/cheerio). We are t
 `crawler.setLimiterProperty` → `crawler.setLimiter`
 
 ### Origin Request Options
-
-*Since we have switched from `request` to `got`, the following option names have been updated accordingly.*
-
 `incomingEncoding` → `encoding`
 
 `qs` → `searchParams`
@@ -660,7 +657,7 @@ Crawler by default use [Cheerio](https://github.com/cheeriojs/cheerio). We are t
 **Some practices that were acceptable and offen used in version 1 but not in version 2：**
 
 -   use “jquery/JQuery/..." => **Only "jQuery" will be accepted.**
--   use "body" as the POST form => **Please use "form" instead. For more, see [got options](https://github.com/sindresorhus/got/blob/main/documentation/2-options.md) .**
+-   use "body" as the POST form => **Please use "form" instead. For more, see [options](https://github.com/sindresorhus/got/blob/main/documentation/2-options.md) .**
 -   add custom options on request options => **Not allowed. Only options.userParams could pass through the response.**
 -   We are temporarily no longer supporting jsdom for certain reasons.
 
