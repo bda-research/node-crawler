@@ -20,7 +20,7 @@ Crawler v2 : Advanced and Typescript version of [node-crawler](https://www.npmjs
 
 Features:
 
--   Server-side DOM & automatic jQuery insertion with Cheerio (default) or JSDOM,
+-   Server-side DOM & automatic jQuery insertion with Cheerio (default),
 -   Configurable pool size and retries,
 -   Control rate limit,
 -   Priority queue of requests,
