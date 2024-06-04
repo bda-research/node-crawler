@@ -24,6 +24,7 @@ describe('Limiter tests', function () {
         c = new Crawler({
             jQuery: false,
             rateLimit: 500,
+            retries: 0,
             callback: function (err, result, done) {
                 expect(err).to.be.equal(null);
                 expect(result.statusCode).to.equal(200);
@@ -80,7 +81,9 @@ describe('Limiter tests', function () {
             done();
         });
     });
-    it('Should modify maxConnections when rateLimit is set', function (done) {
+    it('Should modify maxConnections when rateLimit is set', function (testDone) {
+        nock.cleanAll();
+        nock('http://nockHost').get(uri => uri.indexOf('status') >= 0).times(1).reply(200, 'Yes');
         c.queue({
             uri: 'http://nockHost/status/200',
             callback: function (err, result, done) {
@@ -89,7 +92,9 @@ describe('Limiter tests', function () {
                 done();
             },
         });
-        expect(c.options.maxConnections).to.equal(1);
-        done();
+        c.on('drain', () => {
+            expect(c.options.maxConnections).to.equal(1);
+            testDone();
+        });
     });
 });

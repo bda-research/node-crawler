@@ -9,7 +9,8 @@
     "exports": "./dist/index.js",
     "scripts": {
         "build": "tsc",
-        "test": "npx mocha --timeout=15000 tests/*.test.js"
+        "test": "mocha",
+        "coverage": "nyc mocha --timeout=15000 --exit"
     },
     "engines": {
         "node": ">=18.20.0"
@@ -33,6 +34,7 @@
         "mocha": "^10.4.0",
         "mocha-testdata": "^1.2.0",
         "nock": "^13.5.4",
+        "nyc": "^15.1.0",
         "sinon": "^17.0.1",
         "tough-cookie": "^4.1.4",
         "tsx": "^4.7.3",
