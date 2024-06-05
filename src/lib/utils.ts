@@ -35,7 +35,7 @@ export const isValidUrl = (url: string): boolean => {
     }
 };
 
-export function flattenDeep<T>(array: T[]): T[];
+// export function flattenDeep<T>(array: T[]): T[];
 /**
  *
  * @param array
@@ -56,7 +56,7 @@ export function flattenDeep(array: any[]): any[] {
     return result;
 }
 
-export function pick<T extends Object, K extends keyof T>(target: T, keys: (keyof T)[]): Pick<T, K> {
+export function pick<T extends object, K extends keyof T>(target: T, keys: (keyof T)[]): Pick<T, K> {
     const result: any = {};
     keys.forEach(key => {
         if (target[key] !== undefined) {
@@ -83,7 +83,7 @@ export const cleanObject = (obj: Record<string, unknown>): Record<string, unknow
         }
     });
     return obj;
-}
+};
 /**
  * 
  * @param obj 
@@ -97,4 +97,4 @@ export const lowerObjectKeys = (obj: Record<string, unknown>): Record<string, un
         result[key.toLowerCase()] = obj[key];
     });
     return result;
-}
+};

@@ -36,10 +36,8 @@ class RateLimiter {
         }
         this.maxConnections = maxConnections;
         this.priorityLevels = priorityLevels;
-        this.defaultPriority = Number.isInteger(defaultPriority)
-            ? defaultPriority
-            : Math.floor(this.priorityLevels / 2);
-        this.defaultPriority >= priorityLevels ? priorityLevels - 1 : defaultPriority;
+        this.defaultPriority = Number(defaultPriority);
+        this.defaultPriority = Number.isInteger(defaultPriority) ? Math.min(Math.max(defaultPriority, 0), priorityLevels - 1) : Math.floor(priorityLevels / 2);
         this.nextRequestTime = Date.now();
 
         this._waitingTasks = new multiPriorityQueue<Task>(priorityLevels);

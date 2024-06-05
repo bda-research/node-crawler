@@ -140,7 +140,7 @@ class Crawler extends EventEmitter {
 
         const request = async () => {
             if (options.skipEventRequest !== true) {
-                this.emit("request", options)
+                this.emit("request", options);
             }
             let response: CrawlerResponse;
             try {
@@ -150,7 +150,7 @@ class Crawler extends EventEmitter {
                 return this._handler(error, options);
             }
             return this._handler(null, options, response);
-        }
+        };
 
         if (isFunction(options.preRequest)) {
             try {
@@ -217,7 +217,7 @@ class Crawler extends EventEmitter {
             try {
                 response.body = JSON.parse(response.body);
             } catch (_err) {
-                log.warn("JSON parsing failed, body is not JSON. Set isJson to false to mute this warning.")
+                log.warn("JSON parsing failed, body is not JSON. Set isJson to false to mute this warning.");
             }
         }
 

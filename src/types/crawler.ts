@@ -114,8 +114,8 @@ export type RequestOptions = {
      * @deprecated Please use "cookieJar" instead.
      * @see tough-cookie https://github.com/sindresorhus/got/blob/main/documentation/migration-guides/request.md
      */
-    jar?: Object;
-    cookieJar?: Object;
+    jar?: object;
+    cookieJar?: object;
 
     /**
      * @description If true, the crawler will parse the response body as JSON.

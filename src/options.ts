@@ -21,13 +21,13 @@ export const getValidOptions = (options: RequestConfig): RequestOptions => {
         try {
             if (isValidUrl(options as string)) return { url: options } as RequestOptions;
             options = JSON.parse(options as string);
-            return options as Object;
+            return options as object;
         } catch (_err) {
             throw new TypeError(`Invalid options: ${JSON.stringify(options)}`);
         }
     } else if (type === "object") {
         const prototype = Object.getPrototypeOf(options);
-        if (prototype === Object.prototype || prototype === null) return options as Object;
+        if (prototype === Object.prototype || prototype === null) return options as object;
     }
     throw new TypeError(`Invalid options: ${JSON.stringify(options)}`);
 };
@@ -68,7 +68,7 @@ export const alignOptions = (options: RequestOptions): any => {
     const sslConfig = options.rejectUnauthorized ?? options.strictSSL;
     if (sslConfig !== undefined) {
         if (gotOptions.https === undefined) {
-            gotOptions.https = { rejectUnauthorized: sslConfig }
+            gotOptions.https = { rejectUnauthorized: sslConfig };
         }
         else {
             gotOptions.https.rejectUnauthorized = sslConfig;
@@ -92,7 +92,7 @@ export const alignOptions = (options: RequestOptions): any => {
                 : new Http2Proxies.Http2OverHttp({
                     proxyOptions: { url: options.proxy },
                 });
-        gotOptions.agent = { http2: http2Agent }
+        gotOptions.agent = { http2: http2Agent };
     } else {
         gotOptions.agent = gotOptions.agent ?? (options.proxy ? defaultagent : undefined);
     }
@@ -118,7 +118,7 @@ export const alignOptions = (options: RequestOptions): any => {
             gotOptions.headers.referer = options.referer;
         }
         else {
-            const domain = gotOptions.url.match(/^(\w+):\/\/([^\/]+)/);
+            const domain = gotOptions.url.match(/^(\w+):\/\/([^/]+)/);
             if (domain) gotOptions.headers.referer = domain[0];
         }
     }
