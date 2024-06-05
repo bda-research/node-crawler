@@ -20,6 +20,9 @@ describe('Errors', function() {
 		nock('http://test.crawler.com').get('/status/500').reply(500, 'Internal Error').persist();
 		nock('http://test.crawler.com').get('/status/204').reply(204, '').persist();
 	});
+    after(function() {
+        nock.cleanAll();
+    });
 
 	describe('timeout', function() {
 		const crawler = new Crawler({

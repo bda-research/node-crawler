@@ -9,18 +9,17 @@
     "exports": "./dist/index.js",
     "scripts": {
         "build": "tsc",
-        "test": "mocha",
-        "coverage": "nyc mocha --timeout=15000 --exit"
+        "test": "mocha"
     },
     "engines": {
-        "node": ">=18.20.0"
+        "node": ">=20"
     },
     "type": "module",
     "keywords": [],
     "license": "MIT",
     "dependencies": {
         "cheerio": "1.0.0-rc.12",
-        "got": "^13.0.0",
+        "got": "^14.4.0",
         "hpagent": "^1.2.0",
         "http2-wrapper": "^2.2.1",
         "iconv-lite": "^0.6.3",
@@ -29,15 +28,21 @@
     },
     "devDependencies": {
         "@types/got": "^9.6.12",
-        "@types/node": "^20.10.6",
-        "chai": "^5.1.0",
+        "@types/node": "^20.14.1",
+        "chai": "^5.1.1",
         "mocha": "^10.4.0",
         "mocha-testdata": "^1.2.0",
         "nock": "^13.5.4",
-        "nyc": "^15.1.0",
         "sinon": "^17.0.1",
         "tough-cookie": "^4.1.4",
-        "tsx": "^4.7.3",
+        "tsx": "^4.11.2",
         "typescript": "^5.4.5"
+    },
+    "mocha": {
+        "files": [
+            "test/**/*.js"
+        ],
+        "timeout": 15000,
+        "exit": true
     }
 }
