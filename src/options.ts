@@ -22,7 +22,7 @@ export const getValidOptions = (options: RequestConfig): RequestOptions => {
             if (isValidUrl(options as string)) return { url: options } as RequestOptions;
             options = JSON.parse(options as string);
             return options as Object;
-        } catch (e) {
+        } catch (_err) {
             throw new TypeError(`Invalid options: ${JSON.stringify(options)}`);
         }
     } else if (type === "object") {

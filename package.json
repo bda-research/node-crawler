@@ -27,16 +27,20 @@
         "tslog": "^4.9.2"
     },
     "devDependencies": {
+        "@eslint/js": "^9.4.0",
         "@types/got": "^9.6.12",
         "@types/node": "^20.14.1",
         "chai": "^5.1.1",
+        "eslint": "~9.4.0",
+        "globals": "^15.3.0",
         "mocha": "^10.4.0",
         "mocha-testdata": "^1.2.0",
         "nock": "^13.5.4",
         "sinon": "^17.0.1",
         "tough-cookie": "^4.1.4",
         "tsx": "^4.11.2",
-        "typescript": "^5.4.5"
+        "typescript": "^5.4.5",
+        "typescript-eslint": "8.0.0-alpha.27"
     },
     "mocha": {
         "files": [

@@ -1,6 +1,9 @@
-node_modules
 .vscode
-pnpm-lock.yaml
+.gitignore
+.npmignore
+node_modules
 src
-tests
+test
+CHANGELOG.md
+pnpm-lock.yaml
 tsconfig.json

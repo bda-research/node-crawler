@@ -216,7 +216,7 @@ class Crawler extends EventEmitter {
         if (options.isJson) {
             try {
                 response.body = JSON.parse(response.body);
-            } catch (err) {
+            } catch (_err) {
                 log.warn("JSON parsing failed, body is not JSON. Set isJson to false to mute this warning.")
             }
         }
@@ -227,7 +227,7 @@ class Crawler extends EventEmitter {
             } else {
                 try {
                     response.$ = load(response.body);
-                } catch (err) {
+                } catch (_err) {
                     log.warn("HTML detected failed. Set jQuery to false to mute this warning.");
                 }
             }
@@ -335,7 +335,7 @@ class Crawler extends EventEmitter {
             if (!this.options.skipDuplicates) {
                 try {
                     this._schedule(options as CrawlerOptions);
-                } catch (err) { }
+                } catch (_err) { }
                 return;
             }
 
@@ -345,7 +345,7 @@ class Crawler extends EventEmitter {
                     if (!rst) {
                         try {
                             this._schedule(options as CrawlerOptions);
-                        } catch (err) { }
+                        } catch (_err) { }
                     }
                 })
                 .catch((error: unknown) => log.error(error));

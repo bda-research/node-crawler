@@ -1,4 +1,4 @@
-import RateLimiter, { RateLimiterOptions, Task, TaskWrapper } from "./rateLimiter.js";
+import RateLimiter, { RateLimiterOptions, TaskWrapper } from "./rateLimiter.js";
 
 export type ClusterOptions = RateLimiterOptions & {
     homogeneous?: boolean;

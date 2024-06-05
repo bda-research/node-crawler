@@ -25,7 +25,7 @@ class multiPriorityQueue<T> {
         priority = (priority && +priority | 0) || 0;
         if (priority < 0 || priority >= this._elements.length) {
             priority = this._elements.length - 1;
-            console.error(`Invalid priority: ${priority} must be between 0 and ${this._elements.length - 1}`);
+            throw new RangeError(`Invalid priority: ${priority} must be between 0 and ${this._elements.length - 1}`);
         }
         this._elements[priority].enqueue(value);
         this._size++;
@@ -38,8 +38,7 @@ class multiPriorityQueue<T> {
                 return this._elements[i].dequeue();
             }
         }
-        console.error("multiPriorityQueue is empty");
-        return undefined;
+        throw new ReferenceError("multiPriorityQueue is empty");
     }
 }
 export default multiPriorityQueue;
