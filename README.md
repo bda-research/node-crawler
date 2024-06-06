@@ -3,13 +3,14 @@
     <img alt="Node.js" src="https://raw.githubusercontent.com/bda-research/node-crawler/master/crawler_primary.png" width="400"/>
   </a>
 </p>
-
 #
 
 [![npm package](https://nodei.co/npm/crawler.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/crawler/v/2.0.0-beta.5)
 
+[![CircleCI](https://circleci.com/gh/bda-research/node-crawler/tree/master.svg?style=svg)](https://circleci.com/gh/bda-research/node-crawler/tree/master)
 [![NPM download][download-image]][download-url]
 [![Package Quality][quality-image]][quality-url]
+[![Gitter](https://img.shields.io/badge/gitter-join_chat-blue.svg?style=flat-square)](https://gitter.im/node-crawler/discuss?utm_source=badge)
 
 [quality-image]: https://packagequality.com/shield/crawler.svg
 [quality-url]: https://packagequality.com/#?package=crawler
@@ -32,8 +33,10 @@ If you have prior experience with Crawler v1, for fast migration, please proceed
 
 ## Install
 
-Requires Node.js 18 or above
-**IMPORTANT:**  If you are using a Linux OS, we currently recommend sticking with Node.js version 18 for the time being, rather than opting for higher versions (even if some dependencies suggest 20 or later). Our unit tests have encountered stability issues on Linux with higher versions of Node.js, which may be caused by more profound underlying reasons. However, at present, we do not have the resources to address these issues.
+Requires Node.js 18 or above.
+
+**IMPORTANT:**  If you are using a Linux OS, we currently recommend sticking with **Node.js version 18** for the time being, rather than opting for higher versions (even if some dependencies suggest 20 or later). Our unit tests have encountered stability issues on Linux with higher versions of Node.js, which may be caused by more profound underlying reasons. However, at present, we do not have the resources to address these issues.
+
 ```sh
 $ npm install crawler
 ```
@@ -41,33 +44,6 @@ $ npm install crawler
 **Warning:** Given the dependencies involved (Especially migrating from request to got) , **Crawler v2** has been designed as a native [ESM](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and no longer offers a CommonJS export. We would also like to recommend that you [convert to ESM](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c). Note that making this transition is generally not too difficult.
 
 ## Usage
-
-### Direct request
-
-Support both Promise and callback
-
-```js
-import Crawler from "crawler";
-
-const crawler = new Crawler();
-
-// When using directly "send", the preRequest won't be called and the "Event:request" won't be triggered
-const response = await crawler.send("https://github.com/");
-console.log(response.options);
-// console.log(response.body);
-
-crawler.send({
-    url: "https://github.com/",
-    // When calling `send`, `callback` must be defined explicitly, with two arguments `error` and `response`
-    callback: (error, response) => {
-        if (error) {
-            console.error(error);
-        } else {
-            console.log("Hello World!");
-        }
-    },
-});
-```
 
 ### Execute asynchronously via custom options
 
@@ -227,7 +203,34 @@ c.add({
 });
 ```
 
+### Direct request
 
+Support both Promise and callback
+
+```js
+import Crawler from "crawler";
+
+const crawler = new Crawler();
+
+// When using directly "send", the preRequest won't be called and the "Event:request" won't be triggered
+const response = await crawler.send("https://github.com/");
+console.log(response.options);
+// console.log(response.body);
+
+crawler.send({
+    url: "https://github.com/",
+    // When calling `send`, `callback` must be defined explicitly, with two arguments `error` and `response`
+    callback: (error, response) => {
+        if (error) {
+            console.error(error);
+        } else {
+            console.log("Hello World!");
+        }
+    },
+});
+```
+
+### 
 
 # Table
 
