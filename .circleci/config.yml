@@ -16,7 +16,7 @@ jobs:
       # Checkout the code as the first step.
       - checkout
       - run: |
-          npm install -g pnpm
+          npm install --prefix=$HOME/.local -g pnpm
           pnpm install
           pnpm eslint
           pnpm build
