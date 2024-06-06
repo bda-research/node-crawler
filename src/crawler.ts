@@ -333,9 +333,7 @@ class Crawler extends EventEmitter {
                 delete (options as any)[globalOnlyOption];
             });
             if (!this.options.skipDuplicates) {
-                try {
-                    this._schedule(options as CrawlerOptions);
-                } catch (_err) { }
+                this._schedule(options as CrawlerOptions);
                 return;
             }
 
