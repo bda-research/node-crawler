@@ -33,7 +33,7 @@ If you have prior experience with Crawler v1, for fast migration, please proceed
 ## Install
 
 Requires Node.js 18 or above
-
+**IMPORTANT:**  If you are using a Linux OS, we currently recommend sticking with Node.js version 18 for the time being, rather than opting for higher versions (even if some dependencies suggest 20 or later). Our unit tests have encountered stability issues on Linux with higher versions of Node.js, which may be caused by more profound underlying reasons. However, at present, we do not have the resources to address these issues.
 ```sh
 $ npm install crawler
 ```

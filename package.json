@@ -12,7 +12,7 @@
         "test": "mocha"
     },
     "engines": {
-        "node": ">=20"
+        "node": ">=18"
     },
     "type": "module",
     "keywords": [],

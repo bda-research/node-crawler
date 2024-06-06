@@ -343,9 +343,7 @@ class Crawler extends EventEmitter {
                 .exists(options, options.seenreq)
                 .then((rst: any) => {
                     if (!rst) {
-                        try {
-                            this._schedule(options as CrawlerOptions);
-                        } catch (_err) { }
+                        this._schedule(options as CrawlerOptions);
                     }
                 })
                 .catch((error: unknown) => log.error(error));

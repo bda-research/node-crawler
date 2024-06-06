@@ -31,7 +31,7 @@ const options = [
                 },
             ],
             "no-console": "error",
-            "no-empty": ["error", { "allowEmptyCatch": true }],
+            "no-empty": "error",
             "quotes": ["error", "double"],
             "semi": ["error", "always"],
         },
