@@ -1,8 +1,6 @@
+.vscode
+.idea
+
+dist
 node_modules
-.DS_Store
-.idea/
-npm-debug.log
-.vscode/
-*~
-coverage
-.nyc_*
+archive

@@ -9,17 +9,18 @@ jobs:
     # You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # A list of available CircleCI Docker Convenience Images are available here: https://circleci.com/developer/images/image/cimg/node
     docker:
-      - image: cimg/node:14.18.1
+      - image: cimg/node:18.20.3
     # Then run your tests!
     # CircleCI will report the results back to your VCS provider.
     steps:
       # Checkout the code as the first step.
       - checkout
       - run: |
-          npm i
-          npm run hint
-          npm test
-          npm run cover
+          npm install --prefix=$HOME/.local -g pnpm
+          pnpm install
+          pnpm eslint
+          pnpm build
+          pnpm test
 workflows:
   # Below is the definition of your workflow.
   # Inside the workflow, you provide the jobs you want to run, e.g this workflow runs the build-and-test job above.

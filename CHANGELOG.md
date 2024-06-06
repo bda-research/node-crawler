@@ -1,6 +1,10 @@
 node-crawler ChangeLog
 -------------------------
 
+2.0.0
+- Crawler V2 has been released, which is a complete rewrite of the original crawler. 
+- see [README.md](https://github.com/bda-research/node-crawler/blob/master/README.md) for details.
+
 1.5.0
 - fix bug of `:path` and `:authority` header in http/2 (@mike442144)
 - add `ciphers` to both http/1.1 and http/2 (@mike442144)
