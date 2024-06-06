@@ -1,7 +1,7 @@
 {
     "name": "crawler",
-    "version": "2.0.0-beta.5",
-    "description": "New TypeScript Crawler Test version",
+    "version": "2.0.0",
+    "description": "Crawler is a ready-to-use web spider that works with proxies, asynchrony, rate limit, configurable request pools, jQuery, and seamless HTTP/2 support.",
     "repository": {
         "type": "git",
         "url": "https://github.com/bda-research/node-crawler.git"
@@ -15,7 +15,23 @@
         "node": ">=18"
     },
     "type": "module",
-    "keywords": [],
+    "keywords": [
+        "javascript",
+        "crawler",
+        "spider",
+        "scraper",
+        "scraping",
+        "jquery",
+        "nodejs",
+        "http",
+		"https",
+		"http2",
+		"got",
+        "request",
+		"url",
+		"network",
+		"gzip"
+    ],
     "license": "MIT",
     "dependencies": {
         "cheerio": "1.0.0-rc.12",

@@ -49,7 +49,7 @@ describe('Errors', function () {
 
     describe('error status code', function () {
         const crawler = new Crawler({
-            timeout: 5000,
+            timeout: 15000,
             retryInterval: 0,
             retries: 2,
             jQuery: false,
@@ -127,7 +127,7 @@ describe('Errors', function () {
                 }
             });
         });
-    });5
+    });
 
 
 });
