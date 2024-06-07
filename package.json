@@ -9,7 +9,7 @@
     "exports": "./dist/index.js",
     "scripts": {
         "build": "tsc",
-        "test": "mocha"
+        "test": "mocha && ava"
     },
     "engines": {
         "node": ">=18"
@@ -24,18 +24,18 @@
         "jquery",
         "nodejs",
         "http",
-		"https",
-		"http2",
-		"got",
+        "https",
+        "http2",
+        "got",
         "request",
-		"url",
-		"network",
-		"gzip"
+        "url",
+        "network",
+        "gzip"
     ],
     "license": "MIT",
     "dependencies": {
         "cheerio": "1.0.0-rc.12",
-        "got": "^14.4.0",
+        "got": "^14.4.1",
         "hpagent": "^1.2.0",
         "http2-wrapper": "^2.2.1",
         "iconv-lite": "^0.6.3",
@@ -48,13 +48,9 @@
         "@types/node": "^20.14.2",
         "chai": "^5.1.1",
         "eslint": "~9.4.0",
-        "globals": "^15.3.0",
-        "mocha": "^10.4.0",
-        "mocha-testdata": "^1.2.0",
-        "nock": "^13.5.4",
-        "sinon": "^17.0.1",
+        "globals": "^15.4.0",
         "tough-cookie": "^4.1.4",
-        "tsx": "^4.11.2",
+        "tsx": "^4.13.1",
         "typescript": "^5.4.5",
         "typescript-eslint": "8.0.0-alpha.27"
     },

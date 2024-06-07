@@ -3,14 +3,14 @@
     <img alt="Node.js" src="https://raw.githubusercontent.com/bda-research/node-crawler/master/crawler_primary.png" width="400"/>
   </a>
 </p>
-#
+
+------
 
 [![npm package](https://nodei.co/npm/crawler.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/crawler/v/2.0.0-beta.5)
 
 [![CircleCI](https://circleci.com/gh/bda-research/node-crawler/tree/master.svg?style=svg)](https://circleci.com/gh/bda-research/node-crawler/tree/master)
 [![NPM download][download-image]][download-url]
 [![Package Quality][quality-image]][quality-url]
-[![Gitter](https://img.shields.io/badge/gitter-join_chat-blue.svg?style=flat-square)](https://gitter.im/node-crawler/discuss?utm_source=badge)
 
 [quality-image]: https://packagequality.com/shield/crawler.svg
 [quality-url]: https://packagequality.com/#?package=crawler
