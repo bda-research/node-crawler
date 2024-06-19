@@ -32,7 +32,7 @@ const options = [
             ],
             "no-console": "error",
             "no-empty": "error",
-            "quotes": ["error", "double"],
+            "quotes": ["error", "double", { "avoidEscape": true }],
             "semi": ["error", "always"],
         },
     },
