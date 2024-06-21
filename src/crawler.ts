@@ -11,9 +11,8 @@ import iconv from "iconv-lite";
 import { Logger } from "tslog";
 
 // @todo: remove seenreq dependency
-process.env.NODE_ENV = process.env.NODE_ENV ?? process.argv[2];
+// process.env.NODE_ENV = process.env.NODE_ENV ?? process.argv[2];
 // process.env.NODE_ENV = "debug";
-
 logOptions.minLevel = process.env.NODE_ENV === "debug" ? 0 : 3;
 const log = new Logger(logOptions);
 

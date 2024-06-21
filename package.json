@@ -1,7 +1,7 @@
 {
     "name": "crawler",
-    "version": "2.0.0",
-    "description": "Crawler is a ready-to-use web spider that works with proxies, asynchrony, rate limit, configurable request pools, jQuery, and seamless HTTP/2 support.",
+    "version": "2.0.1",
+    "description": "Crawler is a ready-to-use web spider that works with proxies, asynchrony, rate limit, configurable request pools, jQuery, and HTTP/2 support.",
     "repository": {
         "type": "git",
         "url": "https://github.com/bda-research/node-crawler.git"
