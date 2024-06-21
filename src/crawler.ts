@@ -23,7 +23,6 @@ class Crawler extends EventEmitter {
     private _proxyIndex = 0;
 
     public options: CrawlerOptions;
-    public globalOnlyOptions: string[];
     public seen: any;
 
     constructor(options?: CrawlerOptions) {
@@ -51,15 +50,6 @@ class Crawler extends EventEmitter {
         if (this.options.silence) {
             log.settings.minLevel = 7;
         }
-
-        this.globalOnlyOptions = [
-            "maxConnections",
-            "rateLimit",
-            "priorityLevels",
-            "skipDuplicates",
-            "homogeneous",
-            "userAgents",
-        ];
 
         this._limiters = new Cluster({
             maxConnections: this.options.maxConnections!,
@@ -294,9 +284,6 @@ class Crawler extends EventEmitter {
         options = getValidOptions(options);
         options.retries = options.retries ?? 0;
         setDefaults(options, this.options);
-        this.globalOnlyOptions.forEach(globalOnlyOption => {
-            delete options[globalOnlyOption as keyof RequestOptions];
-        });
         options.skipEventRequest = isBoolean(options.skipEventRequest) ? options.skipEventRequest : true;
         delete options.preRequest;
         return await this._execute(options);
@@ -334,9 +321,6 @@ class Crawler extends EventEmitter {
             }
             setDefaults(options, this.options);
             options.headers = { ...this.options.headers, ...options.headers };
-            this.globalOnlyOptions.forEach(globalOnlyOption => {
-                delete (options as any)[globalOnlyOption];
-            });
             if (!this.options.skipDuplicates) {
                 this._schedule(options as CrawlerOptions);
                 return;

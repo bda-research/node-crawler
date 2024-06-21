@@ -9,7 +9,7 @@ test.before(t => {
 });
 test.beforeEach(t => {
     nock("http://nockhost")
-        .get(uri => uri.indexOf("status") >= 0)
+        .get(url => url.indexOf("status") >= 0)
         .times(20)
         .reply(200, "Yes");
     t.context.crawler = new Crawler({
