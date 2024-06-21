@@ -39,6 +39,12 @@ export type GlobalOnlyOptions = {
      * @description If passed, the crawler will rotate the user agent for each request. The "userAgents" option must be an array if activated.
      */
     userAgents?: string | string[];
+    /**
+     * Global Only option.
+     * @default false
+     * @description If true, the crawler will mute all warning and error messages. The request error will be still thrown.
+     */
+    silence?: boolean;
 };
 
 export type RequestOptions = {

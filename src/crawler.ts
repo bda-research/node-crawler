@@ -42,10 +42,14 @@ class Crawler extends EventEmitter {
             retryInterval: 2000,
             timeout: 15000,
             isJson: false,
+            silence: false,
         };
         this.options = { ...defaultOptions, ...options };
         if (this.options.rateLimit! > 0) {
             this.options.maxConnections = 1;
+        }
+        if (this.options.silence) {
+            log.settings.minLevel = 7;
         }
 
         this.globalOnlyOptions = [
@@ -88,31 +92,35 @@ class Crawler extends EventEmitter {
 
     private _schedule = (options: CrawlerOptions): void => {
         this.emit("schedule", options);
-        this._limiters.getRateLimiter(options.rateLimiterId).submit(options.priority as number, (done, rateLimiterId) => {
-            options.release = () => {
-                done();
-                this.emit("_release");
-            };
-            options.callback = options.callback || options.release;
+        this._limiters
+            .getRateLimiter(options.rateLimiterId)
+            .submit(options.priority as number, (done, rateLimiterId) => {
+                options.release = () => {
+                    done();
+                    this.emit("_release");
+                };
+                options.callback = options.callback || options.release;
 
-            if (rateLimiterId) {
-                this.emit("limiterChange", options, rateLimiterId);
-            }
+                if (rateLimiterId) {
+                    this.emit("limiterChange", options, rateLimiterId);
+                }
 
-            if (options.html) {
-                options.url = options.url ?? "";
-                this._handler(null, options, { body: options.html, headers: { "content-type": "text/html" } });
-            } else if (typeof options.uri === "function") {
-                options.uri((uri: string) => {
-                    options.url = uri;
-                    this._execute(options);
-                });
-            } else {
-                options.url = options.url ?? options.uri;
-                delete options.uri;
-                this._execute(options);
-            }
-        });
+                if (options.html) {
+                    options.url = options.url ?? "";
+                    this._handler(null, options, { body: options.html, headers: { "content-type": "text/html" } });
+                } else {
+                    options.url = options.url ?? options.uri;
+                    if (typeof options.url === "function") {
+                        options.url((url: string) => {
+                            options.url = url;
+                            this._execute(options);
+                        });
+                    } else {
+                        delete options.uri;
+                        this._execute(options);
+                    }
+                }
+            });
     };
 
     private _execute = async (options: CrawlerOptions): Promise<CrawlerResponse> => {
@@ -165,8 +173,7 @@ class Crawler extends EventEmitter {
                 log.error(err);
                 throw err;
             }
-        }
-        else {
+        } else {
             return await request();
         }
     };
@@ -175,15 +182,16 @@ class Crawler extends EventEmitter {
         if (error) {
             if (options.retries && options.retries > 0) {
                 log.warn(
-                    `${error} when fetching ${options.url} ${options.retries ? `(${options.retries} retries left)` : ""}`
+                    `${error} when fetching ${options.url} ${
+                        options.retries ? `(${options.retries} retries left)` : ""
+                    }`
                 );
                 setTimeout(() => {
                     options.retries!--;
                     this._execute(options as CrawlerOptions);
                 }, options.retryInterval);
                 return;
-            }
-            else {
+            } else {
                 log.error(`${error} when fetching ${options.url}. Request failed.`);
                 if (options.callback && typeof options.callback === "function") {
                     return options.callback(error, { options }, options.release);
@@ -221,7 +229,7 @@ class Crawler extends EventEmitter {
             }
         }
 
-        if (options.jQuery === true) {
+        if (options.jQuery === true && !options.isJson) {
             if (response.body === "" || !this._detectHtmlOnHeaders(response.headers)) {
                 log.warn("response body is not HTML, skip injecting. Set jQuery to false to mute this warning.");
             } else {
@@ -244,10 +252,9 @@ class Crawler extends EventEmitter {
     }
 
     /**
-     * 
-     * @param rateLimiterId 
-     * @param property 
-     * @param value 
+     * @param rateLimiterId
+     * @param property
+     * @param value
      * @description Set the rate limiter property.
      * @version 2.0.0 Only support `rateLimit` change.
      * @example
@@ -268,8 +275,7 @@ class Crawler extends EventEmitter {
     }
 
     /**
-     * 
-     * @param options 
+     * @param options
      * @returns if there is a "callback" function in the options, return the result of the callback function. \
      * Otherwise, return a promise, which resolves when the request is successful and rejects when the request fails.
      * In the case of the promise, the resolved value will be the response object.
@@ -305,8 +311,7 @@ class Crawler extends EventEmitter {
     };
 
     /**
-     * 
-     * @param options 
+     * @param options
      * @description Add a request to the queue.
      * @example
      * ```js
