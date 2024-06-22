@@ -1,7 +1,9 @@
 .circleci
 .vscode
+.idea
 .gitignore
 .npmignore
+coverage
 
 node_modules
 src

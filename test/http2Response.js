@@ -9,8 +9,8 @@ test.afterEach(t => {
 
 testCbSync(test, "response statusCode.", async t => {
     t.context.crawler = new Crawler({
-        // silence: true,
-        timeout: 30000,
+        silence: true,
+        timeout: 10000,
         retryInterval: 1000,
         retries: 2,
         jQuery: false,
