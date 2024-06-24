@@ -41,7 +41,6 @@
         "http2-wrapper": "^2.2.1",
         "iconv-lite": "^0.6.3",
         "seenreq": "^3.0.0",
-        "sinon": "^18.0.0",
         "tslog": "^4.9.3"
     },
     "devDependencies": {
@@ -53,6 +52,7 @@
         "eslint": "~9.4.0",
         "globals": "^15.6.0",
         "nock": "^13.5.4",
+        "sinon": "^18.0.0",
         "tough-cookie": "^4.1.4",
         "tsx": "^4.15.7",
         "typescript": "^5.5.2",

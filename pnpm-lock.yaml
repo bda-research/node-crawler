@@ -26,9 +26,6 @@ importers:
       seenreq:
         specifier: ^3.0.0
         version: 3.0.0
-      sinon:
-        specifier: ^18.0.0
-        version: 18.0.0
       tslog:
         specifier: ^4.9.3
         version: 4.9.3
@@ -57,6 +54,9 @@ importers:
       nock:
         specifier: ^13.5.4
         version: 13.5.4
+      sinon:
+        specifier: ^18.0.0
+        version: 18.0.0
       tough-cookie:
         specifier: ^4.1.4
         version: 4.1.4
