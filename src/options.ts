@@ -3,6 +3,43 @@ import http2Wrapper from "http2-wrapper";
 import { cleanObject, getType, isValidUrl } from "./lib/utils.js";
 import { RequestConfig, RequestOptions } from "./types/crawler.js";
 
+export const globalOnlyOptions = [
+    "maxConnections",
+    "priorityLevels",
+    "rateLimit",
+    "skipDuplicates",
+    "homogeneous",
+    "userAgents",
+    "silence",
+];
+export const crawlerOnlyOptions = [
+    "rateLimiterId",
+    "forceUTF8",
+    "jQuery",
+    "retryInterval",
+    "priority",
+    "proxy",
+    "retries",
+    "preRequest",
+    "callback",
+    "release",
+    "isJson",
+    "referer",
+    "rejectUnauthorized",
+    "userParams",
+].concat(globalOnlyOptions);
+export const deprecatedOptions = [
+    "uri",
+    "qs",
+    "strictSSL",
+    "incomingEncoding",
+    "gzip",
+    "jar",
+    "jsonReviver",
+    "jsonReplacer",
+    "skipEventRequest",
+];
+
 export const getCharset = (headers: Record<string, unknown>): null | string => {
     let charset = null;
     const contentType = headers["content-type"] as string;
@@ -33,27 +70,6 @@ export const getValidOptions = (options: RequestConfig): RequestOptions => {
 };
 
 export const alignOptions = (options: RequestOptions): any => {
-    const crawlerOnlyOptions = [
-        "rateLimiterId",
-        "forceUTF8",
-        "incomingEncoding",
-        "jQuery",
-        "retryInterval",
-        "priority",
-        "proxy",
-        "retries",
-        "preRequest",
-        "callback",
-        "release",
-        "userAgents",
-        "isJson",
-        "referer",
-        "rejectUnauthorized",
-        "userParams",
-    ];
-    const deprecatedOptions = ["uri", "qs", "strictSSL", "gzip", "jar", "jsonReviver", "jsonReplacer", "skipEventRequest"].concat(
-        crawlerOnlyOptions
-    );
     const gotOptions = {
         ...options,
         url: options.url ?? options.uri,
@@ -101,10 +117,11 @@ export const alignOptions = (options: RequestOptions): any => {
      * @deprecated The support of incomingEncoding will be removed in the next major version.
      */
     if (options.encoding === undefined) options.encoding = options.incomingEncoding;
-    delete options["incomingEncoding"];
     gotOptions.responseType = "buffer";
-    Object.keys(gotOptions).forEach(key => {
-        if (deprecatedOptions.includes(key)) {
+
+    const invalidOptions = crawlerOnlyOptions.concat(deprecatedOptions);
+    invalidOptions.forEach(key => {
+        if (key in gotOptions) {
             delete gotOptions[key];
         }
     });
