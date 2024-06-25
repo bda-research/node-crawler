@@ -13,7 +13,7 @@ test.afterEach(t => {
 testCbSync(test, "Should't skip one single url if duplicates are active.", async t => {
     t.context.scope.get("/").reply(200);
     t.context.c = new Crawler({
-        silence: true,
+        // silence: true,
         skipDuplicates: true,
         callback: (error, result, done) => {
             t.is(error, null);
@@ -28,7 +28,7 @@ testCbSync(test, "Should't skip one single url if duplicates are active.", async
 testCbSync(test, "Should notify the callback when an error occurs and 'retries' is disabled.", async t => {
     t.context.scope.get("/").replyWithError("Bad request.");
     t.context.c = new Crawler({
-        silence: true,
+        // silence: true,
         jQuery: false,
         skipDuplicates: true,
         retries: 0,

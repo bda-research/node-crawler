@@ -7,7 +7,10 @@ import sinon from "sinon";
 test.before(t => {
     nock.cleanAll();
     nock('http://test.crawler.com').get('/').reply(200, 'ok').persist();
-    t.context.crawler = new Crawler({ silence: true, jQuery: false });
+    t.context.crawler = new Crawler({
+        // silence: true, 
+        jQuery: false
+    });
 });
 
 testCbSync(test, "should work if url is string", t => {

@@ -15,7 +15,7 @@ test.before(t => {
 });
 test.beforeEach(t => {
     t.context.crawler = new Crawler({
-        silence: true,
+        // silence: true,
         timeout: 500,
         retryInterval: 500,
         retries: 2,
