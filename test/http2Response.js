@@ -9,7 +9,7 @@ test.afterEach(t => {
 
 testCbSync(test, "response statusCode.", async t => {
     t.context.crawler = new Crawler({
-        silence: true,
+        // silence: true,
         timeout: 10000,
         retryInterval: 1000,
         retries: 2,
@@ -28,7 +28,7 @@ testCbSync(test, "response statusCode.", async t => {
 
 testCbSync(test, "response headers.", async t => {
     t.context.crawler = new Crawler({
-        silence: true,
+        // silence: true,
         retryInterval: 1000,
         retries: 2,
         jQuery: false,
@@ -48,7 +48,7 @@ testCbSync(test, "response headers.", async t => {
 
 testCbSync(test, "html response body.", async t => {
     t.context.crawler = new Crawler({
-        silence: true,
+        // silence: true,
         retryInterval: 1000,
         retries: 2,
         jQuery: true,

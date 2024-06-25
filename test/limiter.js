@@ -12,7 +12,7 @@ test.beforeEach(t => {
         .times(5)
         .reply(200, "Yes");
     t.context.crawler = new Crawler({
-        silence: true,
+        // silence: true,
         jQuery: false,
         rateLimit: 500,
         retries: 0,

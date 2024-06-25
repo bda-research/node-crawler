@@ -23,7 +23,7 @@ test.before(t => {
     jar.setCookieSync("foo=bar", "http://test.crawler.com");
     t.context.jar = jar;
     t.context.crawler = new Crawler({
-        silence: true,
+        // silence: true,
         jQuery: false,
         jar: t.context.jar,
     });

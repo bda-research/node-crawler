@@ -8,7 +8,7 @@ test.before(t => {
 });
 test.beforeEach(t => {
     t.context.c = new Crawler({
-        silence: true,
+        // silence: true,
         retries: 0,
         rateLimit: 500,
         callback: (err, res, done) => {

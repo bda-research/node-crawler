@@ -14,7 +14,7 @@ test.beforeEach(t => {
 
 testCbSync(test, "Should do preRequest before request when preRequest defined in crawler options.", async t => {
     t.context.crawler = new Crawler({
-        silence: true,
+        // silence: true,
         jQuery: false,
         preRequest: (options, done) => {
             setTimeout(() => {
@@ -36,7 +36,10 @@ testCbSync(test, "Should do preRequest before request when preRequest defined in
 });
 
 testCbSync(test, "Should do preRequest before request when preRequest defined in add options.", async t => {
-    t.context.crawler = new Crawler({ silence: true, jQuery: false });
+    t.context.crawler = new Crawler({
+        // silence: true, 
+        jQuery: false
+    });
     t.context.crawler.add({
         url: "http://test.crawler.com/",
         preRequest: (options, done) => {
@@ -57,7 +60,7 @@ testCbSync(test, "Should do preRequest before request when preRequest defined in
 
 testCbSync(test, "preRequest should be executed the same times as request.", async t => {
     t.context.crawler = new Crawler({
-        silence: true,
+        // silence: true,
         jQuery: false,
         rateLimit: 50,
         preRequest: (options, done) => {
@@ -93,7 +96,7 @@ testCbSync(test, "preRequest should be executed the same times as request.", asy
 
 testCbSync(test, "when preRequest fail, should retry two times by default.", async t => {
     t.context.crawler = new Crawler({
-        silence: true,
+        // silence: true,
         jQuery: false,
         rateLimit: 20,
         retryInterval: 0,

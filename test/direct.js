@@ -11,7 +11,7 @@ test.before(t => {
 test.beforeEach(t => {
     t.context.cb = sinon.spy();
     t.context.crawler = new Crawler({
-        silence: true,
+        // silence: true,
         jQuery: false,
         rateLimit: 100,
         preRequest: (options, done) => {

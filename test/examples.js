@@ -13,7 +13,7 @@ test.beforeEach(t => {
         .times(20)
         .reply(200, "Yes");
     t.context.crawler = new Crawler({
-        silence: true,
+        // silence: true,
         maxConnections: 10,
         jQuery: false,
     });
@@ -36,7 +36,7 @@ testCb(test, "should run the first readme examples.", async t => {
 
 testCb(test, "should run the readme examples.", async t => {
     t.context.crawler = new Crawler({
-        silence: true,
+        // silence: true,
         maxConnections: 10,
         jQuery: false,
         callback: (err, res, done) => {

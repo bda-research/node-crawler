@@ -11,7 +11,7 @@ test.before(t => {
 });
 test.beforeEach(t => {
     t.context.crawler = new Crawler({
-        silence: true,
+        // silence: true,
         retries: 0,
         isJson: true,
         callback: (err, res, done) => {
@@ -78,7 +78,7 @@ testCbSync(test, "should use the provided user-agent", async t => {
 
 testCbSync(test, "should replace the global default user-agent", async t => {
     t.context.crawler = new Crawler({
-        silence: true,
+        // silence: true,
         isJson: true,
         headers: { "user-agent": "test/1.2" },
         callback: (err, res, done) => {

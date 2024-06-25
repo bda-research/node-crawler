@@ -428,6 +428,11 @@ items in the **crawler.add()** calls if you want them to be specific to that ite
 
 ### Global only options
 
+#### `silence`
+-   **Type:** `boolean`
+-   **Default** : false
+-   If true, the crawler will mute all warning and error messages. The request error will be still reported.
+
 #### `maxConnections`
 
 -   **Type:** `number`
