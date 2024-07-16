@@ -36,8 +36,8 @@ class Crawler extends EventEmitter {
             jQuery: true,
             priority: 5,
             retries: 2,
-            retryInterval: 2000,
-            timeout: 15000,
+            retryInterval: 3000,
+            timeout: 20000,
             isJson: false,
             silence: false,
         };

@@ -246,6 +246,7 @@ crawler.send({
     - [crawler.queueSize](#crawlerqueuesize)
   - [Options](#options)
     - [Global only options](#global-only-options)
+      - [`silence`](#silence)
       - [`maxConnections`](#maxconnections)
       - [`priorityLevels`](#prioritylevels)
       - [`rateLimit`](#ratelimit)
@@ -520,13 +521,13 @@ items in the **crawler.add()** calls if you want them to be specific to that ite
 #### `retryInterval`
 
 -   **Type:** `number`
--   **Default** : 2000
+-   **Default** : 3000
 -   The number of milliseconds to wait before retrying.
 
 #### `timeout`
 
 -   **Type:** `number`
--   **Default** : 15000
+-   **Default** : 20000
 -   The number of milliseconds to wait before the request times out.
 
 #### `priority`
