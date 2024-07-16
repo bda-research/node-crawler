@@ -12,8 +12,7 @@ import { Logger } from "tslog";
 
 // @todo: remove seenreq dependency
 // process.env.NODE_ENV = process.env.NODE_ENV ?? process.argv[2];
-// process.env.NODE_ENV = "debug";
-logOptions.minLevel = process.env.NODE_ENV === "debug" ? 0 : 3;
+logOptions.minLevel = process.env.NODE_ENV === "debug" ? 0 : process.env.NODE_ENV === "test" ? 7 : 3;
 const log = new Logger(logOptions);
 
 class Crawler extends EventEmitter {
@@ -170,22 +169,19 @@ class Crawler extends EventEmitter {
     private _handler = (error: unknown, options: RequestOptions, response?: CrawlerResponse): CrawlerResponse => {
         if (error) {
             if (options.retries && options.retries > 0) {
-                log.warn(
-                    `${error} when fetching ${options.url} ${
-                        options.retries ? `(${options.retries} retries left)` : ""
-                    }`
-                );
+                log.warn(`${error} occurred on ${options.url}. ${options.retries ? `(${options.retries} retries left)` : ""}`);
                 setTimeout(() => {
                     options.retries!--;
                     this._execute(options as CrawlerOptions);
                 }, options.retryInterval);
                 return;
             } else {
-                log.error(`${error} when fetching ${options.url}. Request failed.`);
+                log.error(`${error} occurred on ${options.url}. Request failed.`);
                 if (options.callback && typeof options.callback === "function") {
                     return options.callback(error, { options }, options.release);
+                } else {
+                    throw error;
                 }
-                throw error;
             }
         }
         if (!response.body) response.body = "";

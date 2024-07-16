@@ -4,7 +4,7 @@ import Crawler from "../dist/index.js";
 
 test.before(t => {
     t.context.crawler = new Crawler({
-        silence: true,
+        // silence: true,
         timeout: 1000,
         retryInterval: 0,
         retries: 2,

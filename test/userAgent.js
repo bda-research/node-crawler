@@ -8,7 +8,7 @@ test.before(t => {
     nock("http://nockhost").get(url => url.indexOf("status") >= 0).times(20).reply(200, "Yes");
     t.context.calledAgents = [];
     t.context.crawler = new Crawler({
-        silence: true,
+        // silence: true,
         jQuery: false,
         userAgents: [
             "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
