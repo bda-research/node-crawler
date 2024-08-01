@@ -1,5 +1,5 @@
 import test from "ava";
-import { testCb, testCbSync } from "./lib/avaTestCb.js";
+import { testCb } from "./lib/avaTestCb.js";
 import nock from "nock";
 import Crawler from "../dist/index.js";
 
@@ -26,7 +26,7 @@ test.afterEach(t => {
     t.context.tsArrs = [];
 });
 
-testCbSync(test, "Interval of two requests should be no less than 500ms", async t => {
+testCb(test, "Interval of two requests should be no less than 500ms", async t => {
     nock('http://nockHost').get(url => url.includes('status')).times(2).delay(500).reply(200, 'Yes');
     t.context.c.add({ url: 'http://nockHost/status/200' });
     t.context.c.add({
@@ -43,7 +43,7 @@ testCbSync(test, "Interval of two requests should be no less than 500ms", async 
     t.context.c.on("drain", t.end);
 });
 
-testCbSync(test, "request speed should abide by rateLimit", async t => {
+testCb(test, "request speed should abide by rateLimit", async t => {
     nock('http://nockHost').get(url => url.includes('status')).times(5).reply(200, 'Yes');
     for (let i = 0; i < 5; i++) {
         t.context.c.add('http://nockHost/status/200');
@@ -58,7 +58,7 @@ testCbSync(test, "request speed should abide by rateLimit", async t => {
     });
 });
 
-testCbSync(test, "should be able to change rateLimit", async t => {
+testCb(test, "should be able to change rateLimit", async t => {
     nock('http://nockHost').get(url => url.includes('status')).times(5).reply(200, 'Yes');
     t.context.c.setLimiter(0, 'rateLimit', 300);
     for (let i = 0; i < 5; i++) {

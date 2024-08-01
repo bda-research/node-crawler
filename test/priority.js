@@ -1,5 +1,5 @@
 import test from "ava";
-import { testCb, testCbSync } from "./lib/avaTestCb.js";
+import { testCb } from "./lib/avaTestCb.js";
 import nock from "nock";
 import Crawler from "../dist/index.js";
 
@@ -9,7 +9,7 @@ test.before(t => {
     t.context.crawler = new Crawler({ jQuery: false, maxConnections: 1 });
 });
 
-testCbSync(test, "should execute requests in the correct order", async t => {
+testCb(test, "should execute requests in the correct order", async t => {
     t.context.spf = [];
     let cnt = 0;
     t.context.crawler.add([{

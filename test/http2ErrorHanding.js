@@ -1,5 +1,5 @@
 import test from "ava";
-import { testCb, testCbSync } from "./lib/avaTestCb.js";
+import { testCb } from "./lib/avaTestCb.js";
 import Crawler from "../dist/index.js";
 
 test.before(t => {
@@ -13,7 +13,7 @@ test.before(t => {
     });
 });
 
-testCbSync(test, "http2: should retry after timeout.", async t => {
+testCb(test, "http2: should retry after timeout.", async t => {
     const options = {
         url: "https://nghttp2.org/httpbin/delay/4",
         callback: (error, response, done) => {
@@ -27,7 +27,7 @@ testCbSync(test, "http2: should retry after timeout.", async t => {
     t.is(options.retries, 2);
 });
 
-testCbSync(test, "http2: should return a timeout error after ~3sec.", async t => {
+testCb(test, "http2: should return a timeout error after ~3sec.", async t => {
     t.context.crawler.add({
         url: "https://nghttp2.org/httpbin/delay/4",
         callback: (error, response, done) => {

@@ -1,5 +1,5 @@
 import test from "ava";
-import { testCb, testCbSync } from "./lib/avaTestCb.js";
+import { testCb } from "./lib/avaTestCb.js";
 import nock from "nock";
 import Crawler from "../dist/index.js";
 import { CookieJar } from "tough-cookie";
@@ -29,7 +29,7 @@ test.before(t => {
     });
 });
 
-testCbSync(test, "should send with cookie when setting jar options", async t => {
+testCb(test, "should send with cookie when setting jar options", async t => {
     t.context.crawler.add({
         url: "http://test.crawler.com/getCookie",
         callback: (error, response, done) => {
@@ -41,7 +41,7 @@ testCbSync(test, "should send with cookie when setting jar options", async t => 
     });
 });
 
-testCbSync(test, "should set cookie when response set-cookie headers exist", async t => {
+testCb(test, "should set cookie when response set-cookie headers exist", async t => {
     t.context.crawler.add({
         url: "http://test.crawler.com/setCookie",
         callback: (error, response, done) => {

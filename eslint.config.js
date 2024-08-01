@@ -21,7 +21,6 @@ const options = [
         files: ["src/**/*.ts"],
         rules: {
             "@typescript-eslint/no-explicit-any": "warn",
-            "@typescript-eslint/ban-types": "warn",
             "@typescript-eslint/no-unused-vars": [
                 "error",
                 {

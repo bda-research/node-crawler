@@ -1,5 +1,5 @@
 import test from "ava";
-import { testCb, testCbSync } from "./lib/avaTestCb.js";
+import { testCb } from "./lib/avaTestCb.js";
 import nock from "nock";
 import Crawler from "../dist/index.js";
 
@@ -26,7 +26,7 @@ test.afterEach(t => {
     t.context.crawler = null;
 });
 
-testCbSync(test, "should parse latin-1", async t => {
+testCb(test, "should parse latin-1", async t => {
     t.context.crawler.add({
         url,
         callback: (error, result) => {
@@ -38,7 +38,7 @@ testCbSync(test, "should parse latin-1", async t => {
     });
 });
 
-testCbSync(test, "should return buffer if encoding = null", async t => {
+testCb(test, "should return buffer if encoding = null", async t => {
     t.context.crawler.add({
         url,
         encoding: null,
@@ -50,7 +50,7 @@ testCbSync(test, "should return buffer if encoding = null", async t => {
     });
 });
 
-testCbSync(test, "should parse latin-1 if encoding = ISO-8859-1", async t => {
+testCb(test, "should parse latin-1 if encoding = ISO-8859-1", async t => {
     t.context.crawler.add({
         url,
         encoding: charsetName,
@@ -63,7 +63,7 @@ testCbSync(test, "should parse latin-1 if encoding = ISO-8859-1", async t => {
     });
 });
 
-testCbSync(test, "could not parse latin-1 if encoding = gb2312", async t => {
+testCb(test, "could not parse latin-1 if encoding = gb2312", async t => {
     t.context.crawler.add({
         url,
         encoding: "gb2312",
@@ -75,7 +75,7 @@ testCbSync(test, "could not parse latin-1 if encoding = gb2312", async t => {
     });
 });
 
-testCbSync(test, "should parse charset from header", async t => {
+testCb(test, "should parse charset from header", async t => {
     t.context.crawler.add({
         url,
         callback: (error, result) => {
@@ -87,7 +87,7 @@ testCbSync(test, "should parse charset from header", async t => {
     });
 });
 
-testCbSync(test, "should parse charset from meta tag in html if header does not contain content-type key", async t => {
+testCb(test, "should parse charset from meta tag in html if header does not contain content-type key", async t => {
     t.context.crawler.add({
         url: urlWithoutCharsetHeader,
         callback: (error, result) => {

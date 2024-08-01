@@ -1,3 +1,4 @@
+import { GotUrl } from "got";
 import { HttpProxyAgent, HttpsProxyAgent } from "hpagent";
 import http2Wrapper from "http2-wrapper";
 import { cleanObject, getType, isValidUrl } from "./lib/utils.js";
@@ -5,8 +6,8 @@ import { RequestConfig, RequestOptions } from "./types/crawler.js";
 
 export const globalOnlyOptions = [
     "maxConnections",
-    "priorityLevels",
     "rateLimit",
+    "priorityLevels",
     "skipDuplicates",
     "homogeneous",
     "userAgents",
@@ -69,7 +70,7 @@ export const getValidOptions = (options: RequestConfig): RequestOptions => {
     throw new TypeError(`Invalid options: ${JSON.stringify(options)}`);
 };
 
-export const alignOptions = (options: RequestOptions): any => {
+export const alignOptions = (options: RequestOptions): GotUrl => {
     const gotOptions = {
         ...options,
         url: options.url ?? options.uri,

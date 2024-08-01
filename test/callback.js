@@ -1,5 +1,5 @@
 import test from "ava";
-import { testCb, testCbSync } from "./lib/avaTestCb.js";
+import { testCb } from "./lib/avaTestCb.js";
 import nock from "nock";
 import Crawler from "../dist/index.js";
 
@@ -19,7 +19,7 @@ test.afterEach(t => {
     t.context.crawler = null;
 });
 
-testCbSync(test, "should end as expected without callback", async t => {
+testCb(test, "should end as expected without callback", async t => {
     t.context.scope = nock(url).get("/get").reply(200, "<html></html>", {
         "Content-Type": "text/html",
     });
@@ -30,7 +30,7 @@ testCbSync(test, "should end as expected without callback", async t => {
     t.context.crawler.add(`${url}/get`);
 });
 
-testCbSync(test, "should end as expected without callback when timedout", async t => {
+testCb(test, "should end as expected without callback when timedout", async t => {
     t.context.scope = nock(url).get("/delay").delayBody(500).reply(200, "<html></html>", {
         "Content-Type": "text/html",
     });

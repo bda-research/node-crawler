@@ -1,5 +1,5 @@
 import test from "ava";
-import { testCb, testCbSync } from "./lib/avaTestCb.js";
+import { testCb } from "./lib/avaTestCb.js";
 import nock from "nock";
 import Crawler from "../dist/index.js";
 
@@ -26,7 +26,7 @@ test.afterEach(t => {
     t.context.crawler = null;
 });
 
-testCbSync(test, "should retry after timeout", async t => {
+testCb(test, "should retry after timeout", async t => {
     let options = {
         url: "http://test.crawler.com/delay/1",
         callback: (error, response, done) => {
@@ -39,7 +39,7 @@ testCbSync(test, "should retry after timeout", async t => {
     t.is(options.retries, 2);
 });
 
-testCbSync(test, "should return a timeout error after ~2sec", async t => {
+testCb(test, "should return a timeout error after ~2sec", async t => {
     t.context.crawler.add({
         url: "http://test.crawler.com/delay/1",
         callback: (error, response, done) => {
@@ -50,7 +50,7 @@ testCbSync(test, "should return a timeout error after ~2sec", async t => {
     });
 });
 
-testCbSync(test, "should not failed on empty response", async t => {
+testCb(test, "should not failed on empty response", async t => {
     t.context.crawler.add({
         url: "http://test.crawler.com/status/204",
         callback: (error, response, done) => {
@@ -61,7 +61,7 @@ testCbSync(test, "should not failed on empty response", async t => {
     });
 });
 
-testCbSync(test, "should not failed on a malformed html if jQuery is false", async t => {
+testCb(test, "should not failed on a malformed html if jQuery is false", async t => {
     t.context.crawler.add({
         html: "<html><p>hello <div>dude</p></html>",
         callback: (error, response, done) => {

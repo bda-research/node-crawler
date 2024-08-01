@@ -1,5 +1,5 @@
 import test from "ava";
-import { testCb, testCbSync } from "./lib/avaTestCb.js";
+import { testCb } from "./lib/avaTestCb.js";
 import nock from "nock";
 import Crawler from "../dist/index.js";
 import sinon from "sinon";
@@ -12,7 +12,7 @@ test.beforeEach(t => {
     t.context.cb = sinon.spy();
 });
 
-testCbSync(test, "Should do preRequest before request when preRequest defined in crawler options.", async t => {
+testCb(test, "Should do preRequest before request when preRequest defined in crawler options.", async t => {
     t.context.crawler = new Crawler({
         // silence: true,
         jQuery: false,
@@ -35,7 +35,7 @@ testCbSync(test, "Should do preRequest before request when preRequest defined in
     });
 });
 
-testCbSync(test, "Should do preRequest before request when preRequest defined in add options.", async t => {
+testCb(test, "Should do preRequest before request when preRequest defined in add options.", async t => {
     t.context.crawler = new Crawler({
         // silence: true, 
         jQuery: false
@@ -58,7 +58,7 @@ testCbSync(test, "Should do preRequest before request when preRequest defined in
     });
 });
 
-testCbSync(test, "preRequest should be executed the same times as request.", async t => {
+testCb(test, "preRequest should be executed the same times as request.", async t => {
     t.context.crawler = new Crawler({
         // silence: true,
         jQuery: false,
@@ -94,7 +94,7 @@ testCbSync(test, "preRequest should be executed the same times as request.", asy
     });
 });
 
-testCbSync(test, "when preRequest fail, should retry two times by default.", async t => {
+testCb(test, "when preRequest fail, should retry two times by default.", async t => {
     t.context.crawler = new Crawler({
         // silence: true,
         jQuery: false,

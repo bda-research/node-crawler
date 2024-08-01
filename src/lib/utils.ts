@@ -44,8 +44,8 @@ export const isValidUrl = (url: string): boolean => {
  * Flattens an array of arrays recursively.
  *
  */
-export function flattenDeep(array: any[]): any[] {
-    const result: any[] = [];
+export function flattenDeep<T>(array: (T | T[])[]): T[] {
+    const result: T[] = [];
     array.forEach(element => {
         if (Array.isArray(element)) {
             result.push(...flattenDeep(element));
@@ -56,8 +56,8 @@ export function flattenDeep(array: any[]): any[] {
     return result;
 }
 
-export function pick<T extends object, K extends keyof T>(target: T, keys: (keyof T)[]): Pick<T, K> {
-    const result: any = {};
+export function pick<T extends object, K extends keyof T>(target: T, keys: K[]): Pick<T, K> {
+    const result = {} as Pick<T, K>;
     keys.forEach(key => {
         if (target[key] !== undefined) {
             result[key] = target[key];

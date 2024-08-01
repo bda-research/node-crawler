@@ -1,5 +1,5 @@
 import test from "ava";
-import { testCb, testCbSync } from "./lib/avaTestCb.js";
+import { testCb } from "./lib/avaTestCb.js";
 import nock from "nock";
 import Crawler from "../dist/index.js";
 
@@ -32,7 +32,7 @@ test.afterEach(t => {
     t.context.tsArrs = [];
 });
 
-testCbSync(test, "One limiter, tasks should execute one by one", async t => {
+testCb(test, "One limiter, tasks should execute one by one", async t => {
     for (let i = 0; i < 5; i++) {
         t.context.crawler.add({ url: "http://nockHost/status/200" });
     }
@@ -46,7 +46,7 @@ testCbSync(test, "One limiter, tasks should execute one by one", async t => {
     });
 });
 
-testCbSync(test, "Multiple limiters, tasks should execute in parallel", async t => {
+testCb(test, "Multiple limiters, tasks should execute in parallel", async t => {
     for (let i = 0; i < 5; i++) {
         t.context.crawler.add({ url: "http://nockHost/status/200", rateLimiterId: i });
     }
@@ -59,7 +59,7 @@ testCbSync(test, "Multiple limiters, tasks should execute in parallel", async t 
     });
 });
 
-testCbSync(test, "Multiple limiters are mutual independent", async t => {
+testCb(test, "Multiple limiters are mutual independent", async t => {
     for (let i = 0; i < 5; i++) {
         const limiter = i === 4 ? "second" : "default";
         t.context.crawler.add({ url: "http://nockHost/status/200", rateLimiterId: limiter });
@@ -74,7 +74,7 @@ testCbSync(test, "Multiple limiters are mutual independent", async t => {
     });
 });
 
-testCbSync(test, "should modify maxConnections when rateLimit is set", async t => {
+testCb(test, "should modify maxConnections when rateLimit is set", async t => {
     nock.cleanAll();
     nock("http://nockHost").get(url => url.indexOf("status") >= 0).times(1).reply(200, "Yes");
     t.context.crawler.add({

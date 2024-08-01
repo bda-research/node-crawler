@@ -1,5 +1,5 @@
 import test from "ava";
-import { testCb, testCbSync } from "./lib/avaTestCb.js";
+import { testCb } from "./lib/avaTestCb.js";
 import nock from "nock";
 import Crawler from "../dist/index.js";
 
@@ -23,7 +23,7 @@ test.before(t => {
     });
 });
 
-testCbSync(test, "should rotate user agents if userAgents is set.", async t => {
+testCb(test, "should rotate user agents if userAgents is set.", async t => {
     t.context.crawler.add([
         "http://nockhost/status1",
         "http://nockhost/status2",

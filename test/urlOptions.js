@@ -1,5 +1,5 @@
 import test from "ava";
-import { testCb, testCbSync } from "./lib/avaTestCb.js";
+import { testCb } from "./lib/avaTestCb.js";
 import nock from "nock";
 import Crawler from "../dist/index.js";
 import sinon from "sinon";
@@ -13,7 +13,7 @@ test.before(t => {
     });
 });
 
-testCbSync(test, "should work if url is string", t => {
+testCb(test, "should work if url is string", t => {
     t.context.crawler.add({
         url: 'http://test.crawler.com/',
         callback: (error, response, done) => {
@@ -24,7 +24,7 @@ testCbSync(test, "should work if url is string", t => {
     });
 });
 
-testCbSync(test, "should work if url is a function", t => {
+testCb(test, "should work if url is a function", t => {
     function urlFn(onUrl) {
         onUrl('http://test.crawler.com/');
     }
@@ -38,7 +38,7 @@ testCbSync(test, "should work if url is a function", t => {
     });
 });
 
-testCbSync(test, "should skip if the url is undefined or an empty string", t => {
+testCb(test, "should skip if the url is undefined or an empty string", t => {
     const push = sinon.spy(t.context.crawler, '_schedule');
     t.context.crawler.add([undefined, null, []]);
     t.context.crawler.add({
