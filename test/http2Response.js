@@ -1,13 +1,12 @@
 import test from "ava";
-import { testCb, testCbSync } from "./lib/avaTestCb.js";
+import { testCb } from "./lib/avaTestCb.js";
 import Crawler from "../dist/index.js";
-import fs from "fs";
 
 test.afterEach(t => {
     t.context.crawler = null;
 });
 
-testCbSync(test, "response statusCode.", async t => {
+testCb(test, "response statusCode.", async t => {
     t.context.crawler = new Crawler({
         // silence: true,
         timeout: 10000,
@@ -26,7 +25,7 @@ testCbSync(test, "response statusCode.", async t => {
     });
 });
 
-testCbSync(test, "response headers.", async t => {
+testCb(test, "response headers.", async t => {
     t.context.crawler = new Crawler({
         // silence: true,
         retryInterval: 1000,
@@ -46,7 +45,7 @@ testCbSync(test, "response headers.", async t => {
     });
 });
 
-testCbSync(test, "html response body.", async t => {
+testCb(test, "html response body.", async t => {
     t.context.crawler = new Crawler({
         // silence: true,
         retryInterval: 1000,

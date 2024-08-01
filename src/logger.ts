@@ -1,3 +1,11 @@
+import { Logger } from "tslog";
+
+const logLevelsByEnv: Record<string, number> = {
+    "debug": 0,
+    "production": 3,
+    "test": 7,
+};
+
 export const logOptions = {
     type: "pretty" as "json" | "pretty" | "hidden",
     name: "Crawler",
@@ -23,3 +31,7 @@ export const logOptions = {
     },
     minLevel: 0,
 };
+
+logOptions.minLevel = process.env.NODE_ENV ? logLevelsByEnv[process.env.NODE_ENV] : 3;
+
+export const getLogger = () => new Logger(logOptions);

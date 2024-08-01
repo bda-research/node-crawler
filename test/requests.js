@@ -1,5 +1,5 @@
 import test from "ava";
-import { testCb, testCbSync } from "./lib/avaTestCb.js";
+import { testCb } from "./lib/avaTestCb.js";
 import nock from "nock";
 import Crawler from "../dist/index.js";
 
@@ -61,7 +61,7 @@ testCb(test, "should crawl two request request and emit the drain event.", async
     });
 });
 
-testCbSync(test, "should use the provided user-agent", async t => {
+testCb(test, "should use the provided user-agent", async t => {
     const userAgent = 'test/1.2';
     t.context.crawler.add({
         url: `${origin}${path}`,
@@ -76,7 +76,7 @@ testCbSync(test, "should use the provided user-agent", async t => {
     });
 });
 
-testCbSync(test, "should replace the global default user-agent", async t => {
+testCb(test, "should replace the global default user-agent", async t => {
     t.context.crawler = new Crawler({
         // silence: true,
         isJson: true,
@@ -94,7 +94,7 @@ testCbSync(test, "should replace the global default user-agent", async t => {
     });
 });
 
-testCbSync(test, "should spoof the referrer", async t => {
+testCb(test, "should spoof the referrer", async t => {
     const referer = 'http://spoofed.com';
     t.context.crawler.add({
         url: `${origin}${path}`,

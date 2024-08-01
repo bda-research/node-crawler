@@ -2,18 +2,15 @@ import { EventEmitter } from "events";
 import { Cluster } from "./rateLimiter/index.js";
 import { isBoolean, isFunction, setDefaults, flattenDeep, lowerObjectKeys, isNumber } from "./lib/utils.js";
 import { getValidOptions, alignOptions, getCharset } from "./options.js";
-import { logOptions } from "./logger.js";
+import { getLogger } from "./logger.js";
 import type { CrawlerOptions, RequestOptions, RequestConfig, CrawlerResponse } from "./types/crawler.js";
 import { load } from "cheerio";
 import got from "got";
 import seenreq from "seenreq";
 import iconv from "iconv-lite";
-import { Logger } from "tslog";
 
 // @todo: remove seenreq dependency
-// process.env.NODE_ENV = process.env.NODE_ENV ?? process.argv[2];
-logOptions.minLevel = process.env.NODE_ENV === "debug" ? 0 : process.env.NODE_ENV === "test" ? 7 : 3;
-const log = new Logger(logOptions);
+const log = getLogger();
 
 class Crawler extends EventEmitter {
     private _limiters: Cluster;

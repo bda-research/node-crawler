@@ -1,4 +1,4 @@
-export const testCb = (test, description, assertions) => {
+export const testCbAsync = (test, description, assertions) => {
     test(description, async t => {
         await new Promise(resolve => {
             // eslint-disable-next-linse @typescript-eslint/no-explicit-any
@@ -22,3 +22,6 @@ export const testCbSync = (test, description, assertions) => {
         });
     });
 };
+
+// @todo: add async test version
+export const testCb = testCbSync;

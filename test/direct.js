@@ -1,5 +1,5 @@
 import test from "ava";
-import { testCb, testCbSync } from "./lib/avaTestCb.js";
+import { testCb } from "./lib/avaTestCb.js";
 import nock from "nock";
 import Crawler from "../dist/index.js";
 import sinon from "sinon";
@@ -35,7 +35,7 @@ test.afterEach(t => {
     t.context.crawler = null;
 });
 
-testCbSync(test, "should not trigger preRequest or callback of crawler instance", async t => {
+testCb(test, "should not trigger preRequest or callback of crawler instance", async t => {
     t.context.crawler.send({
         url: "http://test.crawler.com/",
         callback: (error, res) => {
@@ -48,7 +48,7 @@ testCbSync(test, "should not trigger preRequest or callback of crawler instance"
     });
 });
 
-testCbSync(test, "should be sent directly regardless of current queue of crawler", async t => {
+testCb(test, "should be sent directly regardless of current queue of crawler", async t => {
     t.context.crawler.add({
         url: "http://test.crawler.com/",
         callback: (error, res, done) => {
@@ -91,7 +91,7 @@ testCbSync(test, "should be sent directly regardless of current queue of crawler
     });
 });
 
-testCbSync(test, "should not trigger Event:request by default.", async t => {
+testCb(test, "should not trigger Event:request by default.", async t => {
     t.context.crawler.send({
         url: "http://test.crawler.com/",
         callback: (error, res) => {
@@ -104,7 +104,7 @@ testCbSync(test, "should not trigger Event:request by default.", async t => {
     });
 });
 
-testCbSync(test, "should trigger Event:request if set.", async t => {
+testCb(test, "should trigger Event:request if set.", async t => {
     t.context.crawler.send({
         url: "http://test.crawler.com/",
         skipEventRequest: false,

@@ -1,5 +1,5 @@
 import test from "ava";
-import { testCb, testCbSync } from "./lib/avaTestCb.js";
+import { testCb } from "./lib/avaTestCb.js";
 import nock from "nock";
 import Crawler from "../dist/index.js";
 
@@ -10,7 +10,7 @@ test.afterEach(t => {
     t.context.c = {};
 });
 
-testCbSync(test, "Should't skip one single url if duplicates are active.", async t => {
+testCb(test, "Should't skip one single url if duplicates are active.", async t => {
     t.context.scope.get("/").reply(200);
     t.context.c = new Crawler({
         // silence: true,
@@ -25,7 +25,7 @@ testCbSync(test, "Should't skip one single url if duplicates are active.", async
     t.context.c.add("http://target.com");
 });
 
-testCbSync(test, "Should notify the callback when an error occurs and 'retries' is disabled.", async t => {
+testCb(test, "Should notify the callback when an error occurs and 'retries' is disabled.", async t => {
     t.context.scope.get("/").replyWithError("Bad request.");
     t.context.c = new Crawler({
         // silence: true,
@@ -41,7 +41,7 @@ testCbSync(test, "Should notify the callback when an error occurs and 'retries' 
     t.context.c.add("http://target.com");
 });
 
-testCbSync(test, "Should retry and notify the callback when an error occurs and 'retries' is enabled.", async t => {
+testCb(test, "Should retry and notify the callback when an error occurs and 'retries' is enabled.", async t => {
     t.context.scope.get("/").replyWithError("Bad request.").persist();
     t.context.c = new Crawler({
         jQuery: false,
@@ -58,7 +58,7 @@ testCbSync(test, "Should retry and notify the callback when an error occurs and 
     t.context.c.add("http://target.com");
 });
 
-testCbSync(test, "Should skip previously crawled urls when 'skipDuplicates' is active.", async t => {
+testCb(test, "Should skip previously crawled urls when 'skipDuplicates' is active.", async t => {
     t.context.scope.get("/").reply(200).persist();
     t.plan(3);
     t.context.c = new Crawler({
