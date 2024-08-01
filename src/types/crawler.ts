@@ -164,4 +164,4 @@ export type RequestOptions = {
 
 export type RequestConfig = string | RequestOptions | RequestOptions[];
 export type CrawlerOptions = Partial<GlobalOnlyOptions> & RequestOptions;
-export type CrawlerResponse = any
+export type CrawlerResponse = any;
