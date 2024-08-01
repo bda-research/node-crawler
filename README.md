@@ -6,7 +6,7 @@
 
 ------
 
-[![npm package](https://nodei.co/npm/crawler.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/crawler/v/2.0.0)
+[![npm package](https://nodei.co/npm/crawler.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/crawler/v/2.0.2)
 
 [![CircleCI](https://circleci.com/gh/bda-research/node-crawler/tree/master.svg?style=svg)](https://circleci.com/gh/bda-research/node-crawler/tree/master)
 [![NPM download][download-image]][download-url]

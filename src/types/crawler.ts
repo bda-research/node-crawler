@@ -72,8 +72,20 @@ export type RequestOptions = {
      * @description rateLimiter ID
      */
     rateLimiterId?: number;
+    /**
+     * @default 2
+     * @description The retry count of the request.
+     */
     retries?: number;
+    /**
+     * @default 3000
+     * @description The interval between retries in milliseconds.
+     */
     retryInterval?: number;
+    /**
+     * @default 20000
+     * @description The global timeout of the request in milliseconds.
+     */
     timeout?: number;
     priority?: number;
     seenreq?: any;
@@ -91,8 +103,8 @@ export type RequestOptions = {
     /**
      * @deprecated Please use "url" instead.
      */
-    uri?: string | Function;
-    url?: string | Function;
+    uri?: string | ((urlFn: (url: string) => void) => void);
+    url?: string | ((urlFn: (url: string) => void) => void);
 
     /**
      * @deprecated Please use "searchParams" instead.
@@ -124,8 +136,10 @@ export type RequestOptions = {
     cookieJar?: object;
 
     /**
-     * @description If true, the crawler will parse the response body as JSON.
      * @default false
+     * 
+     * If true, the crawler will parse the response body as JSON.
+     * This will set 'jQuery' to false.
      */
     isJson?: boolean;
 
@@ -134,14 +148,14 @@ export type RequestOptions = {
     /**
      * @deprecated Please use "parseJson" instead.
      */
-    jsonReviver?: Function;
-    parseJson?: Function;
+    jsonReviver?: (text: string) => unknown;
+    parseJson?: (text: string) => unknown;
 
     /**
      * @deprecated Please use "stringifyJson" instead.
      */
-    jsonReplacer?: Function;
-    stringifyJson?: Function;
+    jsonReplacer?: (object: unknown) => string;
+    stringifyJson?: (object: unknown) => string;
 
     preRequest?: (options: RequestOptions, done?: (error?: Error | null) => void) => void;
     release?: () => void;

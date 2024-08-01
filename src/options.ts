@@ -5,8 +5,8 @@ import { RequestConfig, RequestOptions } from "./types/crawler.js";
 
 export const globalOnlyOptions = [
     "maxConnections",
-    "priorityLevels",
     "rateLimit",
+    "priorityLevels",
     "skipDuplicates",
     "homogeneous",
     "userAgents",
